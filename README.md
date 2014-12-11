@@ -1,7 +1,5 @@
 # dynaTrace IntelliJ IDEA Integration Plugin
 
-Special Thanks to Christian Grimm who contributed this plugin to the dynaTrace Community
-
 ## Overview
 
 ![images_community/download/attachments/68649064/icon.png](images_community/download/attachments/68649064/icon.png)
