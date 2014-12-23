@@ -1,6 +1,4 @@
-# dynaTrace IntelliJ IDEA Integration Plugin
-
-## Overview
+## dynaTrace IntelliJ IDEA Integration Plugin
 
 ![images_community/download/attachments/68649064/icon.png](images_community/download/attachments/68649064/icon.png)
 
