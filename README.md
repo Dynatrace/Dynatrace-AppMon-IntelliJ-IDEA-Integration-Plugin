@@ -13,4 +13,4 @@ The following dynaTrace integrations are supported:
 
   * Source Code Lookup (CodeLink) 
 
-Find further information in the [dynaTrace community](https://community.compuwareapm.com/community/display/DL/dynaTrace+IntelliJ+IDEA+Integration+Plugin)
+Find further information in the [dynaTrace community](https://community.dynatrace.com/community/display/DL/dynaTrace+IntelliJ+IDEA+Integration+Plugin)
