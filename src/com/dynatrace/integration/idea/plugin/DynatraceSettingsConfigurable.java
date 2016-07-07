@@ -6,7 +6,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import org.jetbrains.annotations.Nls;
@@ -205,7 +204,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
     @Override
     //reset does a rollback to the previous configuration
     public void reset() {
-        ApplicationManager.getApplication().invokeLater(()->this.createComponent());
+        ApplicationManager.getApplication().invokeLater(() -> this.createComponent());
     }
 
     @Override

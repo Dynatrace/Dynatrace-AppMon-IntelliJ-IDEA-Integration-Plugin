@@ -38,6 +38,7 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
         public AgentSettings agent = new AgentSettings();
         @NotNull
         public CodeLinkSettings codeLink = new CodeLinkSettings();
+
         //we might encapsulate fields and annotate them
         //http://www.jetbrains.org/intellij/sdk/docs/basics/persisting_state_of_components.html#implementing-the-state-class
         public State() {

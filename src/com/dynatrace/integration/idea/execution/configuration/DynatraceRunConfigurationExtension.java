@@ -1,8 +1,6 @@
 package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
-import com.dynatrace.integration.idea.execution.configuration.DynatraceConfigurableStorage;
-import com.dynatrace.integration.idea.execution.configuration.DynatraceExtensionConfigurable;
 import com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;

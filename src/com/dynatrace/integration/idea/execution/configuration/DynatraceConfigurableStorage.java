@@ -11,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class DynatraceConfigurableStorage implements JDOMExternalizable {
     public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
+    private String systemProfile;
+    private String agentName;
+    private String additionalParameters;
+    private boolean recordSessionPerLaunch;
 
     static DynatraceConfigurableStorage getOrCreateStorage(@NotNull RunConfigurationBase runConfiguration) {
         DynatraceConfigurableStorage storage = runConfiguration.getCopyableUserData(STORAGE_KEY);
@@ -20,11 +24,6 @@ public class DynatraceConfigurableStorage implements JDOMExternalizable {
         runConfiguration.putCopyableUserData(STORAGE_KEY, storage);
         return storage;
     }
-
-    private String systemProfile;
-    private String agentName;
-    private String additionalParameters;
-    private boolean recordSessionPerLaunch;
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
