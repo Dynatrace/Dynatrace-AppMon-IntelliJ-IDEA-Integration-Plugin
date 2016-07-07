@@ -1,10 +1,10 @@
 <idea-plugin version="2">
-  <id>com.dynatrace.integration.idea</id>
-  <name>Dynatrace Integration Plugin</name>
-  <version>0.1</version>
-  <vendor email="support@yourcompany.com" url="http:/dynatrace.com">Dynatrace</vendor>
+    <id>com.dynatrace.integration.idea</id>
+    <name>Dynatrace Integration Plugin</name>
+    <version>0.1</version>
+    <vendor email="support@yourcompany.com" url="http:/dynatrace.com">Dynatrace</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       Provides an intelliJ IDEA integration with Dynatrace client:
       <ul>
           <li>CodeLink</li>
@@ -12,37 +12,39 @@
       </ul>
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
       Add change notes here.<br>
       <em>most HTML tags may be used</em>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="141.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <runConfigurationExtension implementation="com.dynatrace.integration.idea.execution.DynatraceRunConfigurationExtension" />
-    <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor" />
-    <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
-    <applicationConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceConfigurable" id="dynatrace" displayName="Dynatrace" />
-    <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
-    <!-- Add your extensions here -->
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <runConfigurationExtension
+                implementation="com.dynatrace.integration.idea.execution.DynatraceRunConfigurationExtension"/>
+        <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor"/>
+        <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
+        <applicationConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceConfigurable"
+                                 id="dynatrace" displayName="Dynatrace"/>
+        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
+        <!-- Add your extensions here -->
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
 
     <!--<application-components>-->
-        <!--<component>-->
-            <!--<implementation-class>com.dynatrace.integration.idea.settings.plugin.set</implementation-class>-->
-        <!--</component>-->
+    <!--<component>-->
+    <!--<implementation-class>com.dynatrace.integration.idea.settings.plugin.set</implementation-class>-->
+    <!--</component>-->
     <!--</application-components>-->
 </idea-plugin>

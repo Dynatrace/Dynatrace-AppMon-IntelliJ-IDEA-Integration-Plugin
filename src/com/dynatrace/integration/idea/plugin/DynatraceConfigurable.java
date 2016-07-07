@@ -2,14 +2,10 @@ package com.dynatrace.integration.idea.plugin;
 
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
-import com.intellij.ide.util.TreeFileChooser;
-import com.intellij.ide.util.TreeFileChooserFactory;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import org.jetbrains.annotations.Nls;
@@ -27,7 +23,6 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
 
     public DynatraceConfigurable(DynatraceSettingsProvider provider) {
         this.provider = provider;
-       // this.project = project;
     }
 
     @NotNull
@@ -52,7 +47,6 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     public JComponent createComponent() {
         this.panel = new DynatraceSettingsPanel();
 
-        //load values
         DynatraceSettingsProvider.State state = this.provider.getState();
 
         //server
@@ -130,7 +124,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
                 return true;
             }
         } catch (NumberFormatException e) {
-            return true; //will validate in apply();
+            return true; //will be validated in apply();
         } catch (PasswordSafeException e) {
             e.printStackTrace();
         }
@@ -152,6 +146,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         } catch (NumberFormatException e) {
             throw new ConfigurationException("Agent's collector port must be a non-negative number.");
         }
+
         state.agent.collectorHost = this.panel.collectorHost.getText();
 
         //server panel
@@ -163,7 +158,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
             String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
             //check if passwords do not match
             if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
-                //check if the password is a default password
+                //check if the password is a default password and the stored one is not the default one
                 if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
                     PasswordSafe.getInstance().storePassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID, String.valueOf(this.panel.password.getPassword()));
                 }

@@ -1,9 +1,11 @@
 package com.dynatrace.integration.idea.execution;
 
+import com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
-import com.intellij.execution.configurations.*;
-import com.intellij.openapi.extensions.Extensions;
+import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.execution.configurations.RunConfigurationBase;
+import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
@@ -17,12 +19,24 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     public void updateJavaParameters(RunConfigurationBase configuration, JavaParameters javaParameters, RunnerSettings runnerSettings) throws ExecutionException {
-        javaParameters.getVMParametersList().add("-agentpath:C:\\Program Files\\dynaTrace\\Dynatrace 6.3\\agent\\lib64\\dtagent.dll=name=ideagroup,server=localhost,wait=5,optionTestRunIdJava=8820282a-eded-441d-8598-71181cca7a4");
+        //Check if the action was ran by DynatraceExecutor
+        if (!(runnerSettings instanceof DynatraceRunnerSettings)) {
+            return;
+        }
+
+        DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
+        StringBuilder builder = new StringBuilder("-agentpath:");
+        builder.append(settings.agent.agentLibrary).append('=');
+        builder.append("wait=").append(settings.server.timeout).append(',');
+        builder.append("name=").append("idea").append(',');
+        builder.append("server=").append(settings.agent.collectorHost).append(',');
+        builder.append("port=").append(settings.agent.collectorPort);//.append(',');
+        javaParameters.getVMParametersList().add(builder.toString());
     }
 
     @Override
     protected void readExternal(@NotNull RunConfigurationBase runConfiguration, @NotNull Element element) throws InvalidDataException {
-        if(this.storage == null) {
+        if (this.storage == null) {
             this.storage = DynatraceConfigurableStorage.getOrCreateStorage(runConfiguration);
         }
         this.storage.readExternal(runConfiguration, element);
@@ -30,7 +44,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected void writeExternal(@NotNull RunConfigurationBase runConfiguration, @NotNull Element element) throws WriteExternalException {
-        if(this.storage == null) {
+        if (this.storage == null) {
             return;
         }
         this.storage.writeExternal(runConfiguration, element);
@@ -44,21 +58,12 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
-        final DynatraceConfigurableStorage storage = runConfigurationBase.getUserData(DynatraceConfigurableStorage.STORAGE_KEY);
-        if(storage!=null) {
-            return true;
-        }
-        for(RunConfigurationExtension extension : Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
-            if(extension == this) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
     @Nullable
     @Override
     protected SettingsEditor createEditor(@NotNull RunConfigurationBase base) {
-        return null;
+        return new DynatraceConfigurables();
     }
 }

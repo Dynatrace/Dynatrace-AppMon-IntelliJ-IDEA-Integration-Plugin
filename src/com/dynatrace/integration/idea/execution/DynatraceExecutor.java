@@ -1,7 +1,6 @@
 package com.dynatrace.integration.idea.execution;
 
 import com.intellij.execution.Executor;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindowId;
 import org.jetbrains.annotations.NotNull;
