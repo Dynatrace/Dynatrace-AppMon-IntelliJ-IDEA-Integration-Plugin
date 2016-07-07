@@ -25,10 +25,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <runConfigurationExtension
-                implementation="com.dynatrace.integration.idea.execution.DynatraceRunConfigurationExtension"/>
+                implementation="com.dynatrace.integration.idea.execution.configuration.DynatraceRunConfigurationExtension"/>
         <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor"/>
         <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
-        <applicationConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceSettingsConfigurable"
+        <applicationConfigurable groupId="build"
+                                 instance="com.dynatrace.integration.idea.plugin.DynatraceSettingsConfigurable"
                                  id="dynatrace" displayName="Dynatrace"/>
         <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
     </extensions>
