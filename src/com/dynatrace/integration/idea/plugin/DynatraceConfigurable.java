@@ -2,10 +2,16 @@ package com.dynatrace.integration.idea.plugin;
 
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
+import com.intellij.ide.util.TreeFileChooser;
+import com.intellij.ide.util.TreeFileChooserFactory;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 
+import com.intellij.openapi.ui.TextBrowseFolderListener;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +75,13 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
 
         //agent
         this.panel.agentLibrary.setText(state.agent.agentLibrary);
+
+        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+        descriptor.setTitle("Choose agent path");
+        descriptor.withFileFilter((filter) -> filter == null || filter.isDirectory() || (filter.getExtension() != null && (filter.getExtension().equals("dll") || filter.getExtension().equals("so"))));
+
+        this.panel.agentLibrary.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
+
         this.panel.collectorHost.setText(state.agent.collectorHost);
         this.panel.collectorPort.setText(String.valueOf(state.agent.collectorPort));
 
@@ -208,7 +221,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         private JTextField login;
         private JPasswordField password;
         private JTextField timeout;
-        private JTextField agentLibrary;
+        private TextFieldWithBrowseButton agentLibrary;
         private JTextField collectorHost;
         private JTextField collectorPort;
         private JCheckBox enableCodeLink;
@@ -218,5 +231,9 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         private JCheckBox javaBrowsingPerspective;
 
         private JPanel wholePanel;
+
+        private void createUIComponents() {
+            this.agentLibrary = new TextFieldWithBrowseButton();
+        }
     }
 }
