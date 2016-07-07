@@ -105,7 +105,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
 
             //shame on you IntelliJ, storing passwords in string...
             String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
-            if (!password.equals(String.valueOf(this.panel.password.getPassword()))) {
+            if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
                 if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
                     return true;
                 }
