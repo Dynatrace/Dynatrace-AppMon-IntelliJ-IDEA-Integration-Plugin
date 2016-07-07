@@ -7,8 +7,8 @@ import com.intellij.openapi.components.StoragePathMacros;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
-@State(name = "DynatraceSettingsProvider", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
+//                                                    StoragePathMacros.WORKSPACE is throwing exceptions
+@State(name = "DynatraceSettingsProvider", storages = @Storage(StoragePathMacros.APP_CONFIG + "/dynatrace.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
     static class State {
         //we might encapsulate fields and annotate them

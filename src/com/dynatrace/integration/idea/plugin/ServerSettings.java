@@ -6,7 +6,7 @@ public class ServerSettings {
     public static final String DEFAULT_PASSWORD = "admin";
 
     @NotNull
-    public String host = "";
+    public String host = "localhost";
     public int restPort = 8021;
     public boolean ssl = true;
     @NotNull

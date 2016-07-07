@@ -31,8 +31,8 @@
     <runConfigurationExtension implementation="com.dynatrace.integration.idea.execution.DynatraceRunConfigurationExtension" />
     <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor" />
     <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
-    <projectConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceConfigurable" id="dynatrace" displayName="Dynatrace" />
-    <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
+    <applicationConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceConfigurable" id="dynatrace" displayName="Dynatrace" />
+    <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
     <!-- Add your extensions here -->
   </extensions>
 

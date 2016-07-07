@@ -22,12 +22,12 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     public static final String PS_SERVER_PWD_ID = "serverPassword";
 
     private final DynatraceSettingsProvider provider;
-    private final Project project;
+    private Project project;
     private DynatraceSettingsPanel panel;
 
-    public DynatraceConfigurable(DynatraceSettingsProvider provider, Project project) {
+    public DynatraceConfigurable(DynatraceSettingsProvider provider) {
         this.provider = provider;
-        this.project = project;
+       // this.project = project;
     }
 
     @NotNull
