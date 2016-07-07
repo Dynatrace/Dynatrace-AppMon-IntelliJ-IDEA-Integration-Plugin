@@ -1,21 +1,19 @@
 package com.dynatrace.integration.idea.plugin;
 
+import com.intellij.ide.passwordSafe.PasswordSafe;
+import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
-import com.sun.org.apache.xpath.internal.operations.Number;
+
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-/**
- * Created by Maciej.Mionskowski on 2016-07-06.
- */
 public class DynatraceConfigurable implements Configurable.NoScroll, Configurable {
-
+    public static final String PS_SERVER_PWD_ID = "serverPassword";
 
     private final DynatraceSettingsProvider provider;
     private final Project project;
@@ -47,6 +45,39 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     @Override
     public JComponent createComponent() {
         this.panel = new DynatraceSettingsPanel();
+
+        //load values
+        DynatraceSettingsProvider.State state = this.provider.getState();
+
+        //server
+        this.panel.serverHost.setText(state.server.host);
+        this.panel.serverSSL.setSelected(state.server.ssl);
+        this.panel.restPort.setText(String.valueOf(state.server.restPort));
+        this.panel.serverSSL.setSelected(state.server.ssl);
+        this.panel.login.setText(state.server.login);
+        try {
+            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            if (password != null) {
+                this.panel.password.setText(password);
+            } else {
+                this.panel.password.setText(ServerSettings.DEFAULT_PASSWORD);
+            }
+        } catch (PasswordSafeException e) {
+            e.printStackTrace();
+        }
+        this.panel.timeout.setText(String.valueOf(state.server.timeout));
+
+        //agent
+        this.panel.agentLibrary.setText(state.agent.agentLibrary);
+        this.panel.collectorHost.setText(state.agent.collectorHost);
+        this.panel.collectorPort.setText(String.valueOf(state.agent.collectorPort));
+
+        //CodeLink
+        this.panel.enableCodeLink.setSelected(state.codeLink.enabled);
+        this.panel.clientHost.setText(state.codeLink.host);
+        this.panel.clientPort.setText(String.valueOf(state.codeLink.port));
+        this.panel.codeLinkSSL.setSelected(state.codeLink.ssl);
+        this.panel.javaBrowsingPerspective.setSelected(state.codeLink.javaBrowsingPerspective);
         return this.panel.wholePanel;
     }
 
@@ -56,19 +87,23 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
 
         //agent panel
         try {
-            if (state.agent.agentLibrary != this.panel.agentLibrary.getText()
+            if (!state.agent.agentLibrary.equals(this.panel.agentLibrary.getText())
                     || state.agent.collectorPort != Integer.parseInt(this.panel.collectorPort.getText())
-                    || state.agent.collectorHost != this.panel.collectorHost.getText()) {
+                    || !state.agent.collectorHost.equals(this.panel.collectorHost.getText())) {
                 return true;
             }
 
-
+            //shame on you IntelliJ, storing passwords in string...
+            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            if (!password.equals(String.valueOf(this.panel.password.getPassword()))) {
+                if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
+                    return true;
+                }
+            }
             //server panel
             if (state.server.ssl != this.panel.serverSSL.isSelected()
-                    || state.server.host != this.panel.clientHost.getText()
-                    || state.server.login != this.panel.login.getText()
-                    //TODO: validate password
-                    //|| state.server.password != this.panel.password.getPassword()
+                    || !state.server.host.equals(this.panel.clientHost.getText())
+                    || !state.server.login.equals(this.panel.login.getText())
                     || state.server.restPort != Integer.parseInt(this.panel.restPort.getText())
                     || state.server.timeout != Integer.parseInt(this.panel.timeout.getText())) {
                 return true;
@@ -77,12 +112,14 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
             if (state.codeLink.enabled != this.panel.enableCodeLink.isSelected()
                     || state.codeLink.javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
                     || state.codeLink.ssl != this.panel.codeLinkSSL.isSelected()
-                    || state.codeLink.host != this.panel.clientHost.getText()
+                    || !state.codeLink.host.equals(this.panel.clientHost.getText())
                     || state.codeLink.port != Integer.parseInt(this.panel.clientPort.getText())) {
                 return true;
             }
         } catch (NumberFormatException e) {
             return true; //will validate in apply();
+        } catch (PasswordSafeException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -95,11 +132,11 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         state.agent.agentLibrary = this.panel.agentLibrary.getText();
         try {
             int collectorPort = Integer.parseInt(this.panel.collectorPort.getText());
-            if(collectorPort < 0) {
+            if (collectorPort < 0) {
                 throw new NumberFormatException();
             }
             state.agent.collectorPort = collectorPort;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new ConfigurationException("Agent's collector port must be a non-negative number.");
         }
         state.agent.collectorHost = this.panel.collectorHost.getText();
@@ -108,19 +145,35 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         state.server.ssl = this.panel.serverSSL.isSelected();
         state.server.host = this.panel.clientHost.getText();
         state.server.login = this.panel.login.getText();
-        //TODO: save password in PasswordSafe
-        //state.server.password = this.panel.password.getPassword();
+
+        try {
+            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            //check if passwords do not match
+            if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
+                //check if the password is a default password
+                if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
+                    PasswordSafe.getInstance().storePassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID, String.valueOf(this.panel.password.getPassword()));
+                }
+            }
+        } catch (PasswordSafeException e) {
+            throw new ConfigurationException(e.getMessage());
+        }
+
         try {
             int restPort = Integer.parseInt(this.panel.restPort.getText());
-            if(restPort < 0) {
+            if (restPort < 0) {
                 throw new NumberFormatException();
             }
             state.server.restPort = restPort;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new ConfigurationException("Servers's port must be a non-negative number.");
         }
-
-        state.server.timeout = Integer.parseInt(this.panel.timeout.getText());
+        try {
+            int timeout = Integer.parseInt(this.panel.timeout.getText());
+            state.server.timeout = timeout;
+        } catch (NumberFormatException e) {
+            throw new ConfigurationException("Servers's timeout must be a number.");
+        }
 
         //codelink panel
         state.codeLink.enabled = this.panel.enableCodeLink.isSelected();
@@ -129,24 +182,23 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         state.codeLink.host = this.panel.clientHost.getText();
         try {
             int codeLinkPort = Integer.parseInt(this.panel.clientPort.getText());
-            if(codeLinkPort < 0) {
+            if (codeLinkPort < 0) {
                 throw new NumberFormatException();
             }
             state.codeLink.port = codeLinkPort;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new ConfigurationException("Codelink's port must be a non-negative number.");
         }
     }
 
     @Override
     public void reset() {
-
+        //TODO
     }
 
     @Override
     public void disposeUIResources() {
         this.panel = null;
-
     }
 
     public static class DynatraceSettingsPanel {
