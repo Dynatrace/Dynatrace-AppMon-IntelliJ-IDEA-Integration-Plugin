@@ -2,6 +2,7 @@ package com.dynatrace.integration.idea.plugin;
 
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -14,14 +15,13 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class DynatraceConfigurable implements Configurable.NoScroll, Configurable {
+public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
     public static final String PS_SERVER_PWD_ID = "serverPassword";
 
     private final DynatraceSettingsProvider provider;
-    private Project project;
     private DynatraceSettingsPanel panel;
 
-    public DynatraceConfigurable(DynatraceSettingsProvider provider) {
+    public DynatraceSettingsConfigurable(DynatraceSettingsProvider provider) {
         this.provider = provider;
     }
 
@@ -59,7 +59,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         this.panel.serverSSL.setSelected(state.server.ssl);
         this.panel.login.setText(state.server.login);
         try {
-            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
             if (password != null) {
                 this.panel.password.setText(password);
             } else {
@@ -104,7 +104,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
             }
 
             //shame on you IntelliJ, storing passwords in string...
-            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
             if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
                 if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
                     return true;
@@ -112,7 +112,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
             }
             //server panel
             if (state.server.ssl != this.panel.serverSSL.isSelected()
-                    || !state.server.host.equals(this.panel.clientHost.getText())
+                    || !state.server.host.equals(this.panel.serverHost.getText())
                     || !state.server.login.equals(this.panel.login.getText())
                     || state.server.restPort != Integer.parseInt(this.panel.restPort.getText())
                     || state.server.timeout != Integer.parseInt(this.panel.timeout.getText())) {
@@ -158,12 +158,12 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
         state.server.login = this.panel.login.getText();
 
         try {
-            String password = PasswordSafe.getInstance().getPassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID);
+            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
             //check if passwords do not match
             if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
                 //check if the password is a default password and the stored one is not the default one
                 if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
-                    PasswordSafe.getInstance().storePassword(this.project, DynatraceConfigurable.class, PS_SERVER_PWD_ID, String.valueOf(this.panel.password.getPassword()));
+                    PasswordSafe.getInstance().storePassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID, String.valueOf(this.panel.password.getPassword()));
                 }
             }
         } catch (PasswordSafeException e) {
@@ -205,7 +205,7 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     @Override
     //reset does a rollback to the previous configuration
     public void reset() {
-        this.createComponent();
+        ApplicationManager.getApplication().invokeLater(()->this.createComponent());
     }
 
     @Override
