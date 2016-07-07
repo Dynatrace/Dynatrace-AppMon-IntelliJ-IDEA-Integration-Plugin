@@ -2,6 +2,7 @@ package com.dynatrace.integration.idea.execution;
 
 import com.intellij.execution.Executor;
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindowId;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,5 +63,10 @@ public class DynatraceExecutor extends Executor {
     @Override
     public String getHelpId() {
         return null; //TODO
+    }
+
+    @Override
+    public String getStartActionText(String configurationName) {
+        return "Run " + (StringUtil.isEmpty(configurationName)?"":" \'" + StringUtil.first(configurationName, 30, true) + "\'") + " with Dynatrace";
     }
 }

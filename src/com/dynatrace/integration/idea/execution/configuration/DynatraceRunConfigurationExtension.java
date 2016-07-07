@@ -1,5 +1,8 @@
-package com.dynatrace.integration.idea.execution;
+package com.dynatrace.integration.idea.execution.configuration;
 
+import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
+import com.dynatrace.integration.idea.execution.configuration.DynatraceConfigurableStorage;
+import com.dynatrace.integration.idea.execution.configuration.DynatraceExtensionConfigurable;
 import com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
@@ -15,8 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
 
-    private DynatraceConfigurableStorage storage;
-
     @Override
     public void updateJavaParameters(RunConfigurationBase configuration, JavaParameters javaParameters, RunnerSettings runnerSettings) throws ExecutionException {
         //Check if the action was ran by DynatraceExecutor
@@ -25,10 +26,11 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         }
 
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
+        DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
         StringBuilder builder = new StringBuilder("-agentpath:");
         builder.append(settings.agent.agentLibrary).append('=');
         builder.append("wait=").append(settings.server.timeout).append(',');
-        builder.append("name=").append("idea").append(',');
+        builder.append("name=").append(executionSettings.getAgentName()).append(',');
         builder.append("server=").append(settings.agent.collectorHost).append(',');
         builder.append("port=").append(settings.agent.collectorPort);//.append(',');
         javaParameters.getVMParametersList().add(builder.toString());
@@ -36,18 +38,12 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected void readExternal(@NotNull RunConfigurationBase runConfiguration, @NotNull Element element) throws InvalidDataException {
-        if (this.storage == null) {
-            this.storage = DynatraceConfigurableStorage.getOrCreateStorage(runConfiguration);
-        }
-        this.storage.readExternal(runConfiguration, element);
+        DynatraceConfigurableStorage.getOrCreateStorage(runConfiguration).readExternal(element);
     }
 
     @Override
     protected void writeExternal(@NotNull RunConfigurationBase runConfiguration, @NotNull Element element) throws WriteExternalException {
-        if (this.storage == null) {
-            return;
-        }
-        this.storage.writeExternal(runConfiguration, element);
+        DynatraceConfigurableStorage.getOrCreateStorage(runConfiguration).writeExternal(element);
     }
 
     @Nullable
@@ -64,6 +60,6 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
     @Nullable
     @Override
     protected SettingsEditor createEditor(@NotNull RunConfigurationBase base) {
-        return new DynatraceConfigurables();
+        return new DynatraceExtensionConfigurable();
     }
 }

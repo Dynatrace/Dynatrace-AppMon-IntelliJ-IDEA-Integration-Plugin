@@ -20,11 +20,6 @@ public class DynatraceRunner extends DefaultJavaProgramRunner {
                 profile instanceof RunConfigurationBase;
     }
 
-    @Override
-    public void patch(JavaParameters javaParameters, RunnerSettings runner, RunProfile runProfile, boolean beforeExecution) throws ExecutionException {
-        super.patch(javaParameters, runner, runProfile, beforeExecution);
-    }
-
     public RunnerSettings createConfigurationData(ConfigurationInfoProvider provider) {
         return new DynatraceRunnerSettings();
     }
