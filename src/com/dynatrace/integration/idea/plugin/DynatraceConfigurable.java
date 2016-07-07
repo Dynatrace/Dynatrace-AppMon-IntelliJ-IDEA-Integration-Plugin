@@ -45,7 +45,10 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     @Nullable
     @Override
     public JComponent createComponent() {
-        this.panel = new DynatraceSettingsPanel();
+        //We call createComponent when resetting reset() settings for convenience, that's why there's a null check.
+        if (this.panel == null) {
+            this.panel = new DynatraceSettingsPanel();
+        }
 
         DynatraceSettingsProvider.State state = this.provider.getState();
 
@@ -200,8 +203,9 @@ public class DynatraceConfigurable implements Configurable.NoScroll, Configurabl
     }
 
     @Override
+    //reset does a rollback to the previous configuration
     public void reset() {
-        //TODO
+        this.createComponent();
     }
 
     @Override

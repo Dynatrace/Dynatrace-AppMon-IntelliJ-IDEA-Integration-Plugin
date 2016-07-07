@@ -2,13 +2,13 @@
     <id>com.dynatrace.integration.idea</id>
     <name>Dynatrace Integration Plugin</name>
     <version>0.1</version>
-    <vendor email="support@yourcompany.com" url="http:/dynatrace.com">Dynatrace</vendor>
+    <vendor url="https://dynatrace.com">Dynatrace</vendor>
 
     <description><![CDATA[
       Provides an intelliJ IDEA integration with Dynatrace client:
       <ul>
           <li>CodeLink</li>
-          <li>...</li>
+          <li>Test instrumentation</li>
       </ul>
     ]]></description>
 
@@ -21,11 +21,7 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="141.0"/>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <runConfigurationExtension
@@ -35,11 +31,9 @@
         <applicationConfigurable groupId="build" instance="com.dynatrace.integration.idea.plugin.DynatraceConfigurable"
                                  id="dynatrace" displayName="Dynatrace"/>
         <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
-        <!-- Add your extensions here -->
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
     </actions>
 
     <!--<application-components>-->
