@@ -17,22 +17,6 @@ public class ServerSettings {
     //in seconds
     public int timeout = 30;
 
-    public String getHost() {
-        return this.host;
-    }
-
-    public int getPort() {
-        return this.restPort;
-    }
-
-    public boolean isConnectionSSL() {
-        return this.ssl;
-    }
-
-    public String getLogin() {
-        return this.login;
-    }
-
     public String getPassword() throws PasswordSafeException {
         //shame on you intelliJ
         String pwd = PasswordSafe.getInstance().getPassword(null, ServerSettings.class, "password");
@@ -41,9 +25,5 @@ public class ServerSettings {
 
     public void setPassword(String password) throws PasswordSafeException {
         PasswordSafe.getInstance().storePassword(null, ServerSettings.class, "password", password);
-    }
-
-    public int getTimeout() {
-        return this.timeout;
     }
 }

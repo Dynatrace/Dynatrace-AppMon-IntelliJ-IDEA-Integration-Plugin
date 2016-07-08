@@ -36,7 +36,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
 
         try {
-            RESTEndpoint endpoint = new RESTEndpoint(settings.server.getLogin(), String.valueOf(settings.server.getPassword()), "https://" + settings.server.getHost() + ":" + settings.server.getPort());
+            RESTEndpoint endpoint = new RESTEndpoint(settings.server.login, String.valueOf(settings.server.getPassword()), (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
             StringBuilder builder = new StringBuilder("-agentpath:");
@@ -80,6 +80,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
+        //TODO: only allow test configurations
         return true;
     }
 

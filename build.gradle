@@ -33,10 +33,3 @@ repositories {
     mavenCentral()
     maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
 }
-
-task shade(type: Copy) {
-    from zipTree(file('lib/automation-automation.rest.api-6.5.0.00000000-000000.jar'))
-    into file("${buildDir}/classes/main")
-}
-
-tasks.compileJava.dependsOn(shade)
