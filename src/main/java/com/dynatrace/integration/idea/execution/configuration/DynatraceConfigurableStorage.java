@@ -9,6 +9,8 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("deprecation")
+//Extensions modules uses JDOMExternalizable, we can't do much about that AFAIK
 public class DynatraceConfigurableStorage implements JDOMExternalizable {
     public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
     private String systemProfile;

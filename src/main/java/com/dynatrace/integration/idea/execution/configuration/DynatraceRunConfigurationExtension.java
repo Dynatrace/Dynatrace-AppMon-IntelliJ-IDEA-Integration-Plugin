@@ -86,6 +86,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Nullable
     @Override
+    @SuppressWarnings("unchecked")
     protected SettingsEditor createEditor(@NotNull RunConfigurationBase base) {
         return new DynatraceExtensionConfigurable();
     }
