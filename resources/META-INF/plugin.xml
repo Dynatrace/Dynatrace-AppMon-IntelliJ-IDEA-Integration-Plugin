@@ -1,6 +1,6 @@
 <idea-plugin version="2">
     <id>com.dynatrace.integration.idea</id>
-    <name>Dynatrace Integration Plugin</name>
+    <name>Dynatrace Integration</name>
     <version>0.1</version>
     <vendor url="https://dynatrace.com">Dynatrace</vendor>
 
