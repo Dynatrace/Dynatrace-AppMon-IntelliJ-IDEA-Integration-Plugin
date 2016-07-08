@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.1.10"
+}
+
+apply plugin: 'idea'
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+intellij {
+    version ideaVersion
+    type ideaType
+    pluginName pluginName
+}
+
+dependencies {
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
+}
+
+task shade(type: Copy) {
+    from zipTree(file('lib/automation-automation.rest.api-6.5.0.00000000-000000.jar'))
+    into file("${buildDir}/classes/main")
+}
+
+tasks.compileJava.dependsOn(shade)

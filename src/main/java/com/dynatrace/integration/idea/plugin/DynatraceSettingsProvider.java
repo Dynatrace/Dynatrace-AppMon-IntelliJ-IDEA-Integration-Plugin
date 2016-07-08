@@ -1,6 +1,5 @@
 package com.dynatrace.integration.idea.plugin;
 
-import com.dynatrace.integration.appmon.server.IServerSettings;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
