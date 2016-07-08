@@ -2,6 +2,8 @@ package com.dynatrace.integration.idea.plugin;
 
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
+import com.intellij.notification.Notification;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
@@ -26,7 +28,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
     @NotNull
     public String getId() {
-        return "dynatrace";
+        return "appmon";
     }
 
     @Nls
@@ -57,16 +59,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.restPort.setText(String.valueOf(state.server.restPort));
         this.panel.serverSSL.setSelected(state.server.ssl);
         this.panel.login.setText(state.server.login);
+
         try {
-            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
-            if (password != null) {
-                this.panel.password.setText(password);
-            } else {
-                this.panel.password.setText(ServerSettings.DEFAULT_PASSWORD);
-            }
+            this.panel.password.setText(state.server.getPassword());
         } catch (PasswordSafeException e) {
-            e.printStackTrace();
+            //ignore, will be validated while setting.
         }
+
         this.panel.timeout.setText(String.valueOf(state.server.timeout));
 
         //agent
@@ -102,16 +101,10 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 return true;
             }
 
-            //shame on you IntelliJ, storing passwords in string...
-            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
-            if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
-                if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
-                    return true;
-                }
-            }
             //server panel
             if (state.server.ssl != this.panel.serverSSL.isSelected()
                     || !state.server.host.equals(this.panel.serverHost.getText())
+                    || !state.server.getPassword().equals(String.valueOf(this.panel.password.getPassword()))
                     || !state.server.login.equals(this.panel.login.getText())
                     || state.server.restPort != Integer.parseInt(this.panel.restPort.getText())
                     || state.server.timeout != Integer.parseInt(this.panel.timeout.getText())) {
@@ -153,17 +146,12 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         //server panel
         state.server.ssl = this.panel.serverSSL.isSelected();
-        state.server.host = this.panel.clientHost.getText();
+        state.server.host = this.panel.serverHost.getText();
         state.server.login = this.panel.login.getText();
 
         try {
-            String password = PasswordSafe.getInstance().getPassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID);
-            //check if passwords do not match
-            if (!String.valueOf(this.panel.password.getPassword()).equals(password)) {
-                //check if the password is a default password and the stored one is not the default one
-                if (!(password == null && String.valueOf(this.panel.password.getPassword()).equals(ServerSettings.DEFAULT_PASSWORD))) {
-                    PasswordSafe.getInstance().storePassword(null, DynatraceSettingsConfigurable.class, PS_SERVER_PWD_ID, String.valueOf(this.panel.password.getPassword()));
-                }
+            if(state.server.getPassword() != String.valueOf(this.panel.password.getPassword())) {
+                state.server.setPassword(String.valueOf(this.panel.password.getPassword()));
             }
         } catch (PasswordSafeException e) {
             throw new ConfigurationException(e.getMessage());

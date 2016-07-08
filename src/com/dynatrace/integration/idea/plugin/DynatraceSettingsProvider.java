@@ -1,12 +1,13 @@
 package com.dynatrace.integration.idea.plugin;
 
+import com.dynatrace.integration.appmon.server.IServerSettings;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.NotNull;
 
-@State(name = "DynatraceSettingsProvider", storages = @Storage("dynatrace.settings.xml"))
+@State(name = "DynatraceSettingsProvider", storages = @Storage("appmon.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
 
     private State state;
