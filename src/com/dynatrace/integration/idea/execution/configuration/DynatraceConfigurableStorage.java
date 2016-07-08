@@ -27,6 +27,7 @@ public class DynatraceConfigurableStorage implements JDOMExternalizable {
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
+        //TODO add defaults
         this.systemProfile = element.getAttributeValue("systemProfile");
         this.agentName = element.getAttributeValue("agentName");
         this.additionalParameters = element.getAttributeValue("additionalParameters");

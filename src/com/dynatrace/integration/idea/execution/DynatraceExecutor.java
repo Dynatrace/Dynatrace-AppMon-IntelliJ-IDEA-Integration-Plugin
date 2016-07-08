@@ -67,6 +67,6 @@ public class DynatraceExecutor extends Executor {
 
     @Override
     public String getStartActionText(String configurationName) {
-        return "Run " + (StringUtil.isEmpty(configurationName) ? "" : " \'" + StringUtil.first(configurationName, 30, true) + "\'") + " with Dynatrace";
+        return "Run" + (StringUtil.isEmpty(configurationName) ? "" : " \'" + StringUtil.first(configurationName, 30, true) + "\'") + " with Dynatrace";
     }
 }
