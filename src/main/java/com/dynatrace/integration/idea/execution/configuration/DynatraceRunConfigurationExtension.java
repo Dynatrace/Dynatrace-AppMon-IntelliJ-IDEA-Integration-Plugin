@@ -2,7 +2,7 @@ package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
-import com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider;
+import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.configurations.JavaParameters;
@@ -61,7 +61,6 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
             Calendar now = Calendar.getInstance();
 
-            //TODO: Don't run this if the configuration is not JUnit or NGTest
             String id = endpoint.startTest(executionSettings.getSystemProfile(), String.valueOf(now.get(Calendar.YEAR)), String.valueOf(now.get(Calendar.MONTH) + 1), String.valueOf(now.get(Calendar.DAY_OF_WEEK)), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())), null, null, null, null, null, null);
 
             LOG.info("================" + id + "===================");
@@ -93,7 +92,9 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
-        return runConfigurationBase.getType().getClass().getCanonicalName().equals("com.intellij.execution.junit.JUnitConfigurationType") || runConfigurationBase.getType().getClass().getCanonicalName().equals("com.theoryinpractice.testng.configuration.TestNGConfigurationType");
+        //cannot compare class objects, classloader limitations
+        return runConfigurationBase.getType().getClass().getCanonicalName().equals("com.intellij.execution.junit.JUnitConfigurationType")
+                || runConfigurationBase.getType().getClass().getCanonicalName().equals("com.theoryinpractice.testng.configuration.TestNGConfigurationType");
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.dynatrace.integration.idea.plugin;
+package com.dynatrace.integration.idea.plugin.settings;
 
 import org.jetbrains.annotations.NotNull;
 

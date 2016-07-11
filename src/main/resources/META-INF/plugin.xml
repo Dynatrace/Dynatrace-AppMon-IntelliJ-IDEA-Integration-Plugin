@@ -28,13 +28,22 @@
         <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor"/>
         <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
         <applicationConfigurable groupId="build"
-                                 instance="com.dynatrace.integration.idea.plugin.DynatraceSettingsConfigurable"
+                                 instance="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsConfigurable"
                                  id="dynatrace" displayName="Dynatrace"/>
-        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.DynatraceSettingsProvider"/>
+        <applicationService
+                serviceImplementation="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider"/>
+        <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor"/>
     </extensions>
 
     <actions>
     </actions>
+
+    <project-components>
+        <component>
+            <implementation-class>com.dynatrace.integration.idea.plugin.codelink.CodeLinkCoordinator
+            </implementation-class>
+        </component>
+    </project-components>
 
     <!--<application-components>-->
     <!--<component>-->

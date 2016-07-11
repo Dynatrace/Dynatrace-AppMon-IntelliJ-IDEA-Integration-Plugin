@@ -1,4 +1,4 @@
-package com.dynatrace.integration.idea.plugin;
+package com.dynatrace.integration.idea.plugin.settings;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
