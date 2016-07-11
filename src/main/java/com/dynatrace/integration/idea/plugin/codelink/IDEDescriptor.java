@@ -64,22 +64,28 @@ public class IDEDescriptor implements IIDEDescriptor {
 
     @Override
     public void jumpToClass(String className, String methodName, Callback<Boolean> cb) {
+        //we need to jump on UI thread
         ApplicationManager.getApplication().invokeLater(() -> {
             PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(className, GlobalSearchScope.allScope(this.project));
             if (clazz == null) {
                 cb.call(false);
                 return;
             }
+
             if (!clazz.canNavigateToSource()) {
                 cb.call(false);
                 return;
             }
+
             PsiMethod[] method = clazz.findMethodsByName(methodName, false);
             if (method == null || method.length == 0) {
                 cb.call(false);
                 return;
             }
-            method[0].navigate(true);
+
+            if(method[0].canNavigateToSource()) {
+                method[0].navigate(true);
+            }
             cb.call(method[0].canNavigateToSource());
         });
     }

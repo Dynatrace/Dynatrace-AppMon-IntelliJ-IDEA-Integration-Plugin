@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
-    public static final Logger LOG = Logger.getLogger("DynatraceExtension");
+    public static final Logger LOG = Logger.getLogger(DynatraceRunConfigurationExtension.class.getName());
 //    private static final List<Class<? extends ConfigurationType>> SUPPORTED_TYPES = new ArrayList<>();
 //    static {
 //        try {

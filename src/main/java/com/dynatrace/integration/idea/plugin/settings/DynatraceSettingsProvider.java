@@ -6,7 +6,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.NotNull;
 
-@State(name = "DynatraceSettingsProvider", storages = @Storage("appmon.settings.xml"))
+@State(name = "DynatraceSettingsProvider", storages = @Storage("dynatrace.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
 
     private State state;
