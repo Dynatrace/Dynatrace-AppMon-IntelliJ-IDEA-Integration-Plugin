@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 //Extensions modules uses JDOMExternalizable, we can't do much about that AFAIK
 public class DynatraceConfigurableStorage implements JDOMExternalizable {
     public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
-    private String systemProfile;
-    private String agentName;
+    private String systemProfile = "IntelliJ";
+    private String agentName = "IntelliJ";
     private String additionalParameters;
     private boolean recordSessionPerLaunch;
 
@@ -29,9 +29,12 @@ public class DynatraceConfigurableStorage implements JDOMExternalizable {
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
-        //TODO add defaults
-        this.systemProfile = element.getAttributeValue("systemProfile");
-        this.agentName = element.getAttributeValue("agentName");
+        if(element.getAttributeValue("systemProfile") != null) {
+            this.systemProfile = element.getAttributeValue("systemProfile");
+        }
+        if(element.getAttributeValue("agentName") != null) {
+            this.agentName = element.getAttributeValue("agentName");
+        }
         this.additionalParameters = element.getAttributeValue("additionalParameters");
         String recordSessionPerLaunch = element.getAttributeValue("recordSessionPerLaunch");
         if (recordSessionPerLaunch != null) {
