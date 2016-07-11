@@ -1,5 +1,6 @@
 package com.dynatrace.integration.idea.execution;
 
+import com.dynatrace.integration.idea.Messages;
 import com.intellij.execution.Executor;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
@@ -34,13 +35,13 @@ public class DynatraceExecutor extends Executor {
 
     @Override
     public String getDescription() {
-        return "Run selected configuration with AppMon enabled.";
+        return Messages.getMessage("execution.executor.description");
     }
 
     @NotNull
     @Override
     public String getActionName() {
-        return "Dynatrace"; //TODO ?
+        return Messages.getMessage("execution.executor.action"); //TODO ?
     }
 
     @NotNull
@@ -67,6 +68,6 @@ public class DynatraceExecutor extends Executor {
 
     @Override
     public String getStartActionText(String configurationName) {
-        return "Run" + (StringUtil.isEmpty(configurationName) ? "" : " \'" + StringUtil.first(configurationName, 30, true) + "\'") + " with Dynatrace";
+        return Messages.getMessage("execution.executor.run", (StringUtil.isEmpty(configurationName) ? "" : " \'" + StringUtil.first(configurationName, 30, true) + "\'"));
     }
 }

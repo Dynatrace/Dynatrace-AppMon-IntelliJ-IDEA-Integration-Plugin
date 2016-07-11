@@ -1,5 +1,6 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
+import com.dynatrace.integration.idea.Messages;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -14,8 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
-    public static final String PS_SERVER_PWD_ID = "serverPassword";
-
     private final DynatraceSettingsProvider provider;
     private DynatraceSettingsPanel panel;
 
@@ -25,13 +24,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
     @NotNull
     public String getId() {
-        return "appmon";
+        return "dynatrace";
     }
 
     @Nls
     @Override
     public String getDisplayName() {
-        return "Dynatrace";
+        return Messages.getMessage("plugin.settings.ui.displayName");
     }
 
     @Nullable
@@ -69,8 +68,8 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.agentLibrary.setText(state.agent.agentLibrary);
 
         FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
-        descriptor.setTitle("Choose agent path");
-        descriptor.withFileFilter((filter) -> filter == null || filter.isDirectory() || (filter.getExtension() != null && (filter.getExtension().equals("dll") || filter.getExtension().equals("so"))));
+        descriptor.setTitle(Messages.getMessage("plugin.settings.ui.choose.agent"));
+        descriptor.withFileFilter((filter) -> filter == null || filter.isDirectory() || (filter.getExtension() != null && (filter.getExtension().equals("dll") || filter.getExtension().equals("so") || filter.getExtension().equals("dylib"))));
 
         this.panel.agentLibrary.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
 
@@ -136,7 +135,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.agent.collectorPort = collectorPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException("Agent's collector port must be a non-negative number.");
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","Agent"));
         }
 
         state.agent.collectorHost = this.panel.collectorHost.getText();
@@ -161,13 +160,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.server.restPort = restPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException("Servers's port must be a non-negative number.");
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","Server"));
         }
         try {
             int timeout = Integer.parseInt(this.panel.timeout.getText());
             state.server.timeout = timeout;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException("Servers's timeout must be a number.");
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout","Server"));
         }
 
         //codelink panel
@@ -182,7 +181,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.codeLink.port = codeLinkPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException("Codelink's port must be a non-negative number.");
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","CodeLink"));
         }
     }
 

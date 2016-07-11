@@ -1,6 +1,7 @@
 package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
+import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
@@ -46,10 +47,13 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             return;
         }
 
+        //get global settings
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
 
         try {
             RESTEndpoint endpoint = new RESTEndpoint(settings.server.login, String.valueOf(settings.server.getPassword()), (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
+
+            //get local (runconfiguration) settings
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
             StringBuilder builder = new StringBuilder("-agentpath:");
@@ -61,15 +65,18 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
             Calendar now = Calendar.getInstance();
 
+            //fetch test id
             String id = endpoint.startTest(executionSettings.getSystemProfile(), String.valueOf(now.get(Calendar.YEAR)), String.valueOf(now.get(Calendar.MONTH) + 1), String.valueOf(now.get(Calendar.DAY_OF_WEEK)), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())), null, null, null, null, null, null);
 
             LOG.info("================" + id + "===================");
             builder.append(',').append("optionTestRunIdJava=").append(id);
+            LOG.info(Messages.getMessage("execution.configuration.tests.running", id));
 
+            //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, "Error occured", "<b>Check your configuration</b><br>" + e.getMessage(), NotificationType.ERROR));
-            LOG.log(Level.SEVERE, e.getMessage());
+            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, Messages.getMessage("notifications.error.title"), Messages.getMessage("notifications.error.configuration") + e.getLocalizedMessage(), NotificationType.ERROR));
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
             throw new ExecutionException(e);
         }
     }
