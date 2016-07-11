@@ -25,6 +25,19 @@ import java.util.logging.Logger;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
     public static final Logger LOG = Logger.getLogger("DynatraceExtension");
+//    private static final List<Class<? extends ConfigurationType>> SUPPORTED_TYPES = new ArrayList<>();
+//    static {
+//        try {
+//            SUPPORTED_TYPES.add((Class<? extends ConfigurationType>) ClassLoader.getSystemClassLoader().loadClass("com.intellij.execution.junit.JUnitConfigurationType"));
+//        } catch (ClassNotFoundException e) {
+//            System.out.println(e.toString());
+//        }
+//        try {
+//            SUPPORTED_TYPES.add((Class<? extends ConfigurationType>) ClassLoader.getSystemClassLoader().loadClass("com.theoryinpractice.testng.configuration.TestNGConfigurationType"));
+//        } catch (ClassNotFoundException e) {
+//            System.out.println(e.toString());
+//        }
+//    }
 
     @Override
     public void updateJavaParameters(RunConfigurationBase configuration, JavaParameters javaParameters, RunnerSettings runnerSettings) throws ExecutionException {
@@ -56,8 +69,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
             javaParameters.getVMParametersList().add(builder.toString());
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, "Error occured", "<b>Check your configuration</b><br>"+e.getMessage(), NotificationType.ERROR));
-            LOG.log(Level.SEVERE,e.getMessage());
+            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, "Error occured", "<b>Check your configuration</b><br>" + e.getMessage(), NotificationType.ERROR));
+            LOG.log(Level.SEVERE, e.getMessage());
             throw new ExecutionException(e);
         }
     }
@@ -80,8 +93,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
-        //TODO: only allow test configurations
-        return true;
+        return runConfigurationBase.getType().getClass().getCanonicalName().equals("com.intellij.execution.junit.JUnitConfigurationType") || runConfigurationBase.getType().getClass().getCanonicalName().equals("com.theoryinpractice.testng.configuration.TestNGConfigurationType");
     }
 
     @Nullable
