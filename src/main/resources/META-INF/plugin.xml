@@ -43,6 +43,10 @@
             <implementation-class>com.dynatrace.integration.idea.plugin.codelink.CodeLinkCoordinator
             </implementation-class>
         </component>
+        <component>
+            <implementation-class>com.dynatrace.integration.idea.plugin.session.SessionStorage
+            </implementation-class>
+        </component>
     </project-components>
 
     <!--<application-components>-->

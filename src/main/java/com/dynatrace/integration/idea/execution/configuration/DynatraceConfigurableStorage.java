@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 //Extensions modules uses JDOMExternalizable, we can't do much about that AFAIK
 public class DynatraceConfigurableStorage implements JDOMExternalizable {
     public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
+
     private String systemProfile = "IntelliJ";
     private String agentName = "IntelliJ";
     private String additionalParameters;

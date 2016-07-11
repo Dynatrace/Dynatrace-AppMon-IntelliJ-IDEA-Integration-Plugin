@@ -3,6 +3,7 @@ package com.dynatrace.integration.idea.execution.configuration;
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
+import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunConfigurationExtension;
@@ -51,10 +52,15 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
 
         try {
-            RESTEndpoint endpoint = new RESTEndpoint(settings.server.login, String.valueOf(settings.server.getPassword()), (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
-
+            RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(settings);
             //get local (runconfiguration) settings
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
+
+            SessionStorage ss = configuration.getProject().getComponent(SessionStorage.class);
+
+            if(executionSettings.isRecordSessionPerLaunch() && ss.isRecording(configuration)) {
+                String sessionId = ss.startRecording(configuration, executionSettings.getSystemProfile());
+            }
 
             StringBuilder builder = new StringBuilder("-agentpath:");
             builder.append(settings.agent.agentLibrary).append('=');
