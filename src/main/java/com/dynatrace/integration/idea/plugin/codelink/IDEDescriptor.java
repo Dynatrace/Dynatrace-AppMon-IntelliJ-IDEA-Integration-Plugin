@@ -2,20 +2,22 @@ package com.dynatrace.integration.idea.plugin.codelink;
 
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.IIDEDescriptor;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 
-public class IDEDescriptor implements IIDEDescriptor {
 
+public class IDEDescriptor implements IIDEDescriptor {
     public static IDEDescriptor getInstance() {
         return ServiceManager.getService(IDEDescriptor.class);
     }
@@ -39,6 +41,13 @@ public class IDEDescriptor implements IIDEDescriptor {
     @Override
     public String getProjectPath() {
         return this.project.getBasePath();
+    }
+
+    @Override
+    public Version getPluginVersion() {
+        String version = PluginManager.getPlugin(PluginId.getId("com.dynatrace.integration.idea")).getVersion();
+        String[] split = version.split("\\.");
+        return new IIDEDescriptor.Version(split[0], split[1], split[2]);
     }
 
     @Override

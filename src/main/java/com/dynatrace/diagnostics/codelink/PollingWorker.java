@@ -58,7 +58,6 @@ class PollingWorker implements Runnable {
     private static <T> T inputStreamToObject(InputStream xml, Class<T> clazz) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        //TODO: check if try with resources is applicable here
         try {
             T obj = (T) unmarshaller.unmarshal(xml);
             return obj;
@@ -107,17 +106,16 @@ class PollingWorker implements Runnable {
                 try {
                     this.respond(b ? RESPONSE_FOUND : RESPONSE_NOT_FOUND, sid);
                 } catch (IOException e) {
-                    //TODO: properly log this
-                    e.printStackTrace();
+                    CodeLinkClient.LOGGER.warning("Could not send response to CodeLink: " + e.getMessage());
                 }
                 return;
             });
 
             this.hasErrored = false;
         } catch (UnknownHostException e) {
-            //TODO: if the configuration window is opened, update it
             this.clSettings.setEnabled(false);
             this.ide.showNotification("CodeLink Error", "<b>Check your configuration</b>");
+            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: "+e.getMessage());
         } catch (Exception e) {
             if (!hasErrored) {
                 this.ide.showNotification("CodeLink Error", "<b>Check your configuration</b><br>Could not connect to client.");
@@ -125,6 +123,7 @@ class PollingWorker implements Runnable {
             this.hasErrored = true;
             //skip 5 connections
             this.suppress = 5;
+            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: "+e.getMessage()+".");
         }
     }
 
@@ -133,11 +132,10 @@ class PollingWorker implements Runnable {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("ideid", String.valueOf(this.ide.getId())));
         nvps.add(new BasicNameValuePair("ideversion", this.ide.getVersion()));
-        //TODO : implement
-        nvps.add(new BasicNameValuePair("major", "0"));
-        nvps.add(new BasicNameValuePair("minor", "2"));
-        nvps.add(new BasicNameValuePair("revision", "3"));
-        nvps.add(new BasicNameValuePair("sessionid", Long.toString(this.sessionId)));
+        nvps.add(new BasicNameValuePair("major", this.ide.getPluginVersion().major));
+        nvps.add(new BasicNameValuePair("minor", this.ide.getPluginVersion().minor));
+        nvps.add(new BasicNameValuePair("revision", this.ide.getPluginVersion().revision));
+        nvps.add(new BasicNameValuePair("sessionid", String.valueOf(this.sessionId)));
         nvps.add(new BasicNameValuePair("activeproject", this.ide.getProjectName()));
         nvps.add(new BasicNameValuePair("projectpath", this.ide.getProjectPath()));
 
@@ -156,7 +154,7 @@ class PollingWorker implements Runnable {
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
         nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode)));
 
-        //TODO: not thread safe currently.
+        //TODO:                                        make it thread safe
         StringBuilder builder = PollingWorker.buildURL(this.clSettings).append("response");
         HttpPost post = new HttpPost(builder.toString());
 
