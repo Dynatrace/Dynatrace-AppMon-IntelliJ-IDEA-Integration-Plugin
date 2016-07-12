@@ -6,11 +6,11 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.util.xmlb.annotations.Property;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 
 @State(name = "DynatraceSettingsProvider", storages = @Storage("dynatrace.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
@@ -43,16 +43,14 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
 
     public static class State {
         @NotNull
-        public ServerSettings server = new ServerSettings();
+        @Property
+        private ServerSettings server = new ServerSettings();
         @NotNull
+        @Property
         public AgentSettings agent = new AgentSettings();
         @NotNull
+        @Property
         public CodeLinkSettings codeLink = new CodeLinkSettings();
-
-        //we might encapsulate fields and annotate them
-        //http://www.jetbrains.org/intellij/sdk/docs/basics/persisting_state_of_components.html#implementing-the-state-class
-        public State() {
-        }
 
         @NotNull
         public ServerSettings getServer() {
