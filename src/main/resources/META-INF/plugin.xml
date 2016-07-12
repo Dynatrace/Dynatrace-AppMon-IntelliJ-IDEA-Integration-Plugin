@@ -33,6 +33,10 @@
         <applicationService
                 serviceImplementation="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider"/>
         <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor"/>
+        <projectService
+                serviceImplementation="com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator"/>
+        <toolWindow id="TestResultsToolWindow" icon="/icons/dynatrace_13.png" anchor="right"
+                    factoryClass="com.dynatrace.integration.idea.execution.result.ui.TestRunResultsToolWindow"/>
     </extensions>
 
     <actions>

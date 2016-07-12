@@ -11,13 +11,17 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 
+import javax.swing.*;
+
 
 public class IDEDescriptor implements IIDEDescriptor {
+    public static final Icon CROSSED_ICON = IconLoader.getIcon("/icons/crossed_logo.png");
     public static IDEDescriptor getInstance() {
         return ServiceManager.getService(IDEDescriptor.class);
     }
@@ -53,7 +57,9 @@ public class IDEDescriptor implements IIDEDescriptor {
     @Override
     public void showNotification(String title, String content) {
         ApplicationManager.getApplication().invokeLater(() -> {
-            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, title, content, NotificationType.ERROR));
+            Notification notif = new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, title, content, NotificationType.ERROR);
+            notif.setIcon(CROSSED_ICON);
+            Notifications.Bus.notify(notif);
         });
     }
 

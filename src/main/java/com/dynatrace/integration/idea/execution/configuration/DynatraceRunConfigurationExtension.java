@@ -2,7 +2,9 @@ package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
+import com.dynatrace.integration.idea.execution.DynatraceProcessListener;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
+import com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
@@ -10,6 +12,7 @@ import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
+import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -29,6 +32,17 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
     public static final Logger LOG = Logger.getLogger(DynatraceRunConfigurationExtension.class.getName());
 
     @Override
+    public void attachToProcess(@NotNull final RunConfigurationBase configuration, @NotNull final ProcessHandler handler, @Nullable RunnerSettings runnerSettings) {
+        super.attachToProcess(configuration, handler, runnerSettings);
+        if (!(runnerSettings instanceof DynatraceRunnerSettings)) {
+            return;
+        }
+        DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
+        handler.addProcessListener(new DynatraceProcessListener(executionSettings.getSystemProfile(), configuration.getProject()));
+    }
+
+
+    @Override
     public void updateJavaParameters(RunConfigurationBase configuration, JavaParameters javaParameters, RunnerSettings runnerSettings) throws ExecutionException {
         //Check if the action was ran by DynatraceExecutor
         if (!(runnerSettings instanceof DynatraceRunnerSettings)) {
@@ -44,7 +58,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
             SessionStorage ss = configuration.getProject().getComponent(SessionStorage.class);
-            if(executionSettings.isRecordSessionPerLaunch() && !ss.isRecording(executionSettings.getSystemProfile())) {
+            if (executionSettings.isRecordSessionPerLaunch() && !ss.isRecording(executionSettings.getSystemProfile())) {
                 ss.startRecording(executionSettings.getSystemProfile());
             }
 
@@ -58,7 +72,10 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             Calendar now = Calendar.getInstance();
 
             //fetch test id
-            String id = endpoint.startTest(executionSettings.getSystemProfile(), String.valueOf(now.get(Calendar.YEAR)), String.valueOf(now.get(Calendar.MONTH) + 1), String.valueOf(now.get(Calendar.DAY_OF_WEEK)), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())), null, null, null, null, null, null);
+            String id = endpoint.startTest(executionSettings.getSystemProfile(), String.valueOf(now.get(Calendar.YEAR)),
+                    String.valueOf(now.get(Calendar.MONTH) + 1), String.valueOf(now.get(Calendar.DAY_OF_WEEK)),
+                    String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())),
+                    null, null, null, null, null, null);
 
             LOG.info("================" + id + "===================");
             builder.append(',').append("optionTestRunIdJava=").append(id);
@@ -66,6 +83,10 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
+
+            TestRunResultsCoordinator coordinator = TestRunResultsCoordinator.getInstance(configuration.getProject());
+            //register test run in order to display results later in form of a tool window
+            coordinator.registerTestRun(executionSettings.getSystemProfile(), id);
         } catch (Exception e) {
             Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, Messages.getMessage("notifications.error.title"), Messages.getMessage("notifications.error.configuration") + e.getLocalizedMessage(), NotificationType.ERROR));
             LOG.log(Level.SEVERE, e.getLocalizedMessage());

@@ -51,9 +51,8 @@ public class SessionStorage implements ProjectComponent {
                 //Do it in threaded environment.
                 new Thread(() -> {
                     try {
-                        System.out.println("bbb");
                         this.stopRecording(name);
-                    } catch (PasswordSafeException e) {
+                    } catch (Exception e) {
                         LOG.warning(Messages.getMessage("plugin.session.cantend", name, e.getLocalizedMessage()));
                     } finally {
                         cdl.countDown();
