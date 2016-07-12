@@ -68,7 +68,6 @@ class PollingWorker implements Runnable {
                 } catch (IOException e) {
                     CodeLinkClient.LOGGER.warning("Could not send response to CodeLink: " + e.getMessage());
                 }
-                return;
             });
 
             this.hasErrored = false;
@@ -104,8 +103,7 @@ class PollingWorker implements Runnable {
 
         post.setEntity(new UrlEncodedFormEntity(nvps));
         try (CloseableHttpResponse response = this.client.execute(post)) {
-            CodeLinkLookupResponse lookup = Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
-            return lookup;
+            return Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
         }
     }
 

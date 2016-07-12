@@ -1,8 +1,5 @@
 package com.dynatrace.diagnostics.codelink;
 
-/**
- * Created by Maciej.Mionskowski on 7/11/2016.
- */
 public interface IIDEDescriptor {
     String getVersion();
     String getProjectName();

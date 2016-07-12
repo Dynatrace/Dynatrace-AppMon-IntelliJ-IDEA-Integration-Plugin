@@ -1,7 +1,6 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -9,13 +8,10 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.annotations.Property;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
 @State(name = "DynatraceSettingsProvider", storages = @Storage("dynatrace.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
 
-    public static RESTEndpoint endpointFromState(DynatraceSettingsProvider.State settings) throws PasswordSafeException {
+    public static RESTEndpoint endpointFromState(DynatraceSettingsProvider.State settings) {
         return new RESTEndpoint(settings.server.getLogin(), settings.server.getPassword(), (settings.server.isSSL() ? "https://" : "http://") + settings.server.getHost() + ":" + settings.server.getPort());
     }
 

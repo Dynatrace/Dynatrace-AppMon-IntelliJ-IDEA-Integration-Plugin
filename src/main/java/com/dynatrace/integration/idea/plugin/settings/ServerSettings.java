@@ -1,7 +1,5 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;

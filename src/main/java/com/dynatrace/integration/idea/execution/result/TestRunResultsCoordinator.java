@@ -16,7 +16,7 @@ public class TestRunResultsCoordinator {
         return ServiceManager.getService(project, TestRunResultsCoordinator.class);
     }
 
-    private HashMap<String, String> testRuns = new HashMap<>();
+    private final HashMap<String, String> testRuns = new HashMap<>();
     private final DynatraceSettingsProvider settingsProvider;
 
     public TestRunResultsCoordinator(DynatraceSettingsProvider provider) {

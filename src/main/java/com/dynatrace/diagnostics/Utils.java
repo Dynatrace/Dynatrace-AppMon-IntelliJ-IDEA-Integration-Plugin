@@ -36,12 +36,12 @@ public class Utils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T inputStreamToObject(InputStream xml, Class<T> clazz) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         try {
-            T obj = (T) unmarshaller.unmarshal(xml);
-            return obj;
+            return (T) unmarshaller.unmarshal(xml);
         } finally {
             xml.close();
         }

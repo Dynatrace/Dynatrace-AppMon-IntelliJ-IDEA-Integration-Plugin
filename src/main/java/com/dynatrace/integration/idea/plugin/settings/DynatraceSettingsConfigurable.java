@@ -190,7 +190,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
     @Override
     //reset does a rollback to the previous configuration
     public void reset() {
-        ApplicationManager.getApplication().invokeLater(() -> this.createComponent());
+        ApplicationManager.getApplication().invokeLater(this::createComponent);
     }
 
     @Override

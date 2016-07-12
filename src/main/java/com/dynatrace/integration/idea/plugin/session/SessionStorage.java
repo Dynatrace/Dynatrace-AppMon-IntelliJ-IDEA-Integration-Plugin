@@ -9,7 +9,6 @@ import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
@@ -21,7 +20,7 @@ public class SessionStorage implements ProjectComponent {
     public static final Logger LOG = Logger.getLogger(SessionStorage.class.getName());
     private static final String SESSION_ALREADY_STARTED = "Error starting recording: Session Recording could not be started because it is already started";
 
-    private HashSet<String> recordings = new HashSet<>();
+    private final HashSet<String> recordings = new HashSet<>();
     private final DynatraceSettingsProvider provider;
 
     public SessionStorage(DynatraceSettingsProvider provider) {
@@ -47,7 +46,7 @@ public class SessionStorage implements ProjectComponent {
     public void disposeComponent() {
         synchronized (this.recordings) {
             CountDownLatch cdl = new CountDownLatch(this.recordings.size());
-            this.recordings.forEach((name) ->{
+            this.recordings.forEach((name) -> {
                 //Do it in threaded environment.
                 new Thread(() -> {
                     try {
@@ -57,12 +56,12 @@ public class SessionStorage implements ProjectComponent {
                     } finally {
                         cdl.countDown();
                     }
-                },"SessionDisposalThread").start();
+                }, "SessionDisposalThread").start();
             });
             try {
                 cdl.await(2, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                LOG.log(Level.SEVERE,Messages.getMessage("plugin.session.disposalerror"));
+                LOG.log(Level.SEVERE, Messages.getMessage("plugin.session.disposalerror"));
             }
             this.recordings.clear();
         }
@@ -88,8 +87,8 @@ public class SessionStorage implements ProjectComponent {
                     LOG.info(Messages.getMessage("plugin.session.started", id, profileName));
                 }
             }
-        } catch(CommandExecutionException e) {
-            if(e.getMessage().equals(SESSION_ALREADY_STARTED)) {
+        } catch (CommandExecutionException e) {
+            if (e.getMessage().equals(SESSION_ALREADY_STARTED)) {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
                 }
