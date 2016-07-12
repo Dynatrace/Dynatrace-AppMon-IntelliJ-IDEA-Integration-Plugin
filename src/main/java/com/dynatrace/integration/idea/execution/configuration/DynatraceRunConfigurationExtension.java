@@ -63,11 +63,11 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             }
 
             StringBuilder builder = new StringBuilder("-agentpath:");
-            builder.append(settings.agent.agentLibrary).append('=');
-            builder.append("wait=").append(settings.server.timeout).append(',');
+            builder.append(settings.getAgent().getAgentLibrary()).append('=');
+            builder.append("wait=").append(settings.getServer().getTimeout()).append(',');
             builder.append("name=").append(executionSettings.getAgentName()).append(',');
-            builder.append("server=").append(settings.agent.collectorHost).append(',');
-            builder.append("port=").append(settings.agent.collectorPort);
+            builder.append("server=").append(settings.getAgent().getCollectorHost()).append(',');
+            builder.append("port=").append(settings.getAgent().getCollectorPort());
 
             Calendar now = Calendar.getInstance();
 

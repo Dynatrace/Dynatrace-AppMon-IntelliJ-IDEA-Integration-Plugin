@@ -3,13 +3,33 @@ package com.dynatrace.integration.idea.plugin.settings;
 import com.dynatrace.diagnostics.codelink.ICodeLinkSettings;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CodeLinkSettings implements ICodeLinkSettings {
-    public boolean enabled = true;
+    private boolean enabled = true;
     @NotNull
-    public String host = "localhost";
-    public int port = 8031;
-    public boolean ssl = true;
-    public boolean javaBrowsingPerspective = false;
+    private String host = "localhost";
+    private int port = 8031;
+    private boolean ssl = true;
+    private boolean javaBrowsingPerspective = false;
+
+    public void setJavaBrowsingPerspective(boolean javaBrowsingPerspective) {
+        this.javaBrowsingPerspective = javaBrowsingPerspective;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setSSL(boolean ssl) {
+        this.ssl = ssl;
+    }
+
+    public void setHost(@NotNull String host) {
+        this.host = host;
+    }
 
     @Override
     public boolean isEnabled() {

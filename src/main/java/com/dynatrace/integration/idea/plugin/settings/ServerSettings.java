@@ -4,27 +4,72 @@ import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ServerSettings {
     public static final String DEFAULT_PASSWORD = "admin";
 
     @NotNull
-    public String host = "localhost";
-    public int restPort = 8021;
-    public String password = "admin";
-    public boolean ssl = true;
+    private String host = "localhost";
+    private int port = 8021;
+    private String password = "admin";
+    private boolean ssl = true;
     @NotNull
-    public String login = "admin";
+    private String login = "admin";
     @NotNull
     //in seconds
-    public int timeout = 30;
+    private int timeout = 30;
 
-//    public String getPassword() throws PasswordSafeException {
-//        //shame on you intelliJ
-//        String pwd = PasswordSafe.getInstance().getPassword(null, ServerSettings.class, "password");
-//        return pwd != null ? pwd : DEFAULT_PASSWORD;
-//    }
-//
-//    public void setPassword(String password) throws PasswordSafeException {
-//        PasswordSafe.getInstance().storePassword(null, ServerSettings.class, "password", password);
-//    }
+    @NotNull
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(@NotNull String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isSSL() {
+        return ssl;
+    }
+
+    public void setSSL(boolean ssl) {
+        this.ssl = ssl;
+    }
+
+    @NotNull
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(@NotNull String login) {
+        this.login = login;
+    }
+
+    @NotNull
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(@NotNull int timeout) {
+        this.timeout = timeout;
+    }
 }

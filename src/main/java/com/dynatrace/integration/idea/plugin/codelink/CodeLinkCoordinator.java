@@ -17,7 +17,7 @@ public class CodeLinkCoordinator implements ProjectComponent {
 
     @Override
     public void projectOpened() {
-        this.client = new CodeLinkClient(this.settings.getState().codeLink, this.descriptor);
+        this.client = new CodeLinkClient(this.settings.getState().getCodeLink(), this.descriptor);
         this.client.startPolling(CodeLinkClient.DEFAULT_INTERVAL, CodeLinkClient.DEFAULT_UNIT);
     }
 

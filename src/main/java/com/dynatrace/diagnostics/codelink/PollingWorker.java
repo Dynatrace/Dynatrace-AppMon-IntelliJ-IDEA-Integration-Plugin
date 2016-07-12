@@ -1,5 +1,6 @@
 package com.dynatrace.diagnostics.codelink;
 
+import com.dynatrace.diagnostics.Utils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

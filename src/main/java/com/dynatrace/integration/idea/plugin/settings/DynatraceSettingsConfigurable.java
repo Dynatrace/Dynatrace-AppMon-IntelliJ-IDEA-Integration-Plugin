@@ -51,17 +51,17 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         DynatraceSettingsProvider.State state = this.provider.getState();
 
         //server
-        this.panel.serverHost.setText(state.server.host);
-        this.panel.serverSSL.setSelected(state.server.ssl);
-        this.panel.restPort.setText(String.valueOf(state.server.restPort));
-        this.panel.serverSSL.setSelected(state.server.ssl);
-        this.panel.login.setText(state.server.login);
-        this.panel.password.setText(state.server.password);
+        this.panel.serverHost.setText(state.getServer().getHost());
+        this.panel.serverSSL.setSelected(state.getServer().isSSL());
+        this.panel.restPort.setText(String.valueOf(state.getServer().getPort()));
+        this.panel.serverSSL.setSelected(state.getServer().isSSL());
+        this.panel.login.setText(state.getServer().getLogin());
+        this.panel.password.setText(state.getServer().getPassword());
 
-        this.panel.timeout.setText(String.valueOf(state.server.timeout));
+        this.panel.timeout.setText(String.valueOf(state.getServer().getTimeout()));
 
         //agent
-        this.panel.agentLibrary.setText(state.agent.agentLibrary);
+        this.panel.agentLibrary.setText(state.getAgent().getAgentLibrary());
 
         FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
         descriptor.setTitle(Messages.getMessage("plugin.settings.ui.choose.agent"));
@@ -69,15 +69,15 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         this.panel.agentLibrary.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
 
-        this.panel.collectorHost.setText(state.agent.collectorHost);
-        this.panel.collectorPort.setText(String.valueOf(state.agent.collectorPort));
+        this.panel.collectorHost.setText(state.getAgent().getCollectorHost());
+        this.panel.collectorPort.setText(String.valueOf(state.getAgent().getCollectorPort()));
 
         //CodeLink
-        this.panel.enableCodeLink.setSelected(state.codeLink.enabled);
-        this.panel.clientHost.setText(state.codeLink.host);
-        this.panel.clientPort.setText(String.valueOf(state.codeLink.port));
-        this.panel.codeLinkSSL.setSelected(state.codeLink.ssl);
-        //this.panel.javaBrowsingPerspective.setSelected(state.codeLink.javaBrowsingPerspective);
+        this.panel.enableCodeLink.setSelected(state.getCodeLink().isEnabled());
+        this.panel.clientHost.setText(state.getCodeLink().getHost());
+        this.panel.clientPort.setText(String.valueOf(state.getCodeLink().getPort()));
+        this.panel.codeLinkSSL.setSelected(state.getCodeLink().isSSL());
+        //this.panel.javaBrowsingPerspective.setSelected(state.getCodeLink().javaBrowsingPerspective);
 
         this.panel.helpText.setContentType("text/html");
         this.panel.helpText.setEditable(false);
@@ -101,27 +101,27 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         //agent panel
         try {
-            if (!state.agent.agentLibrary.equals(this.panel.agentLibrary.getText())
-                    || state.agent.collectorPort != Integer.parseInt(this.panel.collectorPort.getText())
-                    || !state.agent.collectorHost.equals(this.panel.collectorHost.getText())) {
+            if (!state.getAgent().getAgentLibrary().equals(this.panel.agentLibrary.getText())
+                    || state.getAgent().getCollectorPort() != Integer.parseInt(this.panel.collectorPort.getText())
+                    || !state.getAgent().getCollectorHost().equals(this.panel.collectorHost.getText())) {
                 return true;
             }
 
             //server panel
-            if (state.server.ssl != this.panel.serverSSL.isSelected()
-                    || !state.server.host.equals(this.panel.serverHost.getText())
-                    || !state.server.password.equals(String.valueOf(this.panel.password.getPassword()))
-                    || !state.server.login.equals(this.panel.login.getText())
-                    || state.server.restPort != Integer.parseInt(this.panel.restPort.getText())
-                    || state.server.timeout != Integer.parseInt(this.panel.timeout.getText())) {
+            if (state.getServer().isSSL() != this.panel.serverSSL.isSelected()
+                    || !state.getServer().getHost().equals(this.panel.serverHost.getText())
+                    || !state.getServer().getPassword().equals(String.valueOf(this.panel.password.getPassword()))
+                    || !state.getServer().getLogin().equals(this.panel.login.getText())
+                    || state.getServer().getPort() != Integer.parseInt(this.panel.restPort.getText())
+                    || state.getServer().getTimeout() != Integer.parseInt(this.panel.timeout.getText())) {
                 return true;
             }
 
-            if (state.codeLink.enabled != this.panel.enableCodeLink.isSelected()
-                    //|| state.codeLink.javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
-                    || state.codeLink.ssl != this.panel.codeLinkSSL.isSelected()
-                    || !state.codeLink.host.equals(this.panel.clientHost.getText())
-                    || state.codeLink.port != Integer.parseInt(this.panel.clientPort.getText())) {
+            if (state.getCodeLink().isEnabled() != this.panel.enableCodeLink.isSelected()
+                    //|| state.getCodeLink().javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
+                    || state.getCodeLink().isSSL() != this.panel.codeLinkSSL.isSelected()
+                    || !state.getCodeLink().getHost().equals(this.panel.clientHost.getText())
+                    || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())) {
                 return true;
             }
         } catch (NumberFormatException e) {
@@ -135,53 +135,53 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         DynatraceSettingsProvider.State state = this.provider.getState();
 
         //agent panel
-        state.agent.agentLibrary = this.panel.agentLibrary.getText();
+        state.getAgent().setAgentLibrary(this.panel.agentLibrary.getText());
         try {
             int collectorPort = Integer.parseInt(this.panel.collectorPort.getText());
             if (collectorPort < 0) {
                 throw new NumberFormatException();
             }
-            state.agent.collectorPort = collectorPort;
+            state.getAgent().setCollectorPort(collectorPort);
         } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Agent"));
         }
 
-        state.agent.collectorHost = this.panel.collectorHost.getText();
+        state.getAgent().setCollectorHost(this.panel.collectorHost.getText());
 
         //server panel
-        state.server.ssl = this.panel.serverSSL.isSelected();
-        state.server.host = this.panel.serverHost.getText();
-        state.server.login = this.panel.login.getText();
+        state.getServer().setSSL(this.panel.serverSSL.isSelected());
+        state.getServer().setHost(this.panel.serverHost.getText());
+        state.getServer().setLogin(this.panel.login.getText());
 
-        state.server.password = String.valueOf(this.panel.password.getPassword());
+        state.getServer().setPassword(String.valueOf(this.panel.password.getPassword()));
 
         try {
             int restPort = Integer.parseInt(this.panel.restPort.getText());
             if (restPort < 0) {
                 throw new NumberFormatException();
             }
-            state.server.restPort = restPort;
+            state.getServer().setPort(restPort);
         } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Server"));
         }
         try {
             int timeout = Integer.parseInt(this.panel.timeout.getText());
-            state.server.timeout = timeout;
+            state.getServer().setTimeout(timeout);
         } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout", "Server"));
         }
 
         //codelink panel
-        state.codeLink.enabled = this.panel.enableCodeLink.isSelected();
-        //state.codeLink.javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
-        state.codeLink.ssl = this.panel.codeLinkSSL.isSelected();
-        state.codeLink.host = this.panel.clientHost.getText();
+        state.getCodeLink().setEnabled(this.panel.enableCodeLink.isSelected());
+        //state.getCodeLink().javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
+        state.getCodeLink().setSSL(this.panel.codeLinkSSL.isSelected());
+        state.getCodeLink().setHost(this.panel.clientHost.getText());
         try {
             int codeLinkPort = Integer.parseInt(this.panel.clientPort.getText());
             if (codeLinkPort < 0) {
                 throw new NumberFormatException();
             }
-            state.codeLink.port = codeLinkPort;
+            state.getCodeLink().setPort(codeLinkPort);
         } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "CodeLink"));
         }

@@ -1,4 +1,4 @@
-package com.dynatrace.diagnostics.codelink;
+package com.dynatrace.diagnostics;
 
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;

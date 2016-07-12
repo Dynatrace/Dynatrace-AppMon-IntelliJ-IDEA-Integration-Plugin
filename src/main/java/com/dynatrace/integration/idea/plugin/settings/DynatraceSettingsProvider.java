@@ -8,11 +8,15 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.NotNull;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 @State(name = "DynatraceSettingsProvider", storages = @Storage("dynatrace.settings.xml"))
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
 
     public static RESTEndpoint endpointFromState(DynatraceSettingsProvider.State settings) throws PasswordSafeException {
-        return new RESTEndpoint(settings.server.login, settings.server.password, (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
+        return new RESTEndpoint(settings.server.getLogin(), settings.server.getPassword(), (settings.server.isSSL() ? "https://" : "http://") + settings.server.getHost() + ":" + settings.server.getPort());
     }
 
     private State state;
@@ -48,6 +52,21 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
         //we might encapsulate fields and annotate them
         //http://www.jetbrains.org/intellij/sdk/docs/basics/persisting_state_of_components.html#implementing-the-state-class
         public State() {
+        }
+
+        @NotNull
+        public ServerSettings getServer() {
+            return server;
+        }
+
+        @NotNull
+        public AgentSettings getAgent() {
+            return agent;
+        }
+
+        @NotNull
+        public CodeLinkSettings getCodeLink() {
+            return codeLink;
         }
     }
 }
