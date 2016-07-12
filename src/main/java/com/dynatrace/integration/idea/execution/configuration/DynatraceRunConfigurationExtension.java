@@ -27,19 +27,6 @@ import java.util.logging.Logger;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
     public static final Logger LOG = Logger.getLogger(DynatraceRunConfigurationExtension.class.getName());
-//    private static final List<Class<? extends ConfigurationType>> SUPPORTED_TYPES = new ArrayList<>();
-//    static {
-//        try {
-//            SUPPORTED_TYPES.add((Class<? extends ConfigurationType>) ClassLoader.getSystemClassLoader().loadClass("com.intellij.execution.junit.JUnitConfigurationType"));
-//        } catch (ClassNotFoundException e) {
-//            System.out.println(e.toString());
-//        }
-//        try {
-//            SUPPORTED_TYPES.add((Class<? extends ConfigurationType>) ClassLoader.getSystemClassLoader().loadClass("com.theoryinpractice.testng.configuration.TestNGConfigurationType"));
-//        } catch (ClassNotFoundException e) {
-//            System.out.println(e.toString());
-//        }
-//    }
 
     @Override
     public void updateJavaParameters(RunConfigurationBase configuration, JavaParameters javaParameters, RunnerSettings runnerSettings) throws ExecutionException {
@@ -57,8 +44,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
             SessionStorage ss = configuration.getProject().getComponent(SessionStorage.class);
-            if(executionSettings.isRecordSessionPerLaunch() && !ss.isRecording(configuration)) {
-                ss.startRecording(configuration, executionSettings.getSystemProfile());
+            if(executionSettings.isRecordSessionPerLaunch() && !ss.isRecording(executionSettings.getSystemProfile())) {
+                ss.startRecording(executionSettings.getSystemProfile());
             }
 
             StringBuilder builder = new StringBuilder("-agentpath:");
