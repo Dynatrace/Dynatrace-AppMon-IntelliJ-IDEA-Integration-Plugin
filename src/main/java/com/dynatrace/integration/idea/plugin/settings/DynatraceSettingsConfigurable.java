@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import java.awt.*;
 
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
     private final DynatraceSettingsProvider provider;
@@ -75,7 +77,21 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.clientHost.setText(state.codeLink.host);
         this.panel.clientPort.setText(String.valueOf(state.codeLink.port));
         this.panel.codeLinkSSL.setSelected(state.codeLink.ssl);
-        this.panel.javaBrowsingPerspective.setSelected(state.codeLink.javaBrowsingPerspective);
+        //this.panel.javaBrowsingPerspective.setSelected(state.codeLink.javaBrowsingPerspective);
+
+        this.panel.helpText.setContentType("text/html");
+        this.panel.helpText.setEditable(false);
+        this.panel.helpText.setOpaque(false);
+        this.panel.helpText.addHyperlinkListener(hle -> {
+            if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.browse(hle.getURL().toURI());
+                } catch (Exception ex) {
+                }
+            }
+        });
+        this.panel.helpText.setText(Messages.getMessage("plugin.settings.ui.help",this.panel.helpText.getFont().getFamily()));
         return this.panel.wholePanel;
     }
 
@@ -102,7 +118,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
 
             if (state.codeLink.enabled != this.panel.enableCodeLink.isSelected()
-                    || state.codeLink.javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
+                    //|| state.codeLink.javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
                     || state.codeLink.ssl != this.panel.codeLinkSSL.isSelected()
                     || !state.codeLink.host.equals(this.panel.clientHost.getText())
                     || state.codeLink.port != Integer.parseInt(this.panel.clientPort.getText())) {
@@ -157,7 +173,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         //codelink panel
         state.codeLink.enabled = this.panel.enableCodeLink.isSelected();
-        state.codeLink.javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
+        //state.codeLink.javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
         state.codeLink.ssl = this.panel.codeLinkSSL.isSelected();
         state.codeLink.host = this.panel.clientHost.getText();
         try {
@@ -196,9 +212,10 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         private JTextField clientHost;
         private JTextField clientPort;
         private JCheckBox codeLinkSSL;
-        private JCheckBox javaBrowsingPerspective;
+        //private JCheckBox javaBrowsingPerspective;
 
         private JPanel wholePanel;
+        private JEditorPane helpText;
 
         private void createUIComponents() {
             this.agentLibrary = new TextFieldWithBrowseButton();
