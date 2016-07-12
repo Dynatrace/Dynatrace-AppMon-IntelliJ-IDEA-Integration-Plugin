@@ -1,4 +1,4 @@
-![](img/logo_IntelliJIDEA.svg)
+![](/img/logo_IntelliJIDEA.svg)
 
 # Dynatrace IntelliJ Idea Integration Plugin
  
@@ -40,7 +40,7 @@ Find further information in the [Dynatrace community](https://community.dynatrac
 * In IntelliJ Idea, click on *File / Settings / Plugins / Install plugin from disk...*
 * Select the downloaded zip archive 
 
-![install_plugin](./img/conf/install_plugin.png)
+![install_plugin](/img/conf/install_plugin.png)
 
 ## <a name="configuration"></a>Configuration
 
@@ -48,11 +48,11 @@ Find further information in the [Dynatrace community](https://community.dynatrac
 
 The global settings for the plugin are located under *File / Settings / Build, Execution, Deployment / Dynatrace*
 
-![global settings](./img/conf/application_configuration.png)
+![global settings](/img/conf/application_configuration.png)
 
 ### <a name="run_configurations"></a>Run Configurations 
 
-![run configurations](./img/conf/run_configuration.png) 
+![run configurations](/img/conf/run_configuration.png)
 
 ## <a name="use"></a>Using the IntelliJ Idea Integration Plugin
 
@@ -60,7 +60,7 @@ The global settings for the plugin are located under *File / Settings / Build, E
 
 The lancher will run applications with an injected Dynatrace Agent using the agent name and additional parameters defined in the run configuration:
 
-![launcher](./img/conf/launcher.png) 
+![launcher](/img/conf/launcher.png)
 
 The launcher support the following launch mode:
 * Java application
@@ -68,7 +68,7 @@ The launcher support the following launch mode:
 
 The agent will output debug information into the console:
 
-![console output](./img/conf/console.png) 
+![console output](/img/conf/console.png)
 
 ### <a name="test_result"></a>Test Result
 
