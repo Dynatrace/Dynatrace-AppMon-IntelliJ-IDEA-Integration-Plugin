@@ -47,10 +47,10 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
         private ServerSettings server = new ServerSettings();
         @NotNull
         @Property
-        public AgentSettings agent = new AgentSettings();
+        private AgentSettings agent = new AgentSettings();
         @NotNull
         @Property
-        public CodeLinkSettings codeLink = new CodeLinkSettings();
+        private CodeLinkSettings codeLink = new CodeLinkSettings();
 
         @NotNull
         public ServerSettings getServer() {

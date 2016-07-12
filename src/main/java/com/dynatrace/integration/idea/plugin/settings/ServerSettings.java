@@ -23,53 +23,53 @@ public class ServerSettings {
     private int timeout = 30;
 
     @NotNull
-    public String getHost() {
+    public synchronized String getHost() {
         return host;
     }
 
-    public void setHost(@NotNull String host) {
+    public synchronized void setHost(@NotNull String host) {
         this.host = host;
     }
 
-    public int getPort() {
+    public synchronized int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 
-    public String getPassword() {
+    public synchronized String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public synchronized void setPassword(String password) {
         this.password = password;
     }
 
-    public boolean isSSL() {
+    public synchronized boolean isSSL() {
         return ssl;
     }
 
-    public void setSSL(boolean ssl) {
+    public synchronized void setSSL(boolean ssl) {
         this.ssl = ssl;
     }
 
     @NotNull
-    public String getLogin() {
+    public synchronized String getLogin() {
         return login;
     }
 
-    public void setLogin(@NotNull String login) {
+    public synchronized void setLogin(@NotNull String login) {
         this.login = login;
     }
 
     @NotNull
-    public int getTimeout() {
+    public synchronized int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(@NotNull int timeout) {
+    public synchronized void setTimeout(@NotNull int timeout) {
         this.timeout = timeout;
     }
 }

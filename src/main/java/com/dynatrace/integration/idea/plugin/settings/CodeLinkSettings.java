@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class CodeLinkSettings implements ICodeLinkSettings {
     private boolean enabled = true;
     @NotNull
@@ -15,49 +15,49 @@ public class CodeLinkSettings implements ICodeLinkSettings {
     private boolean ssl = true;
     private boolean javaBrowsingPerspective = false;
 
-    public void setJavaBrowsingPerspective(boolean javaBrowsingPerspective) {
+    public synchronized void setJavaBrowsingPerspective(boolean javaBrowsingPerspective) {
         this.javaBrowsingPerspective = javaBrowsingPerspective;
     }
 
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
 
-    public void setSSL(boolean ssl) {
+    public synchronized void setSSL(boolean ssl) {
         this.ssl = ssl;
     }
 
-    public void setHost(@NotNull String host) {
+    public synchronized void setHost(@NotNull String host) {
         this.host = host;
     }
 
     @Override
-    public boolean isEnabled() {
+    public synchronized boolean isEnabled() {
         return this.enabled;
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
+    public synchronized void setEnabled(boolean isEnabled) {
         this.enabled = isEnabled;
     }
 
     @Override
-    public String getHost() {
+    public synchronized String getHost() {
         return this.host;
     }
 
     @Override
-    public int getPort() {
+    public synchronized int getPort() {
         return this.port;
     }
 
     @Override
-    public boolean isSSL() {
+    public synchronized boolean isSSL() {
         return this.ssl;
     }
 
     @Override
-    public boolean isJavaBrowsingPerspective() {
+    public synchronized boolean isJavaBrowsingPerspective() {
         return this.javaBrowsingPerspective;
     }
 }

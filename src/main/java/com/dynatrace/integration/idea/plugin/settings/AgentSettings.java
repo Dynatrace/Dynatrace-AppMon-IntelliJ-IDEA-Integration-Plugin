@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class AgentSettings {
     @NotNull
     private String agentLibrary = "";
@@ -14,28 +14,28 @@ public class AgentSettings {
     private int collectorPort = 9998;
 
     @NotNull
-    public String getCollectorHost() {
+    public synchronized String getCollectorHost() {
         return collectorHost;
     }
 
-    public void setCollectorHost(@NotNull String collectorHost) {
+    public synchronized void setCollectorHost(@NotNull String collectorHost) {
         this.collectorHost = collectorHost;
     }
 
     @NotNull
-    public String getAgentLibrary() {
+    public synchronized String getAgentLibrary() {
         return agentLibrary;
     }
 
-    public void setAgentLibrary(@NotNull String agentLibrary) {
+    public synchronized void setAgentLibrary(@NotNull String agentLibrary) {
         this.agentLibrary = agentLibrary;
     }
 
-    public int getCollectorPort() {
+    public synchronized int getCollectorPort() {
         return collectorPort;
     }
 
-    public void setCollectorPort(int collectorPort) {
+    public synchronized void setCollectorPort(int collectorPort) {
         this.collectorPort = collectorPort;
     }
 
