@@ -69,6 +69,10 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             builder.append("server=").append(settings.getAgent().getCollectorHost()).append(',');
             builder.append("port=").append(settings.getAgent().getCollectorPort());
 
+            if (executionSettings.getAdditionalParameters() != null && !executionSettings.getAdditionalParameters().isEmpty()) {
+                builder.append(',').append(executionSettings.getAdditionalParameters());
+            }
+
             Calendar now = Calendar.getInstance();
 
             //fetch test id
