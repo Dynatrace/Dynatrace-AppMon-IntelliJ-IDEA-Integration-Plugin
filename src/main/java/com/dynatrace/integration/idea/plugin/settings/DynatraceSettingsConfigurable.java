@@ -1,7 +1,6 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
 import com.dynatrace.integration.idea.Messages;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
@@ -55,12 +54,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.restPort.setText(String.valueOf(state.server.restPort));
         this.panel.serverSSL.setSelected(state.server.ssl);
         this.panel.login.setText(state.server.login);
-
-        try {
-            this.panel.password.setText(state.server.getPassword());
-        } catch (PasswordSafeException e) {
-            //ignore, will be validated while setting.
-        }
+        this.panel.password.setText(state.server.password);
 
         this.panel.timeout.setText(String.valueOf(state.server.timeout));
 
@@ -100,7 +94,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             //server panel
             if (state.server.ssl != this.panel.serverSSL.isSelected()
                     || !state.server.host.equals(this.panel.serverHost.getText())
-                    || !state.server.getPassword().equals(String.valueOf(this.panel.password.getPassword()))
+                    || !state.server.password.equals(String.valueOf(this.panel.password.getPassword()))
                     || !state.server.login.equals(this.panel.login.getText())
                     || state.server.restPort != Integer.parseInt(this.panel.restPort.getText())
                     || state.server.timeout != Integer.parseInt(this.panel.timeout.getText())) {
@@ -116,8 +110,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
         } catch (NumberFormatException e) {
             return true; //will be validated in apply();
-        } catch (PasswordSafeException e) {
-            e.printStackTrace();
         }
         return false;
     }
@@ -135,7 +127,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.agent.collectorPort = collectorPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","Agent"));
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Agent"));
         }
 
         state.agent.collectorHost = this.panel.collectorHost.getText();
@@ -145,13 +137,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         state.server.host = this.panel.serverHost.getText();
         state.server.login = this.panel.login.getText();
 
-        try {
-            if(state.server.getPassword() != String.valueOf(this.panel.password.getPassword())) {
-                state.server.setPassword(String.valueOf(this.panel.password.getPassword()));
-            }
-        } catch (PasswordSafeException e) {
-            throw new ConfigurationException(e.getMessage());
-        }
+        state.server.password = String.valueOf(this.panel.password.getPassword());
 
         try {
             int restPort = Integer.parseInt(this.panel.restPort.getText());
@@ -160,13 +146,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.server.restPort = restPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","Server"));
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Server"));
         }
         try {
             int timeout = Integer.parseInt(this.panel.timeout.getText());
             state.server.timeout = timeout;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout","Server"));
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout", "Server"));
         }
 
         //codelink panel
@@ -181,7 +167,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             }
             state.codeLink.port = codeLinkPort;
         } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort","CodeLink"));
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "CodeLink"));
         }
     }
 

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class DynatraceSettingsProvider implements PersistentStateComponent<DynatraceSettingsProvider.State> {
 
     public static RESTEndpoint endpointFromState(DynatraceSettingsProvider.State settings) throws PasswordSafeException {
-        return new RESTEndpoint(settings.server.login, String.valueOf(settings.server.getPassword()), (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
+        return new RESTEndpoint(settings.server.login, settings.server.password, (settings.server.ssl ? "https://" : "http://") + settings.server.host + ":" + settings.server.restPort);
     }
 
     private State state;

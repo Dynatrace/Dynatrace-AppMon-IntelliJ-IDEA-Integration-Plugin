@@ -10,6 +10,7 @@ public class ServerSettings {
     @NotNull
     public String host = "localhost";
     public int restPort = 8021;
+    public String password = "admin";
     public boolean ssl = true;
     @NotNull
     public String login = "admin";
@@ -17,13 +18,13 @@ public class ServerSettings {
     //in seconds
     public int timeout = 30;
 
-    public String getPassword() throws PasswordSafeException {
-        //shame on you intelliJ
-        String pwd = PasswordSafe.getInstance().getPassword(null, ServerSettings.class, "password");
-        return pwd != null ? pwd : DEFAULT_PASSWORD;
-    }
-
-    public void setPassword(String password) throws PasswordSafeException {
-        PasswordSafe.getInstance().storePassword(null, ServerSettings.class, "password", password);
-    }
+//    public String getPassword() throws PasswordSafeException {
+//        //shame on you intelliJ
+//        String pwd = PasswordSafe.getInstance().getPassword(null, ServerSettings.class, "password");
+//        return pwd != null ? pwd : DEFAULT_PASSWORD;
+//    }
+//
+//    public void setPassword(String password) throws PasswordSafeException {
+//        PasswordSafe.getInstance().storePassword(null, ServerSettings.class, "password", password);
+//    }
 }
