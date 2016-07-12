@@ -118,7 +118,7 @@ class PollingWorker implements Runnable {
             CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: "+e.getMessage());
         } catch (Exception e) {
             if (!hasErrored) {
-                this.ide.showNotification("CodeLink Error", "<b>Check your configuration</b><br>Could not connect to client.");
+                this.ide.showNotification("CodeLink Error", "Could not connect to client.<br><b>Check your configuration</b>");
             }
             this.hasErrored = true;
             //skip 5 connections

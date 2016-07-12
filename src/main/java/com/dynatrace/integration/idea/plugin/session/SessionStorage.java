@@ -46,23 +46,24 @@ public class SessionStorage implements ProjectComponent {
     public void disposeComponent() {
         synchronized (this.recordings) {
             CountDownLatch cdl = new CountDownLatch(this.recordings.size());
-            for (Map.Entry<RunConfigurationBase, String> entry : this.recordings.entrySet()) {
+            this.recordings.forEach((base, id) ->{
                 //Do it in threaded environment.
                 new Thread(() -> {
                     try {
-                        this.stopRecording(entry.getKey(), entry.getValue());
+                        this.stopRecording(base, id);
                     } catch (PasswordSafeException e) {
-                        LOG.warning(Messages.getMessage("plugin.session.cantend", entry.getKey().getName(), e.getLocalizedMessage()));
+                        LOG.warning(Messages.getMessage("plugin.session.cantend", base.getName(), e.getLocalizedMessage()));
                     } finally {
                         cdl.countDown();
                     }
                 },"SessionDisposalThread").start();
-            }
+            });
             try {
                 cdl.await(2, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 LOG.log(Level.SEVERE,Messages.getMessage("plugin.session.disposalerror"));
             }
+            this.recordings.clear();
         }
     }
 
@@ -75,10 +76,13 @@ public class SessionStorage implements ProjectComponent {
     public String startRecording(RunConfigurationBase base, String profileName) throws PasswordSafeException {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         String sessionName = profileName + ' ' + DateFormat.getDateInstance().format(new Date());
+
+        LOG.info(Messages.getMessage("plugin.session.starting", profileName));
         String id = endpoint.startRecording(profileName, sessionName, sessionName, "all", false, true);
         if (id != null) {
             synchronized (this.recordings) {
                 this.recordings.put(base, id);
+                LOG.info(Messages.getMessage("plugin.session.started", id, profileName));
             }
         }
         return id;
@@ -86,10 +90,12 @@ public class SessionStorage implements ProjectComponent {
 
     public String stopRecording(RunConfigurationBase base, String sessionId) throws PasswordSafeException {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
+        LOG.info(Messages.getMessage("plugin.session.stopping", sessionId));
         String stopped = endpoint.stopRecording(sessionId);
         if (stopped != null) {
             synchronized (this.recordings) {
                 this.recordings.remove(base);
+                LOG.info(Messages.getMessage("plugin.session.stopped", sessionId));
             }
         }
         return stopped;

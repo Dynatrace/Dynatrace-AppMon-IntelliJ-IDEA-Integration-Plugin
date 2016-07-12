@@ -57,9 +57,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
             SessionStorage ss = configuration.getProject().getComponent(SessionStorage.class);
-
-            if(executionSettings.isRecordSessionPerLaunch() && ss.isRecording(configuration)) {
-                String sessionId = ss.startRecording(configuration, executionSettings.getSystemProfile());
+            if(executionSettings.isRecordSessionPerLaunch() && !ss.isRecording(configuration)) {
+                ss.startRecording(configuration, executionSettings.getSystemProfile());
             }
 
             StringBuilder builder = new StringBuilder("-agentpath:");
