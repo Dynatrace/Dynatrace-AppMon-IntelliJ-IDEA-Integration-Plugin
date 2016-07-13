@@ -3,7 +3,6 @@ package com.dynatrace.integration.idea.execution.result.ui;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
 import com.dynatrace.integration.idea.Messages;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.ScrollPaneFactory;

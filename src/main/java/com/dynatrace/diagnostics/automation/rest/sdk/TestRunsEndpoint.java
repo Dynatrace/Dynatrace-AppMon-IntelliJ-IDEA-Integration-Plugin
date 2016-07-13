@@ -10,14 +10,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 /**
  * TestRunsEndpoint is responsible for fetching TestRun summary
@@ -48,10 +44,10 @@ public class TestRunsEndpoint {
         // do the request
         HttpGet request = new HttpGet(stringURL);
         try (CloseableHttpResponse response = this.client.execute(request)) {
-            String content = EntityUtils.toString(response.getEntity());
-            System.out.println(content);
-            InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
-            TestRun testRun = Utils.inputStreamToObject(stream, TestRun.class);
+//            String content = EntityUtils.toString(response.getEntity());
+//            System.out.println(content);
+//            InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+            TestRun testRun = Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
             return testRun;
         }
     }

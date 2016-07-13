@@ -1,18 +1,14 @@
 package com.dynatrace.integration.idea.execution.result;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.ide.impl.ContentManagerWatcher;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 
 import java.util.HashMap;
@@ -56,7 +52,7 @@ public class TestRunResultsCoordinator {
         LOG.log(Level.INFO, Messages.getMessage("execution.result.display.requested", profileName));
         synchronized (this.testRuns) {
             String testRunId = this.testRuns.get(profileName);
-            new Thread(new TestRunResultsWorker(this, profileName, testRunId, this.settingsProvider.getState()), "TestRunResultsFetchingThread").start();
+            new Thread(new TestRunResultsWorker(this.project, profileName, testRunId, this.settingsProvider.getState()), "TestRunResultsFetchingThread").start();
             this.testRuns.remove(profileName);
         }
     }
@@ -67,17 +63,5 @@ public class TestRunResultsCoordinator {
         synchronized (this.testRuns) {
             this.testRuns.remove(profileName);
         }
-    }
-
-    public void displayTestRunResults(String profileName, TestRun testRun) {
-        TestRunResultsView view = new TestRunResultsView(this.project, testRun);
-        ApplicationManager.getApplication().invokeLater(()-> {
-            Content content = this.contentManager.getFactory().createContent(view.getPanel(), profileName, true);
-            this.contentManager.addContent(content);
-            this.contentManager.setSelectedContent(content);
-
-            ToolWindow toolWindow = ToolWindowManager.getInstance(this.project).getToolWindow(TOOLWINDOW_ID);
-            toolWindow.activate(null, false);
-        });
     }
 }
