@@ -1,7 +1,6 @@
 package com.dynatrace.diagnostics;
 
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -21,7 +20,7 @@ public class Utils {
      * @return Configured {@link org.apache.http.impl.client.CloseableHttpClient}
      * @see <a href="http://stackoverflow.com/questions/9402653/apache-httpclient-4-1-and-newer-how-to-do-basic-authentication" />
      */
-    public static CloseableHttpClient createClient() {
+    public static HttpClientBuilder clientBuilder() {
         try {
             HttpClientBuilder builder = HttpClients.custom();
             // trust all certs
@@ -29,7 +28,7 @@ public class Utils {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (chain, authType) -> true).build();
             builder.setSslcontext(sslContext);
 
-            return builder.build();
+            return builder;
         } catch (Exception e) {
             //impossible path
             throw new RuntimeException("Error occured while creating custom CloseableHTTPClient in AppMonServerConfiguration", e);

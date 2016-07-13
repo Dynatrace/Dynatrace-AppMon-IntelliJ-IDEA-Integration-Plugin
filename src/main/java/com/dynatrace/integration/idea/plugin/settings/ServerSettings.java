@@ -1,12 +1,13 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
+import com.dynatrace.diagnostics.automation.rest.sdk.IServerSettings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ServerSettings {
+public class ServerSettings implements IServerSettings {
     public static final String DEFAULT_PASSWORD = "admin";
 
     @NotNull
@@ -21,6 +22,7 @@ public class ServerSettings {
     private int timeout = 30;
 
     @NotNull
+    @Override
     public synchronized String getHost() {
         return host;
     }
@@ -29,6 +31,7 @@ public class ServerSettings {
         this.host = host;
     }
 
+    @Override
     public synchronized int getPort() {
         return port;
     }
@@ -37,6 +40,7 @@ public class ServerSettings {
         this.port = port;
     }
 
+    @Override
     public synchronized String getPassword() {
         return password;
     }
@@ -45,6 +49,7 @@ public class ServerSettings {
         this.password = password;
     }
 
+    @Override
     public synchronized boolean isSSL() {
         return ssl;
     }
@@ -54,6 +59,7 @@ public class ServerSettings {
     }
 
     @NotNull
+    @Override
     public synchronized String getLogin() {
         return login;
     }
@@ -63,6 +69,7 @@ public class ServerSettings {
     }
 
     @NotNull
+    @Override
     public synchronized int getTimeout() {
         return timeout;
     }

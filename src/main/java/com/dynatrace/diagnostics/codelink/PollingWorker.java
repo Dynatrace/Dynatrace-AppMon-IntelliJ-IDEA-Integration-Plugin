@@ -37,7 +37,7 @@ class PollingWorker implements Runnable {
     public PollingWorker(IIDEDescriptor ide, ICodeLinkSettings clSettings) {
         this.ide = ide;
         this.clSettings = clSettings;
-        this.client = Utils.createClient();
+        this.client = Utils.clientBuilder().build();
     }
 
     @Override
@@ -74,7 +74,7 @@ class PollingWorker implements Runnable {
         } catch (UnknownHostException e) {
             this.clSettings.setEnabled(false);
             this.ide.showNotification("CodeLink Error", "<b>Check your configuration</b>");
-            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: "+e.getMessage());
+            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: " + e.getMessage());
         } catch (Exception e) {
             if (!hasErrored) {
                 this.ide.showNotification("CodeLink Error", "Could not connect to client.<br><b>Check your configuration</b>");
@@ -82,7 +82,7 @@ class PollingWorker implements Runnable {
             this.hasErrored = true;
             //skip 5 connections
             this.suppress = 5;
-            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: "+e.getMessage()+".");
+            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: " + e.getMessage() + ".");
         }
     }
 
