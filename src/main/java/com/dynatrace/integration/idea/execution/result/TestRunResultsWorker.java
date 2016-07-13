@@ -19,8 +19,10 @@ public class TestRunResultsWorker implements Runnable {
     private final String testRunId;
     private final long startTime;
     private final DynatraceSettingsProvider.State settings;
+    private final TestRunResultsCoordinator coordinator;
 
-    public TestRunResultsWorker(String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
+    public TestRunResultsWorker(TestRunResultsCoordinator coordinator, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
+        this.coordinator = coordinator;
         this.profileName = profileName;
         this.testRunId = testRunId;
         this.settings = settings;
@@ -34,7 +36,8 @@ public class TestRunResultsWorker implements Runnable {
             try {
                 TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
                 if (!testRun.isEmpty()) {
-                    //show results
+                    System.out.println("GOT IT");
+                    this.coordinator.displayTestRunResults(this.profileName, testRun);
                     return;
                 }
                 Thread.sleep(DELAY);

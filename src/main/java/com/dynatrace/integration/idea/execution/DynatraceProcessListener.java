@@ -27,11 +27,11 @@ public class DynatraceProcessListener implements ProcessListener {
         TestRunResultsCoordinator coordinator = TestRunResultsCoordinator.getInstance(this.project);
 
         //if exitted with error
-        if (event.getExitCode() != 0) {
-            coordinator.discardTestRun(this.profileName);
-            return;
-        }
-        coordinator.showTestRunResults(this.profileName);
+//        if (event.getExitCode() != 0) {
+//            coordinator.discardTestRun(this.profileName);
+//            return;
+//        }
+        coordinator.requestTestRunResults(this.profileName);
     }
 
     @Override

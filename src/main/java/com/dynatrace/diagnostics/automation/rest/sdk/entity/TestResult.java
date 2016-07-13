@@ -2,13 +2,13 @@ package com.dynatrace.diagnostics.automation.rest.sdk.entity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by krzysztof.necel on 2016-02-04.
@@ -18,36 +18,22 @@ public class TestResult {
 
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateTimeInstance();
 
-    private final Date timestamp;
-    private final String testName;
-    private final String packageName;
-    private final String platform;
-    private final TestStatus status;
+    @XmlAttribute
+    private Date timestamp;
+    @XmlAttribute
+    private String name;
+    @XmlAttribute(name = "package")
+    private String packageName;
+    @XmlAttribute
+    private String platform;
+    @XmlAttribute(name = "status")
+    private TestStatus status;
 
-    @XmlElement(name = "testMeasure")
-    private final Set<TestMeasure> testMeasures;
-
-    public TestResult(Date timestamp, String testName, String packageName, String platform, TestStatus status, Set<TestMeasure> testMeasures) {
-        this.timestamp = timestamp;
-        this.testName = testName;
-        this.packageName = packageName;
-        this.platform = platform;
-        this.status = status;
-        this.testMeasures = testMeasures;
-    }
-
-    // Required by JAXB
-    private TestResult() {
-        this.timestamp = null;
-        this.testName = null;
-        this.packageName = null;
-        this.platform = null;
-        this.status = null;
-        this.testMeasures = new TreeSet<TestMeasure>();
-    }
+    @XmlElement(name = "measure")
+    private Set<TestMeasure> measures;
 
     public String getTestName() {
-        return testName;
+        return name;
     }
 
     public String getPackageName() {
@@ -63,7 +49,7 @@ public class TestResult {
     }
 
     public Set<TestMeasure> getTestMeasures() {
-        return testMeasures;
+        return measures;
     }
 
     public Date getTimestamp() {
@@ -79,7 +65,7 @@ public class TestResult {
     }
 
     public TestMeasure getMeasureByName(String metricGroup, String measureName) {
-        for (TestMeasure testMeasure : testMeasures) {
+        for (TestMeasure testMeasure : measures) {
             if (Objects.equals(testMeasure.getMetricGroup(), metricGroup)
                     && Objects.equals(testMeasure.getName(), measureName)) {
                 return testMeasure;
@@ -92,11 +78,11 @@ public class TestResult {
     public String toString() {
         return "TestResult{" +
                 "packageName='" + packageName + '\'' +
-                ", testName='" + testName + '\'' +
+                ", testName='" + name + '\'' +
                 ", platform='" + platform + '\'' +
                 ", timestamp=" + timestamp +
                 ", status=" + status +
-                ", testMeasures=" + testMeasures +
+                ", testMeasures=" + measures +
                 '}';
     }
 }
