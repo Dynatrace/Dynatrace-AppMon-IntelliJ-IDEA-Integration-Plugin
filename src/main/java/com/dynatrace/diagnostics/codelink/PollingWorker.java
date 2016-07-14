@@ -123,7 +123,6 @@ class PollingWorker implements Runnable {
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
         nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode)));
 
-        //TODO:                                        make it thread safe
         StringBuilder builder = PollingWorker.buildURL(this.clSettings).append("response");
         HttpPost post = new HttpPost(builder.toString());
         try {

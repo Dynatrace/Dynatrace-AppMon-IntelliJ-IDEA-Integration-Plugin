@@ -41,7 +41,7 @@ public class DynatraceExecutor extends Executor {
     @NotNull
     @Override
     public String getActionName() {
-        return Messages.getMessage("execution.executor.action"); //TODO ?
+        return Messages.getMessage("execution.executor.action");
     }
 
     @NotNull
@@ -58,7 +58,7 @@ public class DynatraceExecutor extends Executor {
 
     @Override
     public String getContextActionId() {
-        return "RunWithDynatrace"; //TODO ?
+        return "RunWithDynatrace";
     }
 
     @Override

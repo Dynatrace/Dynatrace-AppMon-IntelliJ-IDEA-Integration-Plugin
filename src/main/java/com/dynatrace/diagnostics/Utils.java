@@ -15,7 +15,6 @@ import java.io.InputStream;
 public class Utils {
     /**
      * Builds a custom {@link org.apache.http.impl.client.CloseableHttpClient} for Dynatrace client connection.
-     * TODO @see for dynatrace docs
      *
      * @return Configured {@link org.apache.http.impl.client.CloseableHttpClient}
      * @see <a href="http://stackoverflow.com/questions/9402653/apache-httpclient-4-1-and-newer-how-to-do-basic-authentication" />
