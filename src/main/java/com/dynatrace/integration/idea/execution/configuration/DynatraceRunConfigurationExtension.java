@@ -14,9 +14,6 @@ import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
 import com.intellij.execution.process.ProcessHandler;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
@@ -27,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
     @Override
@@ -90,7 +86,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             //register test run in order to display results later in form of a tool window
             coordinator.registerTestRun(executionSettings.getSystemProfile(), id);
         } catch (Exception e) {
-            IDEDescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
+            //IDEDescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
             throw new ExecutionException(e);
         }
     }
