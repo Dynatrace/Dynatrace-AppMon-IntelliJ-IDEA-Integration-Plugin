@@ -77,8 +77,11 @@ class PollingWorker implements Runnable {
         } catch (CodeLinkConnectionException e) {
             if (e.getCause() instanceof UnknownHostException) {
                 this.clSettings.setEnabled(false);
+                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
+            } else if (!hasErrored) {
+                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
+                this.hasErrored = true;
             }
-            this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
         } catch (Exception e) {
             if (!hasErrored) {
                 this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
@@ -133,7 +136,7 @@ class PollingWorker implements Runnable {
                 }
             }
         } catch (IOException e) {
-            throw new CodeLinkConnectionException(e.getMessage(), e);
+            throw new CodeLinkConnectionException(e);
         }
     }
 }

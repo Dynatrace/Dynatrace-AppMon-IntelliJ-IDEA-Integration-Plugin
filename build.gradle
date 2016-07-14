@@ -24,6 +24,9 @@ intellij {
     version ideaVersion
     type ideaType
     pluginName pluginName
+    sameSinceUntilBuild false
+    updateSinceUntilBuild false
+    downloadSources false
 }
 
 dependencies {

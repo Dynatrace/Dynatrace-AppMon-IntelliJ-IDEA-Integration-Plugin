@@ -5,21 +5,20 @@
     <vendor url="https://dynatrace.com">Dynatrace</vendor>
 
     <description><![CDATA[
-      Provides an intelliJ IDEA integration with Dynatrace client:
+      The Dynatrace IntelliJ Idea Integration Plugin enables you to:
       <ul>
-          <li>CodeLink</li>
-          <li>Test instrumentation</li>
+      <li>launch applications with an injected Dynatrace Agent directly from Eclipse</li>
+      <li>retrieve & display the key architectural metrics (such as number of SQL queries, external API calls, exceptions and log messages) from your tests</li>
+      <li>perform look-ups of sources files and methods from applications under diagnosis in Dynatrace Application Monitoring</li>
       </ul>
     ]]></description>
 
     <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
     ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="141.0"/>
+    <idea-version since-build="151.0"/>
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
