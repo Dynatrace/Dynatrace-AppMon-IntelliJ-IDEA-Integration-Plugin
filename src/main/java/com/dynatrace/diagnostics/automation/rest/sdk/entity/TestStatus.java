@@ -20,5 +20,6 @@ public enum TestStatus {
     IMPROVED,
     @XmlEnumValue("passed")
     PASSED,
-    INVALIDATED;
+    @XmlEnumValue("invalidated")
+    INVALIDATED
 }

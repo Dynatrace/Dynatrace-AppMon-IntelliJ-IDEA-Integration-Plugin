@@ -37,9 +37,6 @@
                 serviceImplementation="com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator"/>
     </extensions>
 
-    <actions>
-    </actions>
-
     <project-components>
         <component>
             <implementation-class>com.dynatrace.integration.idea.plugin.codelink.CodeLinkCoordinator

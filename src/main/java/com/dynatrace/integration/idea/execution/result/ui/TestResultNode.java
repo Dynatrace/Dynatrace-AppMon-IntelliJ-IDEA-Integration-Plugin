@@ -38,4 +38,8 @@ public class TestResultNode extends SimpleNode implements StatusProvider {
     public TestStatus getStatus() {
         return this.result.getStatus();
     }
+
+    public TestResult getResult() {
+        return this.result;
+    }
 }

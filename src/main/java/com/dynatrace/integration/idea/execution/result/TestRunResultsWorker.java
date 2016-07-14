@@ -25,10 +25,10 @@ public class TestRunResultsWorker implements Runnable {
     private final String testRunId;
     private final long startTime;
     private final DynatraceSettingsProvider.State settings;
-    private final Project project;
+    private final TestRunResultsCoordinator coordinator;
 
-    public TestRunResultsWorker(Project project, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
-        this.project = project;
+    public TestRunResultsWorker(TestRunResultsCoordinator coordinator, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
+        this.coordinator = coordinator;
         this.profileName = profileName;
         this.testRunId = testRunId;
         this.settings = settings;
@@ -43,7 +43,7 @@ public class TestRunResultsWorker implements Runnable {
                 TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
                 if (!testRun.isEmpty()) {
                     LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
-                    this.displayTestRunResults(this.profileName, testRun);
+                    this.coordinator.displayTestRunResults(testRun);
                     return;
                 }
                 Thread.sleep(DELAY);
@@ -53,16 +53,6 @@ public class TestRunResultsWorker implements Runnable {
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.interrupted"));
             }
         }
-    }
-
-    public void displayTestRunResults(String profileName, TestRun testRun) {
-        TestRunResultsView view = new TestRunResultsView(this.project, testRun);
-        ApplicationManager.getApplication().invokeLater(()-> {
-            ToolWindow toolWindow = ToolWindowManager.getInstance(this.project).getToolWindow(TestRunResultsCoordinator.TOOLWINDOW_ID);
-            Content content = toolWindow.getContentManager().getFactory().createContent(view.getPanel(), profileName, true);
-            toolWindow.getContentManager().addContent(content);
-            toolWindow.getContentManager().setSelectedContent(content);
-            toolWindow.activate(null, false);
-        });
+        this.coordinator.discardTestRunResult(this.testRunId);
     }
 }

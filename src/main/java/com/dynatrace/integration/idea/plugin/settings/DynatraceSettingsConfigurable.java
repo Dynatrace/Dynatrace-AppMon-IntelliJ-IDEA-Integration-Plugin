@@ -68,7 +68,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         descriptor.withFileFilter((filter) -> filter == null || filter.isDirectory() || (filter.getExtension() != null && (filter.getExtension().equals("dll") || filter.getExtension().equals("so") || filter.getExtension().equals("dylib"))));
 
         this.panel.agentLibrary.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
-
+        //this.panel.agentLibrary.
         this.panel.collectorHost.setText(state.getAgent().getCollectorHost());
         this.panel.collectorPort.setText(String.valueOf(state.getAgent().getCollectorPort()));
 

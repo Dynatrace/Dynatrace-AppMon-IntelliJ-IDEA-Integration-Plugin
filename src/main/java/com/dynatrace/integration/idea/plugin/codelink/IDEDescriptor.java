@@ -22,8 +22,9 @@ import javax.swing.*;
 
 public class IDEDescriptor implements IIDEDescriptor {
     public static final Icon CROSSED_ICON = IconLoader.getIcon("/icons/crossed_logo.png");
-    public static IDEDescriptor getInstance() {
-        return ServiceManager.getService(IDEDescriptor.class);
+
+    public static IDEDescriptor getInstance(Project project) {
+        return ServiceManager.getService(project, IDEDescriptor.class);
     }
 
     private final Project project;
@@ -74,23 +75,33 @@ public class IDEDescriptor implements IIDEDescriptor {
         ApplicationManager.getApplication().invokeLater(() -> {
             PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(className, GlobalSearchScope.allScope(this.project));
             if (clazz == null) {
-                cb.call(false);
+                if (cb != null) {
+                    cb.call(false);
+                }
                 return;
             }
 
             if (!clazz.canNavigateToSource()) {
-                cb.call(false);
+                if (cb != null) {
+                    cb.call(false);
+                }
                 return;
             }
 
             PsiMethod[] method = clazz.findMethodsByName(methodName, false);
             if (method == null || method.length == 0) {
-                cb.call(false);
+                if (cb != null) {
+                    cb.call(false);
+                }
                 return;
             }
 
-            if(method[0].canNavigateToSource()) {
+            if (method[0].canNavigateToSource()) {
                 method[0].navigate(true);
+            }
+
+            if (cb == null) {
+                return;
             }
             cb.call(method[0].canNavigateToSource());
         });
