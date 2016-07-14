@@ -73,7 +73,7 @@ public class SessionStorage implements ProjectComponent {
         return "dynatrace.sessionstorage";
     }
 
-    public String startRecording(String profileName) throws PasswordSafeException {
+    public String startRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         String sessionName = profileName + ' ' + DateFormat.getDateInstance().format(new Date());
 
@@ -87,6 +87,7 @@ public class SessionStorage implements ProjectComponent {
                     LOG.info(Messages.getMessage("plugin.session.started", id, profileName));
                 }
             }
+            return id;
         } catch (CommandExecutionException e) {
             if (e.getMessage().equals(SESSION_ALREADY_STARTED)) {
                 synchronized (this.recordings) {
@@ -100,7 +101,7 @@ public class SessionStorage implements ProjectComponent {
         return null;
     }
 
-    public String stopRecording(String profileName) throws PasswordSafeException {
+    public String stopRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         LOG.info(Messages.getMessage("plugin.session.stopping", profileName));
         String stopped = endpoint.stopRecording(profileName);

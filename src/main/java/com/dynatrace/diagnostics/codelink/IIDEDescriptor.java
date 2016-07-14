@@ -1,11 +1,13 @@
 package com.dynatrace.diagnostics.codelink;
 
+import java.util.logging.Level;
+
 public interface IIDEDescriptor {
     String getVersion();
     String getProjectName();
     String getProjectPath();
     Version getPluginVersion();
-    void showNotification(String title, String content);
+    void log(Level level, String title, String subtitle, String content, boolean notification);
     int getId();
     void jumpToClass(String className, String methodName, Callback<Boolean> cb);
 

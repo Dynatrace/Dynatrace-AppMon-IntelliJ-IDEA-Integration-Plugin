@@ -3,9 +3,7 @@ package com.dynatrace.integration.idea.plugin.codelink;
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.IIDEDescriptor;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.notification.*;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -18,10 +16,15 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 
 import javax.swing.*;
+import java.util.logging.Level;
 
 
 public class IDEDescriptor implements IIDEDescriptor {
     public static final Icon CROSSED_ICON = IconLoader.getIcon("/icons/crossed_logo.png");
+    public static final Icon DYNATRACE_ICON = IconLoader.getIcon("/icons/dynatrace_13.png");
+    public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, CROSSED_ICON);
+    public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, DYNATRACE_ICON);
+
 
     public static IDEDescriptor getInstance(Project project) {
         return ServiceManager.getService(project, IDEDescriptor.class);
@@ -56,10 +59,20 @@ public class IDEDescriptor implements IIDEDescriptor {
     }
 
     @Override
-    public void showNotification(String title, String content) {
+    public void log(Level level, String title, String subtitle, String content, boolean notification) {
         ApplicationManager.getApplication().invokeLater(() -> {
-            Notification notif = new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, title, content, NotificationType.ERROR);
-            notif.setIcon(CROSSED_ICON);
+            NotificationType type = NotificationType.INFORMATION;
+            if (level == Level.SEVERE) {
+                type = NotificationType.ERROR;
+            } else if (level == Level.WARNING) {
+                type = NotificationType.WARNING;
+            }
+            Notification notif;
+            if (notification) {
+                notif = IMPORTANT_NOTIFICATION_GROUP.createNotification(title, subtitle, content, type);
+            } else {
+                notif = INFO_NOTIFICATION_GROUP.createNotification(title, subtitle, content, type);
+            }
             Notifications.Bus.notify(notif);
         });
     }
@@ -89,7 +102,7 @@ public class IDEDescriptor implements IIDEDescriptor {
             }
 
             PsiMethod[] method = clazz.findMethodsByName(methodName, false);
-            if (method == null || method.length == 0) {
+            if (method.length == 0) {
                 if (cb != null) {
                     cb.call(false);
                 }

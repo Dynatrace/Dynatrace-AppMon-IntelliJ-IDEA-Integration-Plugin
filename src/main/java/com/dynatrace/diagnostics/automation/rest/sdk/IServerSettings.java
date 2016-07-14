@@ -15,6 +15,5 @@ public interface IServerSettings {
     @NotNull
     String getLogin();
 
-    @NotNull
     int getTimeout();
 }

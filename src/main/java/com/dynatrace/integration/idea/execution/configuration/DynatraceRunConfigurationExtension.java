@@ -5,6 +5,7 @@ import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.DynatraceProcessListener;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
 import com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator;
+import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
@@ -29,8 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
-    public static final Logger LOG = Logger.getLogger(DynatraceRunConfigurationExtension.class.getName());
-
     @Override
     public void attachToProcess(@NotNull final RunConfigurationBase configuration, @NotNull final ProcessHandler handler, @Nullable RunnerSettings runnerSettings) {
         super.attachToProcess(configuration, handler, runnerSettings);
@@ -81,9 +80,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
                     String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())),
                     null, null, null, null, null, null);
 
-            LOG.info("================" + id + "===================");
             builder.append(',').append("optionTestRunIdJava=").append(id);
-            LOG.info(Messages.getMessage("execution.configuration.tests.running", id));
+            IDEDescriptor.getInstance(configuration.getProject()).log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", id), false);
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
@@ -92,8 +90,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             //register test run in order to display results later in form of a tool window
             coordinator.registerTestRun(executionSettings.getSystemProfile(), id);
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID, Messages.getMessage("notifications.error.title"), Messages.getMessage("notifications.error.configuration") + e.getLocalizedMessage(), NotificationType.ERROR));
-            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            IDEDescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
             throw new ExecutionException(e);
         }
     }

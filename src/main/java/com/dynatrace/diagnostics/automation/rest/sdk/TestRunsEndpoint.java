@@ -47,8 +47,7 @@ public class TestRunsEndpoint {
 //            String content = EntityUtils.toString(response.getEntity());
 //            System.out.println(content);
 //            InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
-            TestRun testRun = Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
-            return testRun;
+            return Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
         }
     }
 }

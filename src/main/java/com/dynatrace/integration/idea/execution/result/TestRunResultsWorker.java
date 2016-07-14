@@ -5,11 +5,6 @@ import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -25,10 +20,10 @@ public class TestRunResultsWorker implements Runnable {
     private final String testRunId;
     private final long startTime;
     private final DynatraceSettingsProvider.State settings;
-    private final TestRunResultsCoordinator coordinator;
+    private final TestRunResultsView view;
 
-    public TestRunResultsWorker(TestRunResultsCoordinator coordinator, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
-        this.coordinator = coordinator;
+    public TestRunResultsWorker(TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
+        this.view = view;
         this.profileName = profileName;
         this.testRunId = testRunId;
         this.settings = settings;
@@ -43,16 +38,18 @@ public class TestRunResultsWorker implements Runnable {
                 TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
                 if (!testRun.isEmpty()) {
                     LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
-                    this.coordinator.displayTestRunResults(testRun);
+                    this.view.setTestRun(testRun);
                     return;
                 }
                 Thread.sleep(DELAY);
             } catch (IOException | JAXBException e) {
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()));
+                break;
             } catch (InterruptedException e) {
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.interrupted"));
+                break;
             }
         }
-        this.coordinator.discardTestRunResult(this.testRunId);
+        this.view.setEmptyText(Messages.getMessage("execution.result.ui.errorloading"));
     }
 }

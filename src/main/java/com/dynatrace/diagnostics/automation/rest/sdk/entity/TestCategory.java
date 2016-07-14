@@ -15,5 +15,5 @@ public enum TestCategory {
     @XmlEnumValue("performance")
     PERFORMANCE,
     @XmlEnumValue("webapi")
-    WEB_API;
+    WEB_API
 }

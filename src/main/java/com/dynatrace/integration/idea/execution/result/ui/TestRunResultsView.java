@@ -39,14 +39,12 @@ public class TestRunResultsView implements Disposable {
         COLUMNS = Collections.unmodifiableList(columns);
     }
 
-    private final Project project;
     private final ListTreeTableModelOnColumns model;
     private TreeTable tree;
     private SimpleTreeBuilder treeBuilder;
     private JPanel panel;
 
     public TestRunResultsView(Project project) {
-        this.project = project;
         this.model = new ListTreeTableModelOnColumns(null, COLUMNS.toArray(new ColumnInfo[COLUMNS.size()]));
         this.tree = new TreeTable(model);
 
@@ -57,7 +55,10 @@ public class TestRunResultsView implements Disposable {
         }
 
         this.panel = JBUI.Panels.simplePanel().addToCenter(ScrollPaneFactory.createScrollPane(this.tree));
-        this.tree.getEmptyText().setText(Messages.getMessage("execution.result.ui.loading"));
+        //set text when no tests were fetched yet
+        this.setEmptyText(Messages.getMessage("execution.result.ui.loading"));
+
+        //add rightclick dialog
         DefaultActionGroup dag = new DefaultActionGroup();
         dag.add(new OpenInEditorAction(() -> {
             TestResultNode node = this.getSelectedNode();
@@ -66,31 +67,33 @@ public class TestRunResultsView implements Disposable {
             }
             return null;
         }, project));
-        ActionManager manager = ActionManager.getInstance();
         PopupHandler.installUnknownPopupHandler(this.tree, dag, ActionManager.getInstance());
     }
 
     private TestResultNode getResultNodeForPath(TreePath path) {
         TreePath aPath = path;
-        while (aPath != null && !(aPath.getLastPathComponent() instanceof DefaultMutableTreeNode) && !(((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject() instanceof TestResultNode)) {
-            aPath = aPath.getParentPath();
-        }
-        if (aPath != null && aPath.getLastPathComponent() instanceof DefaultMutableTreeNode) {
-            if (((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject() instanceof TestResultNode) {
+        while (aPath != null) {
+            //climb up until TestResult which contains package location and class name is present
+            if ((aPath.getLastPathComponent() instanceof DefaultMutableTreeNode) && (((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject() instanceof TestResultNode)) {
                 return (TestResultNode) ((DefaultMutableTreeNode) aPath.getLastPathComponent()).getUserObject();
             }
+            aPath = aPath.getParentPath();
         }
         return null;
     }
 
     private TestResultNode getSelectedNode() {
         final TreePath[] selectionPaths = this.tree.getTree().getSelectionPaths();
-        if (selectionPaths.length != 1) {
+        if (selectionPaths == null || selectionPaths.length != 1) {
             return null;
         }
         return this.getResultNodeForPath(selectionPaths[0]);
     }
 
+    /**
+     * Populates table with appropriate metrics
+     * @param testRun - testRun to display inside the table
+     */
     public void setTestRun(TestRun testRun) {
         //setup presentation
         TestRunNode node = new TestRunNode(testRun);
@@ -99,9 +102,7 @@ public class TestRunResultsView implements Disposable {
         this.treeBuilder = new SimpleTreeBuilder(this.tree.getTree(), this.model, treeStructure, null);
         Disposer.register(this, this.treeBuilder);
 
-        this.treeBuilder.expand(treeStructure.getRootElement(), () -> {
-            this.expandFailing(treeStructure, treeStructure.getRootElement());
-        });
+        this.treeBuilder.expand(treeStructure.getRootElement(), () -> this.expandFailing(treeStructure, treeStructure.getRootElement()));
 
         this.treeBuilder.initRoot();
     }
@@ -120,6 +121,14 @@ public class TestRunResultsView implements Disposable {
 
     public JPanel getPanel() {
         return this.panel;
+    }
+
+    /**
+     * Sets the text when table has no nodes to display
+     * @param text - String to display when empty
+     */
+    public void setEmptyText(String text) {
+        this.tree.getEmptyText().setText(text);
     }
 
     @Override

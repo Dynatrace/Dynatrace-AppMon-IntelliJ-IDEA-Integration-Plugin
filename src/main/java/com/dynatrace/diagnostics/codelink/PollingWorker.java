@@ -1,6 +1,8 @@
 package com.dynatrace.diagnostics.codelink;
 
 import com.dynatrace.diagnostics.Utils;
+import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkConnectionException;
+import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 class PollingWorker implements Runnable {
     public static final int RESPONSE_FOUND = 50;
@@ -65,29 +68,29 @@ class PollingWorker implements Runnable {
             this.ide.jumpToClass(response.className, response.methodName, (b) -> {
                 try {
                     this.respond(b ? RESPONSE_FOUND : RESPONSE_NOT_FOUND, sid);
-                } catch (IOException e) {
+                } catch (CodeLinkResponseException | CodeLinkConnectionException e) {
                     CodeLinkClient.LOGGER.warning("Could not send response to CodeLink: " + e.getMessage());
                 }
             });
 
             this.hasErrored = false;
-        } catch (UnknownHostException e) {
-            this.clSettings.setEnabled(false);
-            this.ide.showNotification("CodeLink Error", "<b>Check your configuration</b>");
-            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: " + e.getMessage());
+        } catch (CodeLinkConnectionException e) {
+            if (e.getCause() instanceof UnknownHostException) {
+                this.clSettings.setEnabled(false);
+            }
+            this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
         } catch (Exception e) {
             if (!hasErrored) {
-                this.ide.showNotification("CodeLink Error", "Could not connect to client.<br><b>Check your configuration</b>");
+                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
             }
             this.hasErrored = true;
             //skip 5 connections
             this.suppress = 5;
-            CodeLinkClient.LOGGER.warning("Could not connect to CodeLink: " + e.getMessage() + ".");
         }
     }
 
     @Nullable
-    private CodeLinkLookupResponse connect() throws IOException, JAXBException {
+    private CodeLinkLookupResponse connect() throws CodeLinkConnectionException, CodeLinkResponseException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("ideid", String.valueOf(this.ide.getId())));
         nvps.add(new BasicNameValuePair("ideversion", this.ide.getVersion()));
@@ -100,14 +103,22 @@ class PollingWorker implements Runnable {
 
         StringBuilder builder = PollingWorker.buildURL(this.clSettings).append("connect");
         HttpPost post = new HttpPost(builder.toString());
-
-        post.setEntity(new UrlEncodedFormEntity(nvps));
-        try (CloseableHttpResponse response = this.client.execute(post)) {
-            return Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
+        try {
+            post.setEntity(new UrlEncodedFormEntity(nvps));
+            try (CloseableHttpResponse response = this.client.execute(post)) {
+                if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
+                    throw new CodeLinkResponseException("Invalid status code: " + response.getStatusLine().getStatusCode());
+                }
+                return Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
+            } catch (JAXBException e) {
+                throw new CodeLinkResponseException(e);
+            }
+        } catch (IOException e) {
+            throw new CodeLinkConnectionException(e);
         }
     }
 
-    private void respond(int responseCode, long sessionId) throws IOException {
+    private void respond(int responseCode, long sessionId) throws CodeLinkConnectionException, CodeLinkResponseException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
         nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode)));
@@ -115,10 +126,15 @@ class PollingWorker implements Runnable {
         //TODO:                                        make it thread safe
         StringBuilder builder = PollingWorker.buildURL(this.clSettings).append("response");
         HttpPost post = new HttpPost(builder.toString());
-
-        post.setEntity(new UrlEncodedFormEntity(nvps));
-        try (CloseableHttpResponse response = this.client.execute(post)) {
-            //??
+        try {
+            post.setEntity(new UrlEncodedFormEntity(nvps));
+            try (CloseableHttpResponse response = this.client.execute(post)) {
+                if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
+                    throw new CodeLinkResponseException("Invalid status code: " + response.getStatusLine().getStatusCode());
+                }
+            }
+        } catch (IOException e) {
+            throw new CodeLinkConnectionException(e.getMessage(), e);
         }
     }
 }

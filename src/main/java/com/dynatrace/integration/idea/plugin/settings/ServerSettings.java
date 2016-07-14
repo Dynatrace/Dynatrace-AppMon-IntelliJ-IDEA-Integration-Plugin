@@ -17,7 +17,6 @@ public class ServerSettings implements IServerSettings {
     private boolean ssl = true;
     @NotNull
     private String login = "admin";
-    @NotNull
     //in seconds
     private int timeout = 30;
 
@@ -68,13 +67,12 @@ public class ServerSettings implements IServerSettings {
         this.login = login;
     }
 
-    @NotNull
     @Override
     public synchronized int getTimeout() {
         return timeout;
     }
 
-    public synchronized void setTimeout(@NotNull int timeout) {
+    public synchronized void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 }

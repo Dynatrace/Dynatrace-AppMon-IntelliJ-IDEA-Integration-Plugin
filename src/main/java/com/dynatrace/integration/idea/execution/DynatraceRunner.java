@@ -12,6 +12,7 @@ public class DynatraceRunner extends DefaultJavaProgramRunner {
     public static final String ID = "dynatrace.runner";
 
     @Override
+    @NotNull
     public String getRunnerId() {
         return ID;
     }

@@ -1,11 +1,7 @@
 package com.dynatrace.diagnostics.automation.rest.sdk.entity;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
 import javax.xml.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -58,20 +54,20 @@ public class TestRun {
     }
 
     public boolean hasTestStatus(TestStatus status) {
-        return this.testResults.stream().anyMatch((e)->e.getStatus()==TestStatus.FAILED);
+        return this.testResults.stream().anyMatch((e) -> e.getStatus() == status);
     }
 
     public TestStatus getStatus() {
-        if(this.hasTestStatus(TestStatus.FAILED)) {
+        if (this.hasTestStatus(TestStatus.FAILED)) {
             return TestStatus.FAILED;
         }
-        if(this.hasTestStatus(TestStatus.DEGRADED)) {
+        if (this.hasTestStatus(TestStatus.DEGRADED)) {
             return TestStatus.DEGRADED;
         }
-        if(this.hasTestStatus(TestStatus.VOLATILE)) {
+        if (this.hasTestStatus(TestStatus.VOLATILE)) {
             return TestStatus.VOLATILE;
         }
-        if(this.hasTestStatus(TestStatus.IMPROVED)) {
+        if (this.hasTestStatus(TestStatus.IMPROVED)) {
             return TestStatus.IMPROVED;
         }
         return TestStatus.PASSED;

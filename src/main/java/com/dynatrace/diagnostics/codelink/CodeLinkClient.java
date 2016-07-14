@@ -7,12 +7,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class CodeLinkClient {
-    public static final Logger LOGGER = Logger.getLogger(CodeLinkClient.class.getName());
+    public static final Logger LOGGER = Logger.getLogger("#" + CodeLinkClient.class.getName());
     public static final int DEFAULT_INTERVAL = 2;
     public static final TimeUnit DEFAULT_UNIT = TimeUnit.SECONDS;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private PollingWorker worker;
+    private final PollingWorker worker;
     private ScheduledFuture future;
 
     public CodeLinkClient(ICodeLinkSettings clSettings, IIDEDescriptor ideSettings) {

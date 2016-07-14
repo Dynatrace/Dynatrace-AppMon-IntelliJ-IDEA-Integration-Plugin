@@ -1,6 +1,7 @@
 package com.dynatrace.diagnostics.automation.rest.sdk.entity;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

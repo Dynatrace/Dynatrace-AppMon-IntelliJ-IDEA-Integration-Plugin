@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class DynatraceExecutor extends Executor {
-    public static String ID = "dynatrace.executor";
+    public static final String ID = "dynatrace.executor";
 
     @Override
     public String getToolWindowId() {

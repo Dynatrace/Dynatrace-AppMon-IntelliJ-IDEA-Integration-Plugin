@@ -23,15 +23,7 @@ public class DynatraceProcessListener implements ProcessListener {
 
     @Override
     public void processTerminated(ProcessEvent event) {
-        // called every time process end
-        TestRunResultsCoordinator coordinator = TestRunResultsCoordinator.getInstance(this.project);
-
-        //if exitted with error
-//        if (event.getExitCode() != 0) {
-//            coordinator.discardTestRun(this.profileName);
-//            return;
-//        }
-        coordinator.requestTestRunResults(this.profileName);
+        TestRunResultsCoordinator.getInstance(this.project).requestTestRunResults(this.profileName);
     }
 
     @Override

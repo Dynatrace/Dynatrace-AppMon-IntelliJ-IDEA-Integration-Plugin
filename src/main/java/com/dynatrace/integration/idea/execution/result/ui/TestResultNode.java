@@ -23,9 +23,7 @@ public class TestResultNode extends SimpleNode implements StatusProvider {
     @Override
     public TestMeasureNode[] getChildren() {
         List<TestMeasureNode> measures = new ArrayList<>();
-        this.result.getTestMeasures().forEach((measure) -> {
-            measures.add(new TestMeasureNode(measure));
-        });
+        this.result.getTestMeasures().forEach((measure) -> measures.add(new TestMeasureNode(measure)));
         return measures.toArray(new TestMeasureNode[measures.size()]);
     }
 
