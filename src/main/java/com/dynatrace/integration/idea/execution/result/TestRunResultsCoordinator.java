@@ -78,4 +78,10 @@ public class TestRunResultsCoordinator {
             new Thread(new TestRunResultsWorker(view, profileName, testRunId, this.settingsProvider.getState()), "TestRunResultsFetchingThread").start();
         });
     }
+
+    public void discardTestRun(String profileName) {
+        synchronized (this.testRuns) {
+            this.testRuns.remove(profileName);
+        }
+    }
 }

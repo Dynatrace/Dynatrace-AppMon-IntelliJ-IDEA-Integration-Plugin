@@ -25,6 +25,7 @@ public class DynatraceProcessListener implements ProcessListener {
     public void processTerminated(ProcessEvent event) {
         //-1 is "returned" when test fails and 0 normally
         if (event.getExitCode() != -1 && event.getExitCode() != 0) {
+            TestRunResultsCoordinator.getInstance(this.project).discardTestRun(this.profileName);
             return;
         }
         TestRunResultsCoordinator.getInstance(this.project).requestTestRunResults(this.profileName);
