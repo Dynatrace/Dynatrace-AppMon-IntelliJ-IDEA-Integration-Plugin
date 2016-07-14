@@ -77,14 +77,14 @@ class PollingWorker implements Runnable {
         } catch (CodeLinkConnectionException e) {
             if (e.getCause() instanceof UnknownHostException) {
                 this.clSettings.setEnabled(false);
-                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
-            } else if (!hasErrored) {
-                //this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
-                //this.hasErrored = true;
+                this.ide.log(Level.WARNING, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
+            } else {
+                this.ide.log(Level.WARNING, "CodeLink Error", "Check your configuration", "Failed connecting to Dynatrace AppMon Client to poll for CodeLink jump requests.", false);
+                this.suppress = 5;
             }
         } catch (Exception e) {
             if (!hasErrored) {
-                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
+                this.ide.log(Level.WARNING, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
             }
             this.hasErrored = true;
             //skip 5 connections

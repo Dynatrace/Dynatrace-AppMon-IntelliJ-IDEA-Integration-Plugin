@@ -54,3 +54,14 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 
 ##### My Run configuration is not visible under "Run With AppMon Configurations"
 > Only specific run configurations are supported. The currenlty supported run configurations are: Java application, JUnit test
+
+## Error messages
+
+##### Failed connecting to Dynatrace AppMon Client to poll for CodeLink jump requests. 
+> Dynatrace AppMon Client is either not running or the IntelliJ Idea the client configuration is wrong ("File \ Settings \ Build, Execution, Deployment \ Dynatrace \ Codelink ). To prevent the message from appearing please disable CodeLink temporarily and reenable as needed ("File \ Settings \ Build, Execution, Deployment \ CodeLink \ Enable)
+
+##### No test results available. Please verify agent and profile settings.
+> The plugin polls the AppMon Server repeatadly waiting for the purePaths to be analized. Test results are processed on the server after a delay and don't arrive all at once. After 30 seconds the available results are presented. After 30 seconds the only way to view the test results is to open the AppMon Client.
+
+#### Session recording is not allowed if continuous transaction storage is enabled
+> In order to record session you have to disable Continuous Transaction on Dynatrace Server, you can do that in Dynatrace Client under "Settings \ Dynatrace Server... \ Storage \ Storage Settings section \ Enable continuous transaction storage".
