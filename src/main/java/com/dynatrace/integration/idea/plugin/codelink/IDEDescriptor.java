@@ -2,6 +2,7 @@ package com.dynatrace.integration.idea.plugin.codelink;
 
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.IIDEDescriptor;
+import com.dynatrace.integration.idea.Icons;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.*;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -9,21 +10,17 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.search.GlobalSearchScope;
 
-import javax.swing.*;
 import java.util.logging.Level;
 
 
 public class IDEDescriptor implements IIDEDescriptor {
-    public static final Icon CROSSED_ICON = IconLoader.getIcon("/icons/crossed_logo.png");
-    public static final Icon DYNATRACE_ICON = IconLoader.getIcon("/icons/dynatrace_13.png");
-    public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, CROSSED_ICON);
-    public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, DYNATRACE_ICON);
+    public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, Icons.CROSSED_ICON);
+    public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, Icons.DYNATRACE_ICON);
 
 
     public static IDEDescriptor getInstance(Project project) {

@@ -1,5 +1,6 @@
 package com.dynatrace.integration.idea.execution.result;
 
+import com.dynatrace.integration.idea.Icons;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
@@ -38,6 +39,7 @@ public class TestRunResultsCoordinator {
         toolWindow.setSplitMode(true, null);
         toolWindow.setStripeTitle(Messages.getMessage("execution.result.ui.toolwindow.title"));
         toolWindow.setTitle(Messages.getMessage("execution.result.ui.toolwindow.title"));
+        toolWindow.setIcon(Icons.DYNATRACE_ICON);
         new ContentManagerWatcher(toolWindow, toolWindow.getContentManager());
     }
 

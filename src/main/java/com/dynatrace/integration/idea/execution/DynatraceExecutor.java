@@ -1,8 +1,8 @@
 package com.dynatrace.integration.idea.execution;
 
+import com.dynatrace.integration.idea.Icons;
 import com.dynatrace.integration.idea.Messages;
 import com.intellij.execution.Executor;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindowId;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class DynatraceExecutor extends Executor {
     @NotNull
     @Override
     public Icon getIcon() {
-        return IconLoader.getIcon("/icons/dynatrace_run.png");
+        return Icons.DYNATRACE_RUN_ICON;
     }
 
     @Override

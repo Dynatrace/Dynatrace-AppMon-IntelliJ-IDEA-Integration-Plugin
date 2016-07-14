@@ -2,6 +2,7 @@ package com.dynatrace.integration.idea.execution.result.ui;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
+import com.dynatrace.integration.idea.Icons;
 import com.intellij.ui.treeStructure.SimpleNode;
 
 import java.util.ArrayList;
