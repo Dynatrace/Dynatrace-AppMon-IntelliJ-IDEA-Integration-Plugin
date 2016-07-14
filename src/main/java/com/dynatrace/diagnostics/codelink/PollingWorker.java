@@ -79,8 +79,8 @@ class PollingWorker implements Runnable {
                 this.clSettings.setEnabled(false);
                 this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);
             } else if (!hasErrored) {
-                this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
-                this.hasErrored = true;
+                //this.ide.log(Level.SEVERE, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
+                //this.hasErrored = true;
             }
         } catch (Exception e) {
             if (!hasErrored) {

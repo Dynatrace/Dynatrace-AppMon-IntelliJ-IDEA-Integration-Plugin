@@ -80,21 +80,21 @@ The test results are also visible in the Dynatrace Client for further drill-down
 
 ![edit run configurations](img/dynatrace_client_test_automation.png) 
 
-### Source Code Look-up
+### <a name="source_code"></a>Source Code Look-up
 
 The Dynatrace Client enables you to analyze PurePaths down to the individual methods that have been instrumented in the context of the captured transaction. When you identify a problematic method either in the PurePath view or in the Methods view of the Dynatrace Client, you can use the Source Code Lookup to jump to the source code line if you have the IntelliJ Idea project open.
 
 ![edit run configurations](img/source_lookup.png) 
 
-## Problems? Questions? Suggestions?
+## <a name="feedback"></a>Problems? Questions? Suggestions?
 
 * [IntelliJ Integration Plugin FAQ / Troubleshooting Guide](FAQ.md)
 * Post any problems, questions or suggestions to the Dynatrace Community's [Application Monitoring & UEM Forum](https://answers.dynatrace.com/spaces/146/index.html).
 
 
-## Additional Resources
+## <a name="resources"></a>Additional Resources
 
-### Dynatrace AppMon Documentation
+### <a name="doc"></a>Dynatrace AppMon Documentation
 
 - [Continuous Delivery & Test Automation](https://community.dynatrace.com/community/pages/viewpage.action?pageId=215161284)
 - [Capture Performance Data from Tests](https://community.dynatrace.com/community/display/DOCDT63/Capture+Performance+Data+from+Tests)
@@ -104,8 +104,7 @@ The Dynatrace Client enables you to analyze PurePaths down to the individual met
 
 - [Online Perf Clinic - Metrics-Driven Continuous Delivery with Dynatrace Test Automation](https://youtu.be/TXPSDpy7unw)
 
-<a name="blogs"/>
-### Blogs
+### <a name="blogs"></a>Blogs
 
 - [Continuous Performance Validation in Continuous Integration Environments](http://apmblog.dynatrace.com/2013/11/27/continuous-performance-validation-in-continuous-integration-environments/)
 - [Software Quality Metrics for your Continuous Delivery Pipeline – Part I](http://apmblog.dynatrace.com/2014/03/13/software-quality-metrics-for-your-continuous-delivery-pipeline-part-i/)
