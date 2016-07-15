@@ -93,26 +93,26 @@ public class IDEDescriptor implements IIDEDescriptor {
             };
             PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(className, GlobalSearchScope.allScope(this.project));
             if (clazz == null || !clazz.canNavigateToSource()) {
-                cb.call(false);
+                callback.call(false);
                 return;
             }
 
             if (methodName == null) {
                 clazz.navigate(true);
-                cb.call(true);
+                callback.call(true);
                 return;
             }
 
             PsiMethod[] method = clazz.findMethodsByName(methodName, false);
             if (method.length == 0) {
-                cb.call(false);
+                callback.call(false);
                 return;
             }
 
             if (method[0].canNavigateToSource()) {
                 method[0].navigate(true);
             }
-            cb.call(method[0].canNavigateToSource());
+            callback.call(method[0].canNavigateToSource());
         });
     }
 }
