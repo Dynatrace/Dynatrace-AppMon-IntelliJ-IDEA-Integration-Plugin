@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class TestRunsEndpoint {
     private final CloseableHttpClient client;
     private final IServerSettings settings;
 
-    public TestRunsEndpoint(IServerSettings settings) {
+    public TestRunsEndpoint(@NotNull IServerSettings settings) {
         this.settings = settings;
         HttpClientBuilder builder = Utils.clientBuilder();
         CredentialsProvider provider = new BasicCredentialsProvider();
@@ -33,7 +34,17 @@ public class TestRunsEndpoint {
         this.client = builder.build();
     }
 
-    public TestRun getTestRun(String profileName, String testId) throws IOException, JAXBException {
+    /**
+     * Fetches TestRun with a given testId and profileName from the dynatrace server.
+     *
+     * @param profileName - a profileName testId belongs to
+     * @param testId      - a deterministic ID provided you during test registration
+     * @return TestRun object containing basic information and metrics about test runs.
+     * @throws IOException
+     * @throws JAXBException
+     */
+    @NotNull
+    public TestRun getTestRun(@NotNull String profileName, @NotNull String testId) throws IOException, JAXBException {
         // use RESTlib URL builder
         ManagementURLBuilder builder = new ManagementURLBuilder();
         builder.setServerAddress((settings.isSSL() ? "https://" : "http://") + settings.getHost() + ":" + settings.getPort() + "/");

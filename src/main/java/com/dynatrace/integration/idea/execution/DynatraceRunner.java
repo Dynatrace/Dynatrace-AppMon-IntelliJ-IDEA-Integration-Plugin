@@ -23,6 +23,7 @@ public class DynatraceRunner extends DefaultJavaProgramRunner {
                 profile instanceof RunConfigurationBase;
     }
 
+    @NotNull
     public RunnerSettings createConfigurationData(ConfigurationInfoProvider provider) {
         return new DynatraceRunnerSettings();
     }

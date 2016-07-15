@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.annotations.NotNull;
 
 public class OpenInEditorAction extends AnAction {
     public interface TestResultProvider {
@@ -17,7 +18,7 @@ public class OpenInEditorAction extends AnAction {
     private final TestResultProvider provider;
     private final Project project;
 
-    public OpenInEditorAction(TestResultProvider provider, Project project) {
+    public OpenInEditorAction(@NotNull TestResultProvider provider, @NotNull Project project) {
         this.provider = provider;
         this.project = project;
         Presentation presentation = this.getTemplatePresentation();
@@ -32,6 +33,9 @@ public class OpenInEditorAction extends AnAction {
             return;
         }
         String[] testName = result.getTestName().split("\\.");
+        if (testName.length < 2) {
+            return;
+        }
         String className = result.getPackageName() + '.' + testName[0];
         IDEDescriptor descriptor = IDEDescriptor.getInstance(this.project);
         descriptor.jumpToClass(className, testName[1], null);

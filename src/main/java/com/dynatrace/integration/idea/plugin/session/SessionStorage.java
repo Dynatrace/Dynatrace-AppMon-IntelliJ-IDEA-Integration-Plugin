@@ -4,9 +4,9 @@ import com.dynatrace.diagnostics.automation.rest.sdk.CommandExecutionException;
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class SessionStorage implements ProjectComponent {
     private final HashSet<String> recordings = new HashSet<>();
     private final DynatraceSettingsProvider provider;
 
-    public SessionStorage(DynatraceSettingsProvider provider) {
+    public SessionStorage(@NotNull DynatraceSettingsProvider provider) {
         this.provider = provider;
     }
 
@@ -73,6 +73,7 @@ public class SessionStorage implements ProjectComponent {
         return "dynatrace.sessionstorage";
     }
 
+    @Nullable
     public String startRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         String sessionName = profileName + ' ' + DateFormat.getDateInstance().format(new Date());
@@ -101,6 +102,7 @@ public class SessionStorage implements ProjectComponent {
         return null;
     }
 
+    @Nullable
     public String stopRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         LOG.info(Messages.getMessage("plugin.session.stopping", profileName));

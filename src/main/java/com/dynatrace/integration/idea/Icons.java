@@ -2,6 +2,7 @@ package com.dynatrace.integration.idea;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
 import com.intellij.openapi.util.IconLoader;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -15,6 +16,7 @@ public class Icons {
     public static final Icon IMPROVING = IconLoader.getIcon("/icons/improving_ico.png");
     public static final Icon DEGRADING = IconLoader.getIcon("/icons/degrading_ico.png");
 
+    @NotNull
     public static Icon fromStatus(TestStatus status) {
         if (status == null) {
             return Icons.FAILING;

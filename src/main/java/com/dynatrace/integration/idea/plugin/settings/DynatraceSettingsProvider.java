@@ -22,6 +22,7 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
     }
 
     @Override
+    @NotNull
     public DynatraceSettingsProvider.State getState() {
         if (state == null) {
             this.state = new DynatraceSettingsProvider.State();

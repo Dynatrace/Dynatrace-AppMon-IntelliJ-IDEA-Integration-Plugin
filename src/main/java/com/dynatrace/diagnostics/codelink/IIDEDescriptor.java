@@ -1,15 +1,28 @@
 package com.dynatrace.diagnostics.codelink;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.logging.Level;
 
 public interface IIDEDescriptor {
+    @NotNull
     String getVersion();
+
+    @NotNull
     String getProjectName();
+
+    @NotNull
     String getProjectPath();
+
+    @NotNull
     Version getPluginVersion();
-    void log(Level level, String title, String subtitle, String content, boolean notification);
+
+    void log(@NotNull Level level, @NotNull String title, @Nullable String subtitle, @NotNull String content, boolean notification);
+
     int getId();
-    void jumpToClass(String className, String methodName, Callback<Boolean> cb);
+
+    void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb);
 
     class Version {
         public final String major;

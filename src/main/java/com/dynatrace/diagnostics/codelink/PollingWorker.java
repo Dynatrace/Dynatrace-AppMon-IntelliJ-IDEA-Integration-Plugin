@@ -9,7 +9,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -37,7 +37,7 @@ class PollingWorker implements Runnable {
     private boolean hasErrored = false;
     private int suppress = 0;
 
-    public PollingWorker(IIDEDescriptor ide, ICodeLinkSettings clSettings) {
+    public PollingWorker(@NotNull IIDEDescriptor ide, @NotNull ICodeLinkSettings clSettings) {
         this.ide = ide;
         this.clSettings = clSettings;
         this.client = Utils.clientBuilder().build();
@@ -92,7 +92,7 @@ class PollingWorker implements Runnable {
         }
     }
 
-    @Nullable
+    @NotNull
     private CodeLinkLookupResponse connect() throws CodeLinkConnectionException, CodeLinkResponseException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("ideid", String.valueOf(this.ide.getId())));

@@ -7,13 +7,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class AgentSettings {
-    @NotNull
     private String agentLibrary = "";
-    @NotNull
     private String collectorHost = "localhost";
     private int collectorPort = 9998;
 
-    @NotNull
     public synchronized String getCollectorHost() {
         return collectorHost;
     }
@@ -22,7 +19,6 @@ public class AgentSettings {
         this.collectorHost = collectorHost;
     }
 
-    @NotNull
     public synchronized String getAgentLibrary() {
         return agentLibrary;
     }
