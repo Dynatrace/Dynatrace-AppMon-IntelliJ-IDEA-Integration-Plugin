@@ -2,6 +2,8 @@ package com.dynatrace.integration.idea.execution.result;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
@@ -42,7 +44,7 @@ public class TestRunResultsWorker implements Runnable {
                     return;
                 }
                 Thread.sleep(DELAY);
-            } catch (IOException | JAXBException e) {
+            } catch (TestRunsResponseException | TestRunsConnectionException e) {
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()));
                 break;
             } catch (InterruptedException e) {

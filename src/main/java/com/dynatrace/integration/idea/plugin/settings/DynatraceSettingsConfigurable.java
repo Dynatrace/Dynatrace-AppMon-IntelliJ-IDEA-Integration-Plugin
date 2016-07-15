@@ -1,6 +1,7 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
 import com.dynatrace.diagnostics.codelink.PollingWorker;
@@ -76,7 +77,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
                     endpoint.getTestRun("", "");
-                } catch (JAXBException e) {
+                } catch (TestRunsResponseException e) {
                     //that's okay, we won't get a valid XML anyway
                 } catch (Exception e) {
                     message = TEST_CONNECTION_MESSAGE + " FAIL";

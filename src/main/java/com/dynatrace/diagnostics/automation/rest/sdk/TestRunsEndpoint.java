@@ -2,6 +2,8 @@ package com.dynatrace.diagnostics.automation.rest.sdk;
 
 import com.dynatrace.diagnostics.Utils;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -44,7 +46,7 @@ public class TestRunsEndpoint {
      * @throws JAXBException
      */
     @NotNull
-    public TestRun getTestRun(@NotNull String profileName, @NotNull String testId) throws IOException, JAXBException {
+    public TestRun getTestRun(@NotNull String profileName, @NotNull String testId) throws TestRunsConnectionException, TestRunsResponseException {
         // use RESTlib URL builder
         ManagementURLBuilder builder = new ManagementURLBuilder();
         builder.setServerAddress((settings.isSSL() ? "https://" : "http://") + settings.getHost() + ":" + settings.getPort() + "/");
@@ -55,10 +57,19 @@ public class TestRunsEndpoint {
         // do the request
         HttpGet request = new HttpGet(stringURL);
         try (CloseableHttpResponse response = this.client.execute(request)) {
+            if (response.getStatusLine().getStatusCode() == 401) {
+                throw new TestRunsConnectionException("Unauthorized");
+            }
 //            String content = EntityUtils.toString(response.getEntity());
 //            System.out.println(content);
 //            InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
-            return Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
+            try {
+                return Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
+            } catch (JAXBException | IOException e) {
+                throw new TestRunsResponseException(e);
+            }
+        } catch (IOException e) {
+            throw new TestRunsConnectionException(e);
         }
     }
 }
