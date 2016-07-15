@@ -3,7 +3,6 @@ package com.dynatrace.integration.idea.execution.configuration;
 
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
@@ -27,10 +26,10 @@ public class DynatraceConfigurableStorage {
     }
 
     public void readExternal(Element element) throws InvalidDataException {
-        if(element.getAttributeValue("systemProfile") != null) {
+        if (element.getAttributeValue("systemProfile") != null) {
             this.systemProfile = element.getAttributeValue("systemProfile");
         }
-        if(element.getAttributeValue("agentName") != null) {
+        if (element.getAttributeValue("agentName") != null) {
             this.agentName = element.getAttributeValue("agentName");
         }
         this.additionalParameters = element.getAttributeValue("additionalParameters");

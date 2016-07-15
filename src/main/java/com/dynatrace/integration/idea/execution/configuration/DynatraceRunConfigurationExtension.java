@@ -101,7 +101,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         DynatraceConfigurableStorage.getOrCreateStorage(runConfiguration).writeExternal(element);
     }
 
-    @Nullable
+    @NotNull
     @Override
     protected String getEditorTitle() {
         return "Dynatrace";
@@ -114,10 +114,10 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
                 || runConfigurationBase.getType().getClass().getCanonicalName().equals("com.theoryinpractice.testng.configuration.TestNGConfigurationType");
     }
 
-    @Nullable
+    @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    protected SettingsEditor createEditor(@NotNull RunConfigurationBase base) {
+    protected SettingsEditor<RunConfigurationBase> createEditor(@NotNull RunConfigurationBase base) {
         return new DynatraceExtensionConfigurable();
     }
 }
