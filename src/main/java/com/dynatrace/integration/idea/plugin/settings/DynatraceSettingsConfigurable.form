@@ -136,7 +136,7 @@
             </constraints>
             <properties>
               <contentAreaFilled value="false"/>
-              <text value="Test Connection"/>
+              <text resource-bundle="messages" key="plugin.settings.ui.connection.button.message"/>
             </properties>
           </component>
         </children>
@@ -293,7 +293,7 @@
             </constraints>
             <properties>
               <contentAreaFilled value="false"/>
-              <text value="Test Connection"/>
+              <text resource-bundle="messages" key="plugin.settings.ui.connection.button.message"/>
             </properties>
           </component>
           <component id="f19c1" class="javax.swing.JCheckBox" binding="codeLinkLegacy">
