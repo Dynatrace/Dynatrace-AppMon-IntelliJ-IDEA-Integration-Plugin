@@ -53,7 +53,7 @@ public class DynatraceExecutor extends Executor {
     @NotNull
     @Override
     public String getStartActionText() {
-        return "Run with AppMon";
+        return Messages.getMessage("execution.executor.actiontext");
     }
 
     @Override
