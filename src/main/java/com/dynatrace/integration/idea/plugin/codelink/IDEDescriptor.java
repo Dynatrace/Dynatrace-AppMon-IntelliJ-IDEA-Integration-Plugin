@@ -91,10 +91,22 @@ public class IDEDescriptor implements IIDEDescriptor {
         ApplicationManager.getApplication().invokeLater(() -> {
             Callback<Boolean> callback = cb != null ? cb : (b) -> {
             };
-            PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(className, GlobalSearchScope.allScope(this.project));
+
+            //outer$inner$inner$inner or outer
+            String[] innerClasses = className.split("\\$");
+            
+            PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(innerClasses[0], GlobalSearchScope.allScope(this.project));
             if (clazz == null || !clazz.canNavigateToSource()) {
                 callback.call(false);
                 return;
+            }
+
+            for (int i = 1; i < innerClasses.length; i++) {
+                PsiClass inner = clazz.findInnerClassByName(innerClasses[i], false);
+                if (inner == null || !inner.canNavigateToSource()) {
+                    break;
+                }
+                clazz = inner;
             }
 
             if (methodName == null) {
