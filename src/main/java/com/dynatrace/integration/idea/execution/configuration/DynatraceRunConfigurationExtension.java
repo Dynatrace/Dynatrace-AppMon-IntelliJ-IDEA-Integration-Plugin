@@ -104,7 +104,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
     @NotNull
     @Override
     protected String getEditorTitle() {
-        return "Dynatrace";
+        return "Dynatrace AppMon";
     }
 
     @Override

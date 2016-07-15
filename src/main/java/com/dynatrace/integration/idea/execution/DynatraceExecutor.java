@@ -53,12 +53,12 @@ public class DynatraceExecutor extends Executor {
     @NotNull
     @Override
     public String getStartActionText() {
-        return "Run with Dynatrace";
+        return "Run with AppMon";
     }
 
     @Override
     public String getContextActionId() {
-        return "RunWithDynatrace";
+        return "RunWithAppMon";
     }
 
     @Override
