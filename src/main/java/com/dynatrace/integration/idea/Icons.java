@@ -6,9 +6,9 @@ import com.intellij.openapi.util.IconLoader;
 import javax.swing.*;
 
 public class Icons {
-    public static final Icon DYNATRACE_ICON = IconLoader.getIcon("/icons/dynatrace_13.png");
-    public static final Icon DYNATRACE_RUN_ICON = IconLoader.getIcon("/icons/dynatrace_run.png");
-    public static final Icon CROSSED_ICON = IconLoader.getIcon("/icons/crossed_logo.png");
+    public static final Icon DYNATRACE13 = IconLoader.getIcon("/icons/dynatrace_13.png");
+    public static final Icon DYNATRACE_RUN = IconLoader.getIcon("/icons/dynatrace_run.png");
+    public static final Icon CROSSED = IconLoader.getIcon("/icons/crossed_logo.png");
     public static final Icon SUCCESS = IconLoader.getIcon("/icons/success_ico.png");
     public static final Icon FAILING = IconLoader.getIcon("/icons/failing_ico.png");
     public static final Icon VOLATILE = IconLoader.getIcon("/icons/volatile_ico.png");

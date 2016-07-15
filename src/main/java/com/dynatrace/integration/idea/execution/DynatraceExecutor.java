@@ -25,7 +25,7 @@ public class DynatraceExecutor extends Executor {
     @NotNull
     @Override
     public Icon getIcon() {
-        return Icons.DYNATRACE_RUN_ICON;
+        return Icons.DYNATRACE_RUN;
     }
 
     @Override

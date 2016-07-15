@@ -39,7 +39,7 @@ public class TestRunResultsCoordinator {
         toolWindow.setSplitMode(true, null);
         toolWindow.setStripeTitle(Messages.getMessage("execution.result.ui.toolwindow.title"));
         toolWindow.setTitle(Messages.getMessage("execution.result.ui.toolwindow.title"));
-        toolWindow.setIcon(Icons.DYNATRACE_ICON);
+        toolWindow.setIcon(Icons.DYNATRACE13);
         new ContentManagerWatcher(toolWindow, toolWindow.getContentManager());
     }
 
