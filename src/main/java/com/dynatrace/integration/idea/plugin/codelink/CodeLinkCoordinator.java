@@ -7,17 +7,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class CodeLinkCoordinator implements ProjectComponent {
     private final DynatraceSettingsProvider settings;
-    private final IDEDescriptor descriptor;
+    private final IDEDescriptor ideDescriptor;
+    private final ProjectDescriptor projectDescriptor;
     private CodeLinkClient client;
 
-    public CodeLinkCoordinator(DynatraceSettingsProvider settings, IDEDescriptor descriptor) {
+    public CodeLinkCoordinator(DynatraceSettingsProvider settings, IDEDescriptor ideDescriptor, ProjectDescriptor projectDescriptor) {
         this.settings = settings;
-        this.descriptor = descriptor;
+        this.ideDescriptor = ideDescriptor;
+        this.projectDescriptor = projectDescriptor;
     }
 
     @Override
     public void projectOpened() {
-        this.client = new CodeLinkClient(this.settings.getState().getCodeLink(), this.descriptor);
+        this.client = new CodeLinkClient(this.settings.getState().getCodeLink(), this.ideDescriptor, this.projectDescriptor);
         this.client.startPolling(CodeLinkClient.DEFAULT_INTERVAL, CodeLinkClient.DEFAULT_UNIT);
     }
 

@@ -1,6 +1,12 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
+import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
+import com.dynatrace.diagnostics.codelink.Callback;
+import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
+import com.dynatrace.diagnostics.codelink.PollingWorker;
+import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import com.dynatrace.integration.idea.Messages;
+import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
@@ -13,10 +19,14 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
+import javax.xml.bind.JAXBException;
 import java.awt.*;
 
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
+    private static final String TEST_CONNECTION_MESSAGE = Messages.getMessage("plugin.settings.ui.connection.button.message");
+
     private final DynatraceSettingsProvider provider;
+
     private DynatraceSettingsPanel panel;
 
     public DynatraceSettingsConfigurable(DynatraceSettingsProvider provider) {
@@ -43,45 +53,98 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
     @Nullable
     @Override
     public JComponent createComponent() {
-        //We call createComponent when resetting reset() settings for convenience, that's why there's a null check.
-        if (this.panel == null) {
-            this.panel = new DynatraceSettingsPanel();
+        if (this.panel != null) {
+            return this.panel.wholePanel;
         }
+        this.panel = new DynatraceSettingsPanel();
 
-        DynatraceSettingsProvider.State state = this.provider.getState();
+        //setup server connection test
+        this.panel.testServerConnection.addActionListener((event) -> {
+            this.panel.testServerConnection.setText(Messages.getMessage("plugin.settings.ui.connection.button.inprogress"));
 
-        //server
-        this.panel.serverHost.setText(state.getServer().getHost());
-        this.panel.serverSSL.setSelected(state.getServer().isSSL());
-        this.panel.restPort.setText(String.valueOf(state.getServer().getPort()));
-        this.panel.serverSSL.setSelected(state.getServer().isSSL());
-        this.panel.login.setText(state.getServer().getLogin());
-        this.panel.password.setText(state.getServer().getPassword());
+            final ServerSettings settings = new ServerSettings();
+            try {
+                this.applyUIToServerSettings(settings);
+            } catch (ConfigurationException e) {
+                this.panel.testServerConnection.setText(TEST_CONNECTION_MESSAGE + " FAIL");
+                return;
+            }
 
-        this.panel.timeout.setText(String.valueOf(state.getServer().getTimeout()));
-
-        //agent
-        this.panel.agentLibrary.setText(state.getAgent().getAgentLibrary());
+            this.panel.testServerConnection.setEnabled(false);
+            new Thread(() -> {
+                TestRunsEndpoint endpoint = new TestRunsEndpoint(settings);
+                String message = TEST_CONNECTION_MESSAGE + " OK";
+                try {
+                    endpoint.getTestRun("", "");
+                } catch (JAXBException e) {
+                    //that's okay, we won't get a valid XML anyway
+                } catch (Exception e) {
+                    message = TEST_CONNECTION_MESSAGE + " FAIL";
+                } finally {
+                    final String mess = message;
+                    SwingUtilities.invokeLater(() -> {
+                        this.panel.testServerConnection.setEnabled(true);
+                        this.panel.testServerConnection.setText(mess);
+                    });
+                }
+            }, "Checking thread").start();
+        });
 
         FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
         descriptor.setTitle(Messages.getMessage("plugin.settings.ui.choose.agent"));
         descriptor.withFileFilter((filter) -> filter == null || filter.isDirectory() || (filter.getExtension() != null && (filter.getExtension().equals("dll") || filter.getExtension().equals("so") || filter.getExtension().equals("dylib"))));
 
         this.panel.agentLibrary.addBrowseFolderListener(new TextBrowseFolderListener(descriptor));
-        //this.panel.agentLibrary.
-        this.panel.collectorHost.setText(state.getAgent().getCollectorHost());
-        this.panel.collectorPort.setText(String.valueOf(state.getAgent().getCollectorPort()));
 
-        //CodeLink
-        this.panel.enableCodeLink.setSelected(state.getCodeLink().isEnabled());
-        this.panel.clientHost.setText(state.getCodeLink().getHost());
-        this.panel.clientPort.setText(String.valueOf(state.getCodeLink().getPort()));
-        this.panel.codeLinkSSL.setSelected(state.getCodeLink().isSSL());
-        //this.panel.javaBrowsingPerspective.setSelected(state.getCodeLink().javaBrowsingPerspective);
+        this.panel.testCodeLinkConnection.addActionListener((event) -> {
+            this.panel.testCodeLinkConnection.setText(Messages.getMessage("plugin.settings.ui.connection.button.inprogress"));
 
-        this.panel.helpText.setContentType("text/html");
-        this.panel.helpText.setEditable(false);
-        this.panel.helpText.setOpaque(false);
+            final CodeLinkSettings settings = new CodeLinkSettings();
+            try {
+                this.applyUIToCodeLinkSettings(settings);
+            } catch (ConfigurationException e) {
+                this.panel.testCodeLinkConnection.setText(TEST_CONNECTION_MESSAGE + " FAIL");
+                return;
+            }
+
+            this.panel.testCodeLinkConnection.setEnabled(false);
+            new Thread(() -> {
+                PollingWorker worker = new PollingWorker(IDEDescriptor.getInstance(), settings, new IProjectDescriptor() {
+                    @NotNull
+                    @Override
+                    public String getProjectName() {
+                        return "";
+                    }
+
+                    @NotNull
+                    @Override
+                    public String getProjectPath() {
+                        return "";
+                    }
+
+                    @Override
+                    public void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb) {
+
+                    }
+                });
+                String message = TEST_CONNECTION_MESSAGE + " OK";
+                try {
+                    worker.connect();
+                } catch (CodeLinkResponseException e) {
+                    //that's okay
+                } catch (Exception e) {
+                    message = TEST_CONNECTION_MESSAGE + " FAIL";
+                } finally {
+                    final String mess = message;
+                    SwingUtilities.invokeLater(() -> {
+                        this.panel.testCodeLinkConnection.setEnabled(true);
+                        this.panel.testCodeLinkConnection.setText(mess);
+                    });
+                }
+            }, "CodeLink checking thread").start();
+        });
+
+        //add helptext url listener
         this.panel.helpText.addHyperlinkListener(hle -> {
             if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
                 Desktop desktop = Desktop.getDesktop();
@@ -91,7 +154,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 }
             }
         });
-        this.panel.helpText.setText(Messages.getMessage("plugin.settings.ui.help",this.panel.helpText.getFont().getFamily()));
         return this.panel.wholePanel;
     }
 
@@ -114,6 +176,9 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     || !state.getServer().getLogin().equals(this.panel.login.getText())
                     || state.getServer().getPort() != Integer.parseInt(this.panel.restPort.getText())
                     || state.getServer().getTimeout() != Integer.parseInt(this.panel.timeout.getText())) {
+                if(this.panel.testServerConnection.isEnabled()) {
+                    this.panel.testServerConnection.setText(TEST_CONNECTION_MESSAGE);
+                }
                 return true;
             }
 
@@ -121,13 +186,60 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     //|| state.getCodeLink().javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
                     || state.getCodeLink().isSSL() != this.panel.codeLinkSSL.isSelected()
                     || !state.getCodeLink().getHost().equals(this.panel.clientHost.getText())
-                    || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())) {
+                    || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())
+                    || state.getCodeLink().isLegacy() != this.panel.codeLinkLegacy.isSelected()) {
+                if(this.panel.testCodeLinkConnection.isEnabled()) {
+                    this.panel.testServerConnection.setText(TEST_CONNECTION_MESSAGE);
+                }
                 return true;
             }
         } catch (NumberFormatException e) {
             return true; //will be validated in apply();
         }
         return false;
+    }
+
+    private void applyUIToServerSettings(ServerSettings settings) throws ConfigurationException {
+        //server panel
+        settings.setSSL(this.panel.serverSSL.isSelected());
+        settings.setHost(this.panel.serverHost.getText());
+        settings.setLogin(this.panel.login.getText());
+
+        settings.setPassword(String.valueOf(this.panel.password.getPassword()));
+
+        try {
+            int restPort = Integer.parseInt(this.panel.restPort.getText());
+            if (restPort < 0) {
+                throw new NumberFormatException();
+            }
+            settings.setPort(restPort);
+        } catch (NumberFormatException e) {
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Server"));
+        }
+        try {
+            int timeout = Integer.parseInt(this.panel.timeout.getText());
+            settings.setTimeout(timeout);
+        } catch (NumberFormatException e) {
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout", "Server"));
+        }
+    }
+
+    private void applyUIToCodeLinkSettings(CodeLinkSettings settings) throws ConfigurationException {
+        //codelink panel
+        settings.setEnabled(this.panel.enableCodeLink.isSelected());
+        //settings.javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
+        settings.setSSL(this.panel.codeLinkSSL.isSelected());
+        settings.setHost(this.panel.clientHost.getText());
+        settings.setLegacy(this.panel.codeLinkLegacy.isSelected());
+        try {
+            int codeLinkPort = Integer.parseInt(this.panel.clientPort.getText());
+            if (codeLinkPort < 0) {
+                throw new NumberFormatException();
+            }
+            settings.setPort(codeLinkPort);
+        } catch (NumberFormatException e) {
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "CodeLink"));
+        }
     }
 
     @Override
@@ -148,49 +260,47 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         state.getAgent().setCollectorHost(this.panel.collectorHost.getText());
 
-        //server panel
-        state.getServer().setSSL(this.panel.serverSSL.isSelected());
-        state.getServer().setHost(this.panel.serverHost.getText());
-        state.getServer().setLogin(this.panel.login.getText());
-
-        state.getServer().setPassword(String.valueOf(this.panel.password.getPassword()));
-
-        try {
-            int restPort = Integer.parseInt(this.panel.restPort.getText());
-            if (restPort < 0) {
-                throw new NumberFormatException();
-            }
-            state.getServer().setPort(restPort);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Server"));
-        }
-        try {
-            int timeout = Integer.parseInt(this.panel.timeout.getText());
-            state.getServer().setTimeout(timeout);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout", "Server"));
-        }
-
-        //codelink panel
-        state.getCodeLink().setEnabled(this.panel.enableCodeLink.isSelected());
-        //state.getCodeLink().javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
-        state.getCodeLink().setSSL(this.panel.codeLinkSSL.isSelected());
-        state.getCodeLink().setHost(this.panel.clientHost.getText());
-        try {
-            int codeLinkPort = Integer.parseInt(this.panel.clientPort.getText());
-            if (codeLinkPort < 0) {
-                throw new NumberFormatException();
-            }
-            state.getCodeLink().setPort(codeLinkPort);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "CodeLink"));
-        }
+        this.applyUIToServerSettings(state.getServer());
+        this.applyUIToCodeLinkSettings(state.getCodeLink());
     }
 
     @Override
     //reset does a rollback to the previous configuration
     public void reset() {
-        ApplicationManager.getApplication().invokeLater(this::createComponent);
+        DynatraceSettingsProvider.State state = this.provider.getState();
+
+        //server
+        this.panel.serverHost.setText(state.getServer().getHost());
+        this.panel.serverSSL.setSelected(state.getServer().isSSL());
+        this.panel.restPort.setText(String.valueOf(state.getServer().getPort()));
+        this.panel.serverSSL.setSelected(state.getServer().isSSL());
+        this.panel.login.setText(state.getServer().getLogin());
+        this.panel.password.setText(state.getServer().getPassword());
+        this.panel.timeout.setText(String.valueOf(state.getServer().getTimeout()));
+
+
+        //agent
+        this.panel.agentLibrary.setText(state.getAgent().getAgentLibrary());
+
+
+        //this.panel.agentLibrary.
+        this.panel.collectorHost.setText(state.getAgent().getCollectorHost());
+        this.panel.collectorPort.setText(String.valueOf(state.getAgent().getCollectorPort()));
+
+        //CodeLink
+        this.panel.enableCodeLink.setSelected(state.getCodeLink().isEnabled());
+        this.panel.clientHost.setText(state.getCodeLink().getHost());
+        this.panel.clientPort.setText(String.valueOf(state.getCodeLink().getPort()));
+        this.panel.codeLinkSSL.setSelected(state.getCodeLink().isSSL());
+        this.panel.codeLinkLegacy.setSelected(state.getCodeLink().isLegacy());
+
+        //this.panel.javaBrowsingPerspective.setSelected(state.getCodeLink().javaBrowsingPerspective);
+
+        this.panel.helpText.setContentType("text/html");
+        this.panel.helpText.setEditable(false);
+        this.panel.helpText.setOpaque(false);
+        this.panel.helpText.setText(Messages.getMessage("plugin.settings.ui.help", this.panel.helpText.getFont().getFamily()));
+        //ApplicationManager.getApplication().invokeLater(this::createComponent);
     }
 
     @Override
@@ -216,6 +326,9 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         private JPanel wholePanel;
         private JEditorPane helpText;
+        private JButton testServerConnection;
+        private JButton testCodeLinkConnection;
+        private JCheckBox codeLinkLegacy;
 
         private void createUIComponents() {
             this.agentLibrary = new TextFieldWithBrowseButton();

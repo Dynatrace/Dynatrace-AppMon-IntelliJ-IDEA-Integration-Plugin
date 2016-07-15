@@ -60,7 +60,7 @@ public class TestRunResultsCoordinator {
         }
 
         if (testRunId == null) {
-            IDEDescriptor.getInstance(this.project).log(Level.WARNING, "TestRun", "", Messages.getMessage("execution.result.display.notregistered", profileName), false);
+            IDEDescriptor.getInstance().log(Level.WARNING, "TestRun", "", Messages.getMessage("execution.result.display.notregistered", profileName), false);
             return;
         }
 

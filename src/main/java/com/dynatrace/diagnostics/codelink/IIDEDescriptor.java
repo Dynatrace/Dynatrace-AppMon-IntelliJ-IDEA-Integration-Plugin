@@ -10,19 +10,12 @@ public interface IIDEDescriptor {
     String getVersion();
 
     @NotNull
-    String getProjectName();
-
-    @NotNull
-    String getProjectPath();
-
-    @NotNull
     Version getPluginVersion();
 
     void log(@NotNull Level level, @NotNull String title, @Nullable String subtitle, @NotNull String content, boolean notification);
 
     int getId();
 
-    void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb);
 
     class Version {
         public final String major;

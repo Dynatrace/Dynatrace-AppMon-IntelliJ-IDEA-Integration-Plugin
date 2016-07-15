@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-class PollingWorker implements Runnable {
+public class PollingWorker implements Runnable {
     public static final int RESPONSE_FOUND = 50;
     public static final int RESPONSE_NOT_FOUND = 51;
 
@@ -31,15 +31,17 @@ class PollingWorker implements Runnable {
 
     private final CloseableHttpClient client;
     private final ICodeLinkSettings clSettings;
+    private final IProjectDescriptor project;
     private final IIDEDescriptor ide;
 
     private long sessionId = -1;
     private boolean hasErrored = false;
     private int suppress = 0;
 
-    public PollingWorker(@NotNull IIDEDescriptor ide, @NotNull ICodeLinkSettings clSettings) {
+    public PollingWorker(@NotNull IIDEDescriptor ide, @NotNull ICodeLinkSettings clSettings, @NotNull IProjectDescriptor project) {
         this.ide = ide;
         this.clSettings = clSettings;
+        this.project = project;
         this.client = Utils.clientBuilder().build();
     }
 
@@ -65,7 +67,7 @@ class PollingWorker implements Runnable {
                 return;
             }
             long sid = this.sessionId;
-            this.ide.jumpToClass(response.className, response.methodName, (b) -> {
+            this.project.jumpToClass(response.className, response.methodName, (b) -> {
                 try {
                     this.respond(b ? RESPONSE_FOUND : RESPONSE_NOT_FOUND, sid);
                 } catch (CodeLinkResponseException | CodeLinkConnectionException e) {
@@ -93,7 +95,7 @@ class PollingWorker implements Runnable {
     }
 
     @NotNull
-    private CodeLinkLookupResponse connect() throws CodeLinkConnectionException, CodeLinkResponseException {
+    public CodeLinkLookupResponse connect() throws CodeLinkConnectionException, CodeLinkResponseException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("ideid", String.valueOf(this.ide.getId())));
         nvps.add(new BasicNameValuePair("ideversion", this.ide.getVersion()));
@@ -101,8 +103,8 @@ class PollingWorker implements Runnable {
         nvps.add(new BasicNameValuePair("minor", this.ide.getPluginVersion().minor));
         nvps.add(new BasicNameValuePair("revision", this.ide.getPluginVersion().revision));
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(this.sessionId)));
-        nvps.add(new BasicNameValuePair("activeproject", this.ide.getProjectName()));
-        nvps.add(new BasicNameValuePair("projectpath", this.ide.getProjectPath()));
+        nvps.add(new BasicNameValuePair("activeproject", this.project.getProjectName()));
+        nvps.add(new BasicNameValuePair("projectpath", this.project.getProjectPath()));
 
         StringBuilder builder = PollingWorker.buildURL(this.clSettings).append("connect");
         HttpPost post = new HttpPost(builder.toString());

@@ -77,7 +77,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
                     null, null, null, null, null, null);
 
             builder.append(',').append("optionTestRunIdJava=").append(id);
-            IDEDescriptor.getInstance(configuration.getProject()).log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", id), false);
+            IDEDescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", id), false);
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());

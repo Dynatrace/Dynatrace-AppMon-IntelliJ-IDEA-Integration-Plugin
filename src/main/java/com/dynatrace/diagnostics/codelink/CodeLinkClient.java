@@ -15,8 +15,8 @@ public class CodeLinkClient {
     private final PollingWorker worker;
     private ScheduledFuture future;
 
-    public CodeLinkClient(ICodeLinkSettings clSettings, IIDEDescriptor ideSettings) {
-        this.worker = new PollingWorker(ideSettings, clSettings);
+    public CodeLinkClient(ICodeLinkSettings clSettings, IIDEDescriptor ideSettings, IProjectDescriptor project) {
+        this.worker = new PollingWorker(ideSettings, clSettings, project);
     }
 
     public synchronized boolean startPolling(int interval, TimeUnit unit) {

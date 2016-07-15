@@ -14,6 +14,7 @@ public class CodeLinkSettings implements ICodeLinkSettings {
     private int port = 8031;
     private boolean ssl = true;
     private boolean javaBrowsingPerspective = false;
+    private boolean isLegacy = true;
 
     public synchronized void setJavaBrowsingPerspective(boolean javaBrowsingPerspective) {
         this.javaBrowsingPerspective = javaBrowsingPerspective;
@@ -59,5 +60,13 @@ public class CodeLinkSettings implements ICodeLinkSettings {
     @Override
     public synchronized boolean isJavaBrowsingPerspective() {
         return this.javaBrowsingPerspective;
+    }
+
+    public synchronized boolean isLegacy() {
+        return this.isLegacy;
+    }
+
+    public synchronized void setLegacy(boolean legacy) {
+        this.isLegacy = legacy;
     }
 }

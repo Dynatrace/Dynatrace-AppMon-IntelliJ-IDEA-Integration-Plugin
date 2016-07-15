@@ -31,9 +31,10 @@
                                  id="dynatrace" displayName="Dynatrace"/>
         <applicationService
                 serviceImplementation="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider"/>
-        <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor"/>
+        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor"/>
         <projectService
                 serviceImplementation="com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator"/>
+        <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor"/>
     </extensions>
 
     <project-components>
