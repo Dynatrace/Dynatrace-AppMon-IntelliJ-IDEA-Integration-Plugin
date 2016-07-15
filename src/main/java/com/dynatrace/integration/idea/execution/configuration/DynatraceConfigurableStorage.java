@@ -9,9 +9,7 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("deprecation")
-//Extensions modules uses JDOMExternalizable, we can't do much about that AFAIK
-public class DynatraceConfigurableStorage implements JDOMExternalizable {
+public class DynatraceConfigurableStorage {
     public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
 
     private String systemProfile = "IntelliJ";
@@ -28,7 +26,6 @@ public class DynatraceConfigurableStorage implements JDOMExternalizable {
         return storage;
     }
 
-    @Override
     public void readExternal(Element element) throws InvalidDataException {
         if(element.getAttributeValue("systemProfile") != null) {
             this.systemProfile = element.getAttributeValue("systemProfile");
@@ -43,7 +40,6 @@ public class DynatraceConfigurableStorage implements JDOMExternalizable {
         }
     }
 
-    @Override
     public void writeExternal(Element element) throws WriteExternalException {
         if (this.systemProfile != null) {
             element.setAttribute("systemProfile", this.systemProfile);
