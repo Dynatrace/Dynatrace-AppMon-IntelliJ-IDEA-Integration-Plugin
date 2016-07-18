@@ -25,6 +25,18 @@ import java.awt.*;
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
     private static final String TEST_CONNECTION_MESSAGE = Messages.getMessage("plugin.settings.ui.connection.button.message");
 
+    private static int checkPort(String strPort, String service) throws ConfigurationException {
+        try {
+            int port = Integer.valueOf(strPort);
+            if (port < 0 || port > 0xFFFF) {
+                throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", service));
+            }
+            return port;
+        } catch(NumberFormatException e) {
+            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", service));
+        }
+    }
+
     private final DynatraceSettingsProvider provider;
 
     private DynatraceSettingsPanel panel;
@@ -197,18 +209,8 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         settings.setSSL(this.panel.serverSSL.isSelected());
         settings.setHost(this.panel.serverHost.getText());
         settings.setLogin(this.panel.login.getText());
-
         settings.setPassword(String.valueOf(this.panel.password.getPassword()));
-
-        try {
-            int restPort = Integer.parseInt(this.panel.restPort.getText());
-            if (restPort < 0) {
-                throw new NumberFormatException();
-            }
-            settings.setPort(restPort);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Server"));
-        }
+        settings.setPort(checkPort(this.panel.restPort.getText(), "Server"));
         try {
             int timeout = Integer.parseInt(this.panel.timeout.getText());
             settings.setTimeout(timeout);
@@ -224,15 +226,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         settings.setSSL(this.panel.codeLinkSSL.isSelected());
         settings.setHost(this.panel.clientHost.getText());
         settings.setLegacy(this.panel.codeLinkLegacy.isSelected());
-        try {
-            int codeLinkPort = Integer.parseInt(this.panel.clientPort.getText());
-            if (codeLinkPort < 0) {
-                throw new NumberFormatException();
-            }
-            settings.setPort(codeLinkPort);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "CodeLink"));
-        }
+        settings.setPort(checkPort(this.panel.clientPort.getText(), "CodeLink"));
     }
 
     @Override
@@ -241,16 +235,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
         //agent panel
         state.getAgent().setAgentLibrary(this.panel.agentLibrary.getText());
-        try {
-            int collectorPort = Integer.parseInt(this.panel.collectorPort.getText());
-            if (collectorPort < 0) {
-                throw new NumberFormatException();
-            }
-            state.getAgent().setCollectorPort(collectorPort);
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", "Agent"));
-        }
-
+        state.getAgent().setCollectorPort(checkPort(this.panel.collectorPort.getText(), "Agent"));
         state.getAgent().setCollectorHost(this.panel.collectorHost.getText());
 
         this.applyUIToServerSettings(state.getServer());
