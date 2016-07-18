@@ -57,8 +57,8 @@ public class TestRunsEndpoint {
         // do the request
         HttpGet request = new HttpGet(stringURL);
         try (CloseableHttpResponse response = this.client.execute(request)) {
-            if (response.getStatusLine().getStatusCode() == 401) {
-                throw new TestRunsConnectionException("Unauthorized");
+            if (response.getStatusLine().getStatusCode() >= 300 || response.getStatusLine().getStatusCode() < 200) {
+                throw new TestRunsConnectionException(response.getStatusLine().getReasonPhrase());
             }
 //            String content = EntityUtils.toString(response.getEntity());
 //            System.out.println(content);

@@ -1,6 +1,7 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
+import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
 import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
@@ -8,7 +9,6 @@ import com.dynatrace.diagnostics.codelink.PollingWorker;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import javax.xml.bind.JAXBException;
 import java.awt.*;
 
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
@@ -76,9 +75,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 TestRunsEndpoint endpoint = new TestRunsEndpoint(settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
-                    endpoint.getTestRun("", "");
+                    endpoint.getTestRun("DOESNTMATTER", "DOESNTMATTER");
                 } catch (TestRunsResponseException e) {
                     //that's okay, we won't get a valid XML anyway
+                } catch (TestRunsConnectionException e) {
+                    if (!e.getMessage().equals("Not Found")) {
+                        message = TEST_CONNECTION_MESSAGE + " FAIL";
+                    }
                 } catch (Exception e) {
                     message = TEST_CONNECTION_MESSAGE + " FAIL";
                 } finally {
@@ -177,9 +180,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     || !state.getServer().getLogin().equals(this.panel.login.getText())
                     || state.getServer().getPort() != Integer.parseInt(this.panel.restPort.getText())
                     || state.getServer().getTimeout() != Integer.parseInt(this.panel.timeout.getText())) {
-                if(this.panel.testServerConnection.isEnabled()) {
-                    this.panel.testServerConnection.setText(TEST_CONNECTION_MESSAGE);
-                }
                 return true;
             }
 
@@ -189,9 +189,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     || !state.getCodeLink().getHost().equals(this.panel.clientHost.getText())
                     || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())
                     || state.getCodeLink().isLegacy() != this.panel.codeLinkLegacy.isSelected()) {
-                if(this.panel.testCodeLinkConnection.isEnabled()) {
-                    this.panel.testServerConnection.setText(TEST_CONNECTION_MESSAGE);
-                }
                 return true;
             }
         } catch (NumberFormatException e) {
