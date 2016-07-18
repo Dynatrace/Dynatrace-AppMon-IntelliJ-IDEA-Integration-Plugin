@@ -55,6 +55,7 @@ class PollingWorker implements Runnable {
 
             this.hasErrored = false;
         } catch (CodeLinkConnectionException e) {
+            //if the host can't be found disable codelink to not disturb user with future notifications
             if (e.getCause() instanceof UnknownHostException) {
                 this.clSettings.setEnabled(false);
                 this.ide.log(Level.WARNING, "CodeLink Error", "Could not connect to client.", "CodeLink has been disabled<br><b>Check your configuration</b>", true);

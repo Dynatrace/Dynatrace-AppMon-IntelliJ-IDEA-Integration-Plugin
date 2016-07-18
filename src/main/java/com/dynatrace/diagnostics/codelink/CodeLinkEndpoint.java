@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A wrapper for making requests to Dynatrace client polling for CodeLink (lookup) requests.
+ * {@link #connect(long) connect} method should be called frequently to minimize delays.
+ */
 public class CodeLinkEndpoint {
     public enum ResponseStatus {
         FOUND(50), NOT_FOUND(51);
@@ -50,6 +54,15 @@ public class CodeLinkEndpoint {
         this.client = Utils.clientBuilder().build();
     }
 
+    /**
+     * Makes a request to the Dynatrace client polling for CodeLink requests
+     * If CodeLinkLookupResponse.timedOut is true, there is no pending request,
+     * otherwise className and methodName should be populated.
+     * After receiving a CodeLink request one should call {@link #respond(ResponseStatus, long) respond} method.
+     *
+     * @param sessionId - id returned previously by @{@link #connect(long) connect} method or -1 if it's the first request
+     * @returns {@link CodeLinkLookupResponse} containing CodeLink request data.
+     */
     @NotNull
     public CodeLinkLookupResponse connect(long sessionId) throws CodeLinkConnectionException, CodeLinkResponseException {
         List<NameValuePair> nvps = new ArrayList<>();
@@ -80,6 +93,12 @@ public class CodeLinkEndpoint {
         }
     }
 
+    /**
+     * Makes a request to Dynatrace client informing it about a state of CodeLink request.
+     * @param responseCode - states whether caller has successfully navigated to the source-code
+     * @param sessionId - an id returned by {@link #connect(long) connect} method when getting lookup request.
+     * @throws CodeLinkConnectionException if connection is not established or status code is invalid.
+     */
     public void respond(ResponseStatus responseCode, long sessionId) throws CodeLinkConnectionException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
