@@ -1,13 +1,12 @@
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.IServerSettings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ServerSettings implements IServerSettings {
+public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sdk.ServerSettings {
     public static final String DEFAULT_PASSWORD = "admin";
 
     @NotNull

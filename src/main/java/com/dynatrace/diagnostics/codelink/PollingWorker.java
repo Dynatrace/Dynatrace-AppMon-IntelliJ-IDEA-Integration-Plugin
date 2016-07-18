@@ -1,7 +1,6 @@
 package com.dynatrace.diagnostics.codelink;
 
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkConnectionException;
-import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.UnknownHostException;

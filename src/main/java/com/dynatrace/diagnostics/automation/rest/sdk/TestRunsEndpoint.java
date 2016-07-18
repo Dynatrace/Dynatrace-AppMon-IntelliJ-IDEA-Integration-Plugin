@@ -20,18 +20,16 @@ import java.net.URL;
 
 /**
  * TestRunsEndpoint is responsible for fetching TestRun summary
- * It does not respect changes in IServerSettings regarding credentials, so it is required to
- * create a new instance every time Credentials change.
  */
 public class TestRunsEndpoint {
     private final CloseableHttpClient client;
-    private final IServerSettings settings;
+    private final ServerSettings settings;
 
-    public TestRunsEndpoint(@NotNull IServerSettings settings) {
+    public TestRunsEndpoint(@NotNull ServerSettings settings) {
         this.settings = settings;
         HttpClientBuilder builder = Utils.clientBuilder();
         CredentialsProvider provider = new BasicCredentialsProvider();
-        provider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(settings.getLogin(), settings.getPassword()));
+        provider.setCredentials(AuthScope.ANY, this.settings);
         builder.setDefaultCredentialsProvider(provider);
         this.client = builder.build();
     }
@@ -42,8 +40,6 @@ public class TestRunsEndpoint {
      * @param profileName - a profileName testId belongs to
      * @param testId      - a deterministic ID provided you during test registration
      * @return TestRun object containing basic information and metrics about test runs.
-     * @throws IOException
-     * @throws JAXBException
      */
     @NotNull
     public TestRun getTestRun(@NotNull String profileName, @NotNull String testId) throws TestRunsConnectionException, TestRunsResponseException {
@@ -60,9 +56,6 @@ public class TestRunsEndpoint {
             if (response.getStatusLine().getStatusCode() >= 300 || response.getStatusLine().getStatusCode() < 200) {
                 throw new TestRunsConnectionException(response.getStatusLine().getReasonPhrase());
             }
-//            String content = EntityUtils.toString(response.getEntity());
-//            System.out.println(content);
-//            InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
             try {
                 return Utils.inputStreamToObject(response.getEntity().getContent(), TestRun.class);
             } catch (JAXBException | IOException e) {
