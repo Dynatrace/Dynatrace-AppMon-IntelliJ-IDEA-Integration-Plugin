@@ -8,9 +8,6 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 
 class PollingWorker implements Runnable {
-    static final int RESPONSE_FOUND = 50;
-    static final int RESPONSE_NOT_FOUND = 51;
-
     private final IProjectDescriptor project;
     private final CodeLinkEndpoint endpoint;
     private final ICodeLinkSettings clSettings;
@@ -50,8 +47,8 @@ class PollingWorker implements Runnable {
             //try to jump to class
             this.project.jumpToClass(response.className, response.methodName, (b) -> {
                 try {
-                    this.endpoint.respond(b ? RESPONSE_FOUND : RESPONSE_NOT_FOUND, sid);
-                } catch (CodeLinkResponseException | CodeLinkConnectionException e) {
+                    this.endpoint.respond(b ? CodeLinkEndpoint.ResponseStatus.FOUND : CodeLinkEndpoint.ResponseStatus.NOT_FOUND, sid);
+                } catch (CodeLinkConnectionException e) {
                     CodeLinkClient.LOGGER.warning("Could not send response to CodeLink: " + e.getMessage());
                 }
             });

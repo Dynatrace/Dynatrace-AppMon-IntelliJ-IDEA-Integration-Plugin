@@ -141,8 +141,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
                     endpoint.connect(-1);
-                } catch (CodeLinkResponseException e) {
-                    //that's okay
                 } catch (Exception e) {
                     message = TEST_CONNECTION_MESSAGE + " FAIL";
                 } finally {

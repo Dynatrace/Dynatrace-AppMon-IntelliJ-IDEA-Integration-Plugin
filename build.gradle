@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
     }
 }
@@ -31,9 +32,11 @@ intellij {
 
 dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
-    testCompile "junit:junit:4.13"
+    testCompile "junit:junit:4.12"
+    testCompile "com.github.tomakehurst:wiremock:2.1.7"
 }
 
 repositories {
+    mavenCentral()
     maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
 }

@@ -17,6 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CodeLinkEndpoint {
+    public enum ResponseStatus {
+        FOUND(50), NOT_FOUND(51);
+
+        private final int code;
+
+        ResponseStatus(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return this.code;
+        }
+    }
 
     private static StringBuilder buildURL(ICodeLinkSettings settings) {
         return new StringBuilder(settings.isSSL() ? "https://" : "http://")
@@ -52,10 +65,11 @@ public class CodeLinkEndpoint {
         StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("connect");
         HttpPost post = new HttpPost(builder.toString());
         try {
+            post.setHeader("Content-Type", "text/xml");
             post.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = this.client.execute(post)) {
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
-                    throw new CodeLinkResponseException("Invalid status code: " + response.getStatusLine().getStatusCode());
+                    throw new CodeLinkConnectionException(response.getStatusLine().getReasonPhrase());
                 }
                 return Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
             } catch (JAXBException e) {
@@ -66,18 +80,19 @@ public class CodeLinkEndpoint {
         }
     }
 
-    public void respond(int responseCode, long sessionId) throws CodeLinkConnectionException, CodeLinkResponseException {
+    public void respond(ResponseStatus responseCode, long sessionId) throws CodeLinkConnectionException {
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
-        nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode)));
+        nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode.code)));
 
         StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("response");
         HttpPost post = new HttpPost(builder.toString());
         try {
+            post.setHeader("Content-Type", "text/xml");
             post.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = this.client.execute(post)) {
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
-                    throw new CodeLinkResponseException("Invalid status code: " + response.getStatusLine().getStatusCode());
+                    throw new CodeLinkConnectionException(response.getStatusLine().getReasonPhrase());
                 }
             }
         } catch (IOException e) {
