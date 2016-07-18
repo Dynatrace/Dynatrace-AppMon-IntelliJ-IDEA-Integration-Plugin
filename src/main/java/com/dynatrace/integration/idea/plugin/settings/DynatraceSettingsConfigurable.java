@@ -4,8 +4,8 @@ import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
 import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
 import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.diagnostics.codelink.Callback;
+import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
-import com.dynatrace.diagnostics.codelink.PollingWorker;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
@@ -31,11 +31,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
     public DynatraceSettingsConfigurable(DynatraceSettingsProvider provider) {
         this.provider = provider;
-    }
-
-    @NotNull
-    public String getId() {
-        return "dynatrace";
     }
 
     @Nls
@@ -113,7 +108,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
             this.panel.testCodeLinkConnection.setEnabled(false);
             new Thread(() -> {
-                PollingWorker worker = new PollingWorker(IDEDescriptor.getInstance(), settings, new IProjectDescriptor() {
+                CodeLinkEndpoint endpoint = new CodeLinkEndpoint(new IProjectDescriptor() {
                     @NotNull
                     @Override
                     public String getProjectName() {
@@ -130,10 +125,10 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     public void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb) {
 
                     }
-                });
+                }, IDEDescriptor.getInstance(), settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
-                    worker.connect();
+                    endpoint.connect(-1);
                 } catch (CodeLinkResponseException e) {
                     //that's okay
                 } catch (Exception e) {
