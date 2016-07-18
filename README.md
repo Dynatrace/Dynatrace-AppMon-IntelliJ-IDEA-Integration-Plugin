@@ -1,4 +1,4 @@
-![](img/logo_IntelliJIDEA.svg)
+![](img/logo_IntelliJIDEA.png)
 
 # Dynatrace IntelliJ Idea Integration Plugin
  
