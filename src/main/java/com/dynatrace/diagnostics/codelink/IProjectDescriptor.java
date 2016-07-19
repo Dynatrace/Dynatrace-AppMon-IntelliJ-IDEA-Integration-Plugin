@@ -11,5 +11,5 @@ public interface IProjectDescriptor {
     @NotNull
     String getProjectPath();
 
-    void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb);
+    void jumpToClass(@NotNull CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb);
 }

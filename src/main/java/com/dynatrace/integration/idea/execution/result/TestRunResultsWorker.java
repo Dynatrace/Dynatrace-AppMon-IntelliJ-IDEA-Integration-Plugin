@@ -6,6 +6,7 @@ import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnecti
 import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
+import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 
 import java.util.logging.Level;
@@ -43,12 +44,17 @@ public class TestRunResultsWorker implements Runnable {
                     lastFetched = testRun.getTestResults().size();
                     this.view.setTestRun(testRun);
                     if (testRun.getTestResults().size() >= this.testCount) {
+                        IDEDescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.success", this.testRunId), false);
                         LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
                         return;
+                    } else {
+                        IDEDescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.partial", testRun.getTestResults().size(), this.testCount, this.testRunId), false);
+                        LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.partial", testRun.getTestResults().size(), this.testCount, this.testRunId));
                     }
                 }
                 Thread.sleep(DELAY);
             } catch (TestRunsResponseException | TestRunsConnectionException e) {
+                IDEDescriptor.getInstance().log(Level.SEVERE, "TestRuns", "", Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()), false);
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()));
                 break;
             } catch (InterruptedException e) {

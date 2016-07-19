@@ -1,6 +1,7 @@
 package com.dynatrace.integration.idea.execution.result.actions;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestResult;
+import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor;
@@ -39,6 +40,10 @@ public class OpenInEditorAction extends AnAction {
         }
         String className = result.getPackageName() + '.' + testName[0];
         ProjectDescriptor descriptor = ProjectDescriptor.getInstance(this.project);
-        descriptor.jumpToClass(className, testName[1], null);
+        CodeLinkLookupResponse response = new CodeLinkLookupResponse();
+        response.className = className;
+        //if the test was parametrized the mathod name will contain parameters passed, we need to strip it
+        response.methodName = testName[1].split("\\(")[0];
+        descriptor.jumpToClass(response, null);
     }
 }

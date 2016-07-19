@@ -9,10 +9,14 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +88,9 @@ public class CodeLinkEndpoint {
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
                     throw new CodeLinkConnectionException(response.getStatusLine().getReasonPhrase());
                 }
+//                String content = EntityUtils.toString(response.getEntity());
+//                System.out.println(content);
+//                InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
                 return Utils.inputStreamToObject(response.getEntity().getContent(), CodeLinkLookupResponse.class);
             } catch (JAXBException e) {
                 throw new CodeLinkResponseException(e);
@@ -95,8 +102,9 @@ public class CodeLinkEndpoint {
 
     /**
      * Makes a request to Dynatrace client informing it about a state of CodeLink request.
+     *
      * @param responseCode - states whether caller has successfully navigated to the source-code
-     * @param sessionId - an id returned by {@link #connect(long) connect} method when getting lookup request.
+     * @param sessionId    - an id returned by {@link #connect(long) connect} method when getting lookup request.
      * @throws CodeLinkConnectionException if connection is not established or status code is invalid.
      */
     public void respond(ResponseStatus responseCode, long sessionId) throws CodeLinkConnectionException {

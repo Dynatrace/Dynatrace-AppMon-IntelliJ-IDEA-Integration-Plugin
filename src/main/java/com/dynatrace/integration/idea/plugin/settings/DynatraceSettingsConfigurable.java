@@ -5,6 +5,7 @@ import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnecti
 import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
+import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import com.dynatrace.integration.idea.Messages;
@@ -133,8 +134,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     }
 
                     @Override
-                    public void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb) {
-
+                    public void jumpToClass(CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
                     }
                 }, IDEDescriptor.getInstance(), settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";

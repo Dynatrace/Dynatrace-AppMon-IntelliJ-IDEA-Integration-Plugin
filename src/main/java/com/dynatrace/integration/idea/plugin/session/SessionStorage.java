@@ -3,6 +3,7 @@ package com.dynatrace.integration.idea.plugin.session;
 import com.dynatrace.diagnostics.automation.rest.sdk.CommandExecutionException;
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
+import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
@@ -77,14 +78,13 @@ public class SessionStorage implements ProjectComponent {
     public String startRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         String sessionName = profileName + ' ' + DateFormat.getDateInstance().format(new Date());
-
-        LOG.info(Messages.getMessage("plugin.session.starting", profileName));
         try {
             String id = endpoint.startRecording(profileName, sessionName, sessionName, "all", false, true);
 
             if (id != null) {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
+                    IDEDescriptor.getInstance().log(Level.INFO, "Session", "", Messages.getMessage("plugin.session.started", id, profileName), false);
                     LOG.info(Messages.getMessage("plugin.session.started", id, profileName));
                 }
             }
@@ -94,6 +94,7 @@ public class SessionStorage implements ProjectComponent {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
                 }
+                IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", e.getMessage(), false);
                 LOG.log(Level.INFO, e.getMessage());
             } else {
                 throw e;
@@ -105,6 +106,7 @@ public class SessionStorage implements ProjectComponent {
     @Nullable
     public String stopRecording(String profileName) {
         RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
+        IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.stopping", profileName), false);
         LOG.info(Messages.getMessage("plugin.session.stopping", profileName));
         String stopped = endpoint.stopRecording(profileName);
         if (stopped != null) {

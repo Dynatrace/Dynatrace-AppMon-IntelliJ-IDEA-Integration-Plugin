@@ -44,16 +44,21 @@ class PollingWorker implements Runnable {
             }
             final long sid = this.sessionId;
             //try to jump to class
-            this.project.jumpToClass(response.className, response.methodName, (b) -> {
+            this.project.jumpToClass(response, (b) -> {
+                if (!b) {
+                    this.ide.log(Level.WARNING, "CodeLink Error", "Method not found", "A method with a given signature could not be found.", false);
+                }
                 try {
                     this.endpoint.respond(b ? CodeLinkEndpoint.ResponseStatus.FOUND : CodeLinkEndpoint.ResponseStatus.NOT_FOUND, sid);
                 } catch (CodeLinkConnectionException e) {
+                    this.ide.log(Level.WARNING, "CodeLink Error", "Could not send response", "Error occured while sending a response to Dynatrace Client", false);
                     CodeLinkClient.LOGGER.warning("Could not send response to CodeLink: " + e.getMessage());
                 }
             });
 
             this.hasErrored = false;
         } catch (CodeLinkConnectionException e) {
+            CodeLinkClient.LOGGER.warning("Error occured in codelink worker during connection phase" + e.getMessage());
             //if the host can't be found disable codelink to not disturb user with future notifications
             if (e.getCause() instanceof UnknownHostException) {
                 this.clSettings.setEnabled(false);
@@ -63,6 +68,7 @@ class PollingWorker implements Runnable {
                 this.suppress = 5;
             }
         } catch (Exception e) {
+            CodeLinkClient.LOGGER.warning("Error occured in codelink worker " + e.getMessage());
             if (!hasErrored) {
                 this.ide.log(Level.WARNING, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
             }
