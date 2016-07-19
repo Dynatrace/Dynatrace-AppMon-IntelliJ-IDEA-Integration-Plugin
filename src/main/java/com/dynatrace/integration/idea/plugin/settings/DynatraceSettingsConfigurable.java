@@ -64,7 +64,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             return this.panel.wholePanel;
         }
         this.panel = new DynatraceSettingsPanel();
-
         //setup server connection test
         this.panel.testServerConnection.addActionListener((event) -> {
             this.panel.testServerConnection.setText(Messages.getMessage("plugin.settings.ui.connection.button.inprogress"));

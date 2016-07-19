@@ -49,7 +49,7 @@ public class TestRun {
         return null;
     }
 
-    public Iterable<TestResult> getTestResults() {
+    public List<TestResult> getTestResults() {
         return this.testResults;
     }
 

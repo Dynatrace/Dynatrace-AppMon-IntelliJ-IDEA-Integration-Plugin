@@ -8,8 +8,6 @@ import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,25 +21,34 @@ public class TestRunResultsWorker implements Runnable {
     private final long startTime;
     private final DynatraceSettingsProvider.State settings;
     private final TestRunResultsView view;
+    private final int testCount;
 
-    public TestRunResultsWorker(TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings) {
+    public TestRunResultsWorker(TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings, int testCount) {
         this.view = view;
         this.profileName = profileName;
         this.testRunId = testRunId;
         this.settings = settings;
+        this.testCount = testCount;
         this.startTime = System.currentTimeMillis();
     }
 
     @Override
     public void run() {
+        int lastFetched = 0;
         while (System.currentTimeMillis() - this.startTime < this.settings.getServer().getTimeout() * 1000L) {
             TestRunsEndpoint endpoint = new TestRunsEndpoint(this.settings.getServer());
             try {
                 TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
                 if (!testRun.isEmpty()) {
-                    LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
+                    if (testRun.getTestResults().size() <= lastFetched) {
+                        continue;
+                    }
+                    lastFetched = testRun.getTestResults().size();
                     this.view.setTestRun(testRun);
-                    return;
+                    if (testRun.getTestResults().size() >= this.testCount) {
+                        LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
+                        return;
+                    }
                 }
                 Thread.sleep(DELAY);
             } catch (TestRunsResponseException | TestRunsConnectionException e) {

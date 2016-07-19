@@ -3,7 +3,6 @@ package com.dynatrace.integration.idea.execution.result;
 import com.dynatrace.integration.idea.Icons;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.ide.impl.ContentManagerWatcher;
 import com.intellij.openapi.application.ApplicationManager;
@@ -15,7 +14,6 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +25,6 @@ public class TestRunResultsCoordinator {
         return ServiceManager.getService(project, TestRunResultsCoordinator.class);
     }
 
-    private final HashMap<String, String> testRuns = new HashMap<>();
     private final DynatraceSettingsProvider settingsProvider;
     private final Project project;
 
@@ -43,32 +40,15 @@ public class TestRunResultsCoordinator {
         new ContentManagerWatcher(toolWindow, toolWindow.getContentManager());
     }
 
-    // Store testRunId as ProcessHandler is not self-aware of java parameters
-    public void registerTestRun(String profileName, String testRunId) {
-        LOG.log(Level.INFO, Messages.getMessage("execution.result.registered", profileName, testRunId));
-        synchronized (this.testRuns) {
-            this.testRuns.put(profileName, testRunId);
-        }
-    }
-
     // Requests test results from the server and displays them in the UI
-    public void requestTestRunResults(String profileName) {
+    public void requestTestRunResults(String profileName, final String trId, int testCount) {
         LOG.log(Level.INFO, Messages.getMessage("execution.result.display.requested", profileName));
-        String testRunId;
-        synchronized (this.testRuns) {
-            testRunId = this.testRuns.remove(profileName);
-        }
-
-        if (testRunId == null) {
-            IDEDescriptor.getInstance().log(Level.WARNING, "TestRun", "", Messages.getMessage("execution.result.display.notregistered", profileName), false);
-            return;
-        }
 
         ApplicationManager.getApplication().invokeLater(() -> {
             TestRunResultsView view = new TestRunResultsView(this.project);
 
             ToolWindow toolWindow = ToolWindowManager.getInstance(this.project).getToolWindow(TestRunResultsCoordinator.TOOLWINDOW_ID);
-            Content content = toolWindow.getContentManager().getFactory().createContent(view.getPanel(), profileName + " #" + testRunId.substring(0, 8), true);
+            Content content = toolWindow.getContentManager().getFactory().createContent(view.getPanel(), profileName + " #" + trId.substring(0, 8), true);
 
             //dispose if the tab is closed
             Disposer.register(content, view);
@@ -77,13 +57,7 @@ public class TestRunResultsCoordinator {
             toolWindow.getContentManager().setSelectedContent(content);
             toolWindow.activate(null, false);
 
-            new Thread(new TestRunResultsWorker(view, profileName, testRunId, this.settingsProvider.getState()), "TestRunResultsFetchingThread").start();
+            new Thread(new TestRunResultsWorker(view, profileName, trId, this.settingsProvider.getState(), testCount), "TestRunResultsFetchingThread").start();
         });
-    }
-
-    public void discardTestRun(String profileName) {
-        synchronized (this.testRuns) {
-            this.testRuns.remove(profileName);
-        }
     }
 }

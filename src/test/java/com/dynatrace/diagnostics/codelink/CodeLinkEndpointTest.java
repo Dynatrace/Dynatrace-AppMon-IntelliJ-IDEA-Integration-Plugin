@@ -21,7 +21,7 @@ public class CodeLinkEndpointTest {
     private CodeLinkSettings dummySettings = new CodeLinkSettings();
     private IIDEDescriptor ide = new DummyIDEDescriptor();
     private IProjectDescriptor project = new DummyProjectDescriptor();
-    private CodeLinkEndpoint endpoint = new CodeLinkEndpoint(project, ide, dummySettings);
+    private CodeLinkEndpoint endpoint = new CodeLinkEndpoint(this.project, this.ide, this.dummySettings);
 
     @Before
     public void setup() {

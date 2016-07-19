@@ -2,20 +2,21 @@ package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.execution.DynatraceProcessListener;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
-import com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.execution.ExecutionException;
+import com.intellij.execution.JavaTestConfigurationBase;
 import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunnerSettings;
+import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -24,16 +25,32 @@ import org.jetbrains.annotations.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
+    public static final Key<String> PROFILE_KEY = Key.create("com.dynatrace.integration.idea.profilename");
+    public static final Key<String> TRID_KEY = Key.create("com.dynatrace.integration.idea.trid");
+    public static final Pattern TRID_EXTRACTOR = Pattern.compile("\"-agentpath:[^\"]+,optionTestRunIdJava=([\\w-]+)");
+
     @Override
     public void attachToProcess(@NotNull final RunConfigurationBase configuration, @NotNull final ProcessHandler handler, @Nullable RunnerSettings runnerSettings) {
         super.attachToProcess(configuration, handler, runnerSettings);
         if (!(runnerSettings instanceof DynatraceRunnerSettings)) {
             return;
         }
+        if (!(handler instanceof OSProcessHandler)) {
+            return;
+        }
+
+        OSProcessHandler procHandler = (OSProcessHandler) handler;
         DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
-        handler.addProcessListener(new DynatraceProcessListener(executionSettings.getSystemProfile(), configuration.getProject()));
+        Matcher matcher = TRID_EXTRACTOR.matcher(procHandler.getCommandLine());
+        if (!matcher.find()) {
+            return;
+        }
+        handler.putCopyableUserData(PROFILE_KEY, executionSettings.getSystemProfile());
+        handler.putCopyableUserData(TRID_KEY, matcher.group(1));
     }
 
 
@@ -43,7 +60,6 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         if (!(runnerSettings instanceof DynatraceRunnerSettings)) {
             return;
         }
-
         //get global settings
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
 
@@ -81,10 +97,6 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
-
-            TestRunResultsCoordinator coordinator = TestRunResultsCoordinator.getInstance(configuration.getProject());
-            //register test run in order to display results later in form of a tool window
-            coordinator.registerTestRun(executionSettings.getSystemProfile(), id);
         } catch (Exception e) {
             //IDEDescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
             throw new ExecutionException(e);
@@ -109,9 +121,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
-        //cannot compare class objects, classloader limitations
-        return runConfigurationBase.getType().getClass().getCanonicalName().equals("com.intellij.execution.junit.JUnitConfigurationType")
-                || runConfigurationBase.getType().getClass().getCanonicalName().equals("com.theoryinpractice.testng.configuration.TestNGConfigurationType");
+        return runConfigurationBase instanceof JavaTestConfigurationBase;
     }
 
     @NotNull
