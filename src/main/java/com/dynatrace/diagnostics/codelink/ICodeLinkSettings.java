@@ -6,5 +6,4 @@ public interface ICodeLinkSettings {
     String getHost();
     int getPort();
     boolean isSSL();
-    boolean isJavaBrowsingPerspective();
 }
