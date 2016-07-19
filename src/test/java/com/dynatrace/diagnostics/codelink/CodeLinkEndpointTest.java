@@ -41,7 +41,6 @@ public class CodeLinkEndpointTest {
         }
     }
 
-
     @Test
     public void connectGivenInvalidPort() throws Exception {
         //http://en.wikipedia.org/wiki/Ephemeral_port
