@@ -14,6 +14,8 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,7 +50,8 @@ public class TestRunResultsCoordinator {
             TestRunResultsView view = new TestRunResultsView(this.project);
 
             ToolWindow toolWindow = ToolWindowManager.getInstance(this.project).getToolWindow(TestRunResultsCoordinator.TOOLWINDOW_ID);
-            Content content = toolWindow.getContentManager().getFactory().createContent(view.getPanel(), profileName + " #" + trId.substring(0, 8), true);
+            Calendar now = Calendar.getInstance();
+            Content content = toolWindow.getContentManager().getFactory().createContent(view.getPanel(), Messages.getMessage("execution.result.ui.tab.title", new SimpleDateFormat("HH:mm:ss").format(now.getTime())), true);//profileName + " #" + trId.substring(0, 8), true);
 
             //dispose if the tab is closed
             Disposer.register(content, view);
