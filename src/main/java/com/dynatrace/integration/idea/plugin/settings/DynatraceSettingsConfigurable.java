@@ -7,7 +7,6 @@ import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
 import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
-import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.util.logging.Level;
 
 public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Configurable {
     private static final String TEST_CONNECTION_MESSAGE = Messages.getMessage("plugin.settings.ui.connection.button.message");
@@ -33,7 +33,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", service));
             }
             return port;
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalPort", service));
         }
     }
@@ -134,7 +134,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     }
 
                     @Override
-                    public void jumpToClass(CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
+                    public void jumpToClass(@NotNull CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
                     }
                 }, IDEDescriptor.getInstance(), settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";
@@ -159,6 +159,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 try {
                     desktop.browse(hle.getURL().toURI());
                 } catch (Exception ex) {
+                    IDEDescriptor.getInstance().log(Level.WARNING, "Error occured while opening hyperlink", "", ex.getMessage(), false);
                 }
             }
         });

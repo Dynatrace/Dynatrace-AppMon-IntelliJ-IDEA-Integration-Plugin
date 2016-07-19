@@ -32,7 +32,7 @@ public class ProjectDescriptor implements IProjectDescriptor {
     }
 
     @Override
-    @NotNull
+    @Nullable
     public String getProjectPath() {
         return this.project.getBasePath();
     }
@@ -90,7 +90,7 @@ public class ProjectDescriptor implements IProjectDescriptor {
 
 
     @Override
-    public void jumpToClass(CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
+    public void jumpToClass(@NotNull CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
         //we need to jump on UI thread
         ApplicationManager.getApplication().invokeLater(() -> {
             Callback<Boolean> callback = cb != null ? cb : (b) -> {

@@ -8,7 +8,7 @@ public interface IProjectDescriptor {
     @NotNull
     String getProjectName();
 
-    @NotNull
+    @Nullable
     String getProjectPath();
 
     void jumpToClass(@NotNull CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb);

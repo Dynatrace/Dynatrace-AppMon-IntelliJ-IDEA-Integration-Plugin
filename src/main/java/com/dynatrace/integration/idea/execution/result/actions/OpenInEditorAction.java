@@ -3,7 +3,6 @@ package com.dynatrace.integration.idea.execution.result.actions;
 import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestResult;
 import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;

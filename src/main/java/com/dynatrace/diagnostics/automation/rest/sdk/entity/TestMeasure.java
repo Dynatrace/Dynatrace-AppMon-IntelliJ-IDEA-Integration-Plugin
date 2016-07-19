@@ -81,7 +81,7 @@ public class TestMeasure implements Comparable<TestMeasure> {
     }
 
     @Override
-    public int compareTo(TestMeasure o) {
+    public int compareTo(@NotNull TestMeasure o) {
         return new CompareToBuilder()
                 .append(metricGroup, o.metricGroup)
                 .append(name, o.name)

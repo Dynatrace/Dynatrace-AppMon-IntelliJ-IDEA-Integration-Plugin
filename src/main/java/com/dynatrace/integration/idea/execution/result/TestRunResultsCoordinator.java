@@ -3,7 +3,6 @@ package com.dynatrace.integration.idea.execution.result;
 import com.dynatrace.integration.idea.Icons;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.ide.impl.ContentManagerWatcher;
 import com.intellij.openapi.application.ApplicationManager;

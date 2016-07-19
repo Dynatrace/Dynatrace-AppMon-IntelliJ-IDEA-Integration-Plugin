@@ -40,6 +40,9 @@ public class IDEDescriptor implements IIDEDescriptor {
     public Version getPluginVersion() {
         String version = PluginManager.getPlugin(PluginId.getId("com.dynatrace.integration.idea")).getVersion();
         String[] split = version.split("\\.");
+        if (split.length < 3) {
+            throw new RuntimeException("Invalid plugin version, should be in major.minor.rev format");
+        }
         return new IIDEDescriptor.Version(split[0], split[1], split[2]);
     }
 
@@ -64,7 +67,7 @@ public class IDEDescriptor implements IIDEDescriptor {
 
     @Override
     public int getId() {
-        if(this.provider.getState().getCodeLink().isLegacy()) {
+        if (this.provider.getState().getCodeLink().isLegacy()) {
             return 0;
         } else {
             return 5;

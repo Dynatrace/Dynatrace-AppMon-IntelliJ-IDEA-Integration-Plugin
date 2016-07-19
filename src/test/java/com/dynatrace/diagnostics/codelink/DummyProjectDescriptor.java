@@ -17,7 +17,7 @@ public class DummyProjectDescriptor implements IProjectDescriptor {
     }
 
     @Override
-    public void jumpToClass(@NotNull String className, @Nullable String methodName, @Nullable Callback<Boolean> cb) {
+    public void jumpToClass(@NotNull CodeLinkLookupResponse reponse, @Nullable Callback<Boolean> cb) {
 
     }
 }

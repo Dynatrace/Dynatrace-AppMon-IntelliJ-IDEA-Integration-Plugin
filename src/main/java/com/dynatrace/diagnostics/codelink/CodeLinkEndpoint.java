@@ -9,14 +9,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +60,8 @@ public class CodeLinkEndpoint {
      * otherwise className and methodName should be populated.
      * After receiving a CodeLink request one should call {@link #respond(ResponseStatus, long) respond} method.
      *
-     * @param sessionId - id returned previously by @{@link #connect(long) connect} method or -1 if it's the first request
-     * @returns {@link CodeLinkLookupResponse} containing CodeLink request data.
+     * @param sessionId - id returned previously by this method or -1 if it's the first request
+     * @return A {@link CodeLinkLookupResponse response} containing CodeLink request data.
      */
     @NotNull
     public CodeLinkLookupResponse connect(long sessionId) throws CodeLinkConnectionException, CodeLinkResponseException {
