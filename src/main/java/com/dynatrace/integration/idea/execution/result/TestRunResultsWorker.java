@@ -91,6 +91,7 @@ public class TestRunResultsWorker implements Runnable {
                 break;
             }
         }
+        IDEDescriptor.getInstance().log(Level.WARNING, "TestRuns", "", Messages.getMessage("execution.result.worker.timeout", lastFetched, this.testCount, this.testRunId), false);
         this.view.setEmptyText(Messages.getMessage("execution.result.ui.errorloading"));
     }
 }
