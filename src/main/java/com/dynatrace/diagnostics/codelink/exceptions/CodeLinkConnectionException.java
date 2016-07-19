@@ -34,10 +34,6 @@ public class CodeLinkConnectionException extends Exception {
         super(message);
     }
 
-    public CodeLinkConnectionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public CodeLinkConnectionException(Throwable cause) {
         super(cause);
     }

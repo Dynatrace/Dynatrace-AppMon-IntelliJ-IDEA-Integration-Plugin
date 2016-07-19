@@ -47,7 +47,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SessionStorage implements ProjectComponent {
-    public static final Logger LOG = Logger.getLogger(SessionStorage.class.getName());
+    public static final Logger LOG = Logger.getLogger("#" + SessionStorage.class.getName());
     private static final String SESSION_ALREADY_STARTED = "Error starting recording: Session Recording could not be started because it is already started";
 
     private final HashSet<String> recordings = new HashSet<>();

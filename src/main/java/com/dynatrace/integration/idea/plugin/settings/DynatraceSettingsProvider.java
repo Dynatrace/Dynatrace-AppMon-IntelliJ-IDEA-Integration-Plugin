@@ -80,17 +80,17 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
 
         @NotNull
         public ServerSettings getServer() {
-            return server;
+            return this.server;
         }
 
         @NotNull
         public AgentSettings getAgent() {
-            return agent;
+            return this.agent;
         }
 
         @NotNull
         public CodeLinkSettings getCodeLink() {
-            return codeLink;
+            return this.codeLink;
         }
     }
 }

@@ -50,9 +50,10 @@ import java.util.logging.Logger;
 
 public class TestRunResultsCoordinator {
     public static final String TOOLWINDOW_ID = "DynatraceTestRunResults";
-    public static final Logger LOG = Logger.getLogger(TestRunResultsCoordinator.class.getName());
+    public static final Logger LOG = Logger.getLogger("#" + TestRunResultsCoordinator.class.getName());
     private final DynatraceSettingsProvider settingsProvider;
     private final Project project;
+
     public TestRunResultsCoordinator(DynatraceSettingsProvider provider, ToolWindowManager manager, Project project) {
         this.settingsProvider = provider;
         this.project = project;

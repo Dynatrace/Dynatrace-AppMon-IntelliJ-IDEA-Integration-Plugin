@@ -41,7 +41,7 @@ public class AgentSettings {
     private int collectorPort = 9998;
 
     public synchronized String getCollectorHost() {
-        return collectorHost;
+        return this.collectorHost;
     }
 
     public synchronized void setCollectorHost(@NotNull String collectorHost) {
@@ -49,7 +49,7 @@ public class AgentSettings {
     }
 
     public synchronized String getAgentLibrary() {
-        return agentLibrary;
+        return this.agentLibrary;
     }
 
     public synchronized void setAgentLibrary(@NotNull String agentLibrary) {
@@ -57,7 +57,7 @@ public class AgentSettings {
     }
 
     public synchronized int getCollectorPort() {
-        return collectorPort;
+        return this.collectorPort;
     }
 
     public synchronized void setCollectorPort(int collectorPort) {

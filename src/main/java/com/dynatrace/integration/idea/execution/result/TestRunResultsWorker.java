@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 // Fetches results from DynatraceServer and displays them in UI
 public class TestRunResultsWorker implements Runnable {
-    public static final Logger LOG = Logger.getLogger(TestRunResultsWorker.class.getName());
+    public static final Logger LOG = Logger.getLogger("#" + TestRunResultsWorker.class.getName());
     private static final long DELAY = 2000L; // 2 seconds delay
 
     private final String profileName;

@@ -54,7 +54,7 @@ public class DynatraceConfigurableStorage {
         return storage;
     }
 
-    public void readExternal(Element element) throws InvalidDataException {
+    public void readExternal(Element element) {
         if (element.getAttributeValue("systemProfile") != null) {
             this.systemProfile = element.getAttributeValue("systemProfile");
         }

@@ -36,7 +36,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sdk.ServerSettings {
-    public static final String DEFAULT_PASSWORD = "admin";
 
     @NotNull
     private String host = "localhost";
@@ -51,7 +50,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
     @NotNull
     @Override
     public synchronized String getHost() {
-        return host;
+        return this.host;
     }
 
     public synchronized void setHost(@NotNull String host) {
@@ -60,7 +59,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
 
     @Override
     public synchronized int getPort() {
-        return port;
+        return this.port;
     }
 
     public synchronized void setPort(int port) {
@@ -69,7 +68,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
 
     @Override
     public synchronized String getPassword() {
-        return password;
+        return this.password;
     }
 
     public synchronized void setPassword(String password) {
@@ -78,7 +77,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
 
     @Override
     public synchronized boolean isSSL() {
-        return ssl;
+        return this.ssl;
     }
 
     public synchronized void setSSL(boolean ssl) {
@@ -88,7 +87,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
     @NotNull
     @Override
     public synchronized String getLogin() {
-        return login;
+        return this.login;
     }
 
     public synchronized void setLogin(@NotNull String login) {
@@ -97,7 +96,7 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
 
     @Override
     public synchronized int getTimeout() {
-        return timeout;
+        return this.timeout;
     }
 
     public synchronized void setTimeout(int timeout) {
