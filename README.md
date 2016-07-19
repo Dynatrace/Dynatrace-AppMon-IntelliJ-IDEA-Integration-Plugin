@@ -63,7 +63,7 @@ The lancher will run applications with an injected Dynatrace Agent using the age
 ![launcher](img/launcher.png)
 
 The launcher support the following launch mode:
-* Java application
+* NGTest
 * JUnit test
 
 The agent will output debug information into the console:

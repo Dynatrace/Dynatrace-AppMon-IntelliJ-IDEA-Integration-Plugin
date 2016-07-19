@@ -32,7 +32,7 @@ Post any problems, questions or suggestions to the Dynatrace Community's [Applic
 > Run Dynatrace AppMon Client, open Settings menu \ Dynatrace Server... \ Services \ Management tab \ Web Server section
 
 ##### Dynatrace AppMon server-as-collector port number -- where can I find it?
-> Run Dynatrace AppMon Client, open Settings menu \ Dynatrace Server... \ Services \ General tab \ Embedded Collector Settings section. The default is 9998.
+> Run Dynatrace AppMon Client, open Settings menu \ Dynatrace Server... \ Services \ General tab \ [Embedded Collector Settings section](img/collector_settings.png). The default is 9998.
 
 ##### Can I configure multiple servers/collectors?
 > No. There is a single server and collector configuration which you would have to change every time.
