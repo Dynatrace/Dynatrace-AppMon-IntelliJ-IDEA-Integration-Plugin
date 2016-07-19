@@ -39,10 +39,7 @@ public class TestRunResultsWorker implements Runnable {
             TestRunsEndpoint endpoint = new TestRunsEndpoint(this.settings.getServer());
             try {
                 TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
-                if (!testRun.isEmpty()) {
-                    if (testRun.getTestResults().size() <= lastFetched) {
-                        continue;
-                    }
+                if (!testRun.isEmpty() && testRun.getTestResults().size() > lastFetched) {
                     lastFetched = testRun.getTestResults().size();
                     this.view.setTestRun(testRun);
                     if (testRun.getTestResults().size() >= this.testCount) {

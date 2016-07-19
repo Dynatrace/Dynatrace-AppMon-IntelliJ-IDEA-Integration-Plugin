@@ -45,7 +45,7 @@ public class TestRunsEndpoint {
     public TestRun getTestRun(@NotNull String profileName, @NotNull String testId) throws TestRunsConnectionException, TestRunsResponseException {
         // use RESTlib URL builder
         ManagementURLBuilder builder = new ManagementURLBuilder();
-        builder.setServerAddress((settings.isSSL() ? "https://" : "http://") + settings.getHost() + ":" + settings.getPort() + "/");
+        builder.setServerAddress((settings.isSSL() ? "https://" : "http://") + settings.getHost() + ":" + settings.getPort());
         URL url = builder.getTestrunsURL(profileName);
         // append test run id to the url
         String stringURL = url.toString() + "/" + testId + ".xml";
