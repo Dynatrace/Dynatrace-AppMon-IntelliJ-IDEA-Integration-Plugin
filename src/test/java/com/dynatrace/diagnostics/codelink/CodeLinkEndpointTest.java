@@ -56,6 +56,7 @@ public class CodeLinkEndpointTest {
     public void setup() {
         this.dummySettings.setPort(8080);
         this.dummySettings.setSSL(false);
+        stubFor(get(urlEqualTo("/rest/management/version")).willReturn(aResponse().withBody("<result value=\"6.5.0.1218\"/>")));
     }
 
     @Test
@@ -79,7 +80,6 @@ public class CodeLinkEndpointTest {
             fail("Exception not thrown when expected to do");
         } catch (CodeLinkConnectionException e) {
             assertTrue(e.getCause() instanceof HttpHostConnectException);
-            assertTrue(e.getCause().getMessage().endsWith("Connection refused: connect"));
         }
     }
 
@@ -115,15 +115,15 @@ public class CodeLinkEndpointTest {
         assertTrue(response.versionMatched);
         verify(postRequestedFor(urlPathEqualTo("/rest/management/codelink/connect"))
                 .withRequestBody(containing("sessionid=-1"))
-                .withRequestBody(containing("ideid="+this.ide.getId()))
-                .withRequestBody(containing("ideversion="+this.ide.getVersion())));
+                .withRequestBody(containing("ideid=" + this.ide.getId()))
+                .withRequestBody(containing("ideversion=" + this.ide.getVersion())));
     }
 
     @Test
     public void respondGivenInvalidStatusCode() {
         stubFor(post(urlPathEqualTo("/rest/management/codelink/response")).willReturn(aResponse().withStatus(401)));
         try {
-            this.endpoint.respond(CodeLinkEndpoint.ResponseStatus.NOT_FOUND ,-1);
+            this.endpoint.respond(CodeLinkEndpoint.ResponseStatus.NOT_FOUND, -1);
             fail("Exception not thrown when expected to do");
         } catch (CodeLinkConnectionException e) {
             assertTrue(e.getMessage().equals("Unauthorized"));
@@ -135,7 +135,7 @@ public class CodeLinkEndpointTest {
         stubFor(post(urlPathEqualTo("/rest/management/codelink/response")).willReturn(aResponse().withStatus(200)));
         this.endpoint.respond(CodeLinkEndpoint.ResponseStatus.FOUND, -1);
         verify(postRequestedFor(urlPathEqualTo("/rest/management/codelink/response"))
-            .withRequestBody(containing("responsecode="+CodeLinkEndpoint.ResponseStatus.FOUND.getCode()))
-            .withRequestBody(containing("sessionid=-1")));
+                .withRequestBody(containing("responsecode=" + CodeLinkEndpoint.ResponseStatus.FOUND.getCode()))
+                .withRequestBody(containing("sessionid=-1")));
     }
 }

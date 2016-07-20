@@ -95,11 +95,7 @@ public class IDEDescriptor implements IIDEDescriptor {
 
     @Override
     public int getId() {
-        if (this.provider.getState().getCodeLink().isLegacy()) {
-            return 0;
-        } else {
-            return 5;
-        }
+        return 5;
     }
 
 }

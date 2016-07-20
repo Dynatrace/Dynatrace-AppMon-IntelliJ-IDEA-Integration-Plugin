@@ -219,8 +219,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     //|| state.getCodeLink().javaBrowsingPerspective != this.panel.javaBrowsingPerspective.isSelected()
                     || state.getCodeLink().isSSL() != this.panel.codeLinkSSL.isSelected()
                     || !state.getCodeLink().getHost().equals(this.panel.clientHost.getText())
-                    || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())
-                    || state.getCodeLink().isLegacy() != this.panel.codeLinkLegacy.isSelected()) {
+                    || state.getCodeLink().getPort() != Integer.parseInt(this.panel.clientPort.getText())) {
                 return true;
             }
         } catch (NumberFormatException e) {
@@ -250,7 +249,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         //settings.javaBrowsingPerspective = this.panel.javaBrowsingPerspective.isSelected();
         settings.setSSL(this.panel.codeLinkSSL.isSelected());
         settings.setHost(this.panel.clientHost.getText());
-        settings.setLegacy(this.panel.codeLinkLegacy.isSelected());
         settings.setPort(checkPort(this.panel.clientPort.getText(), "CodeLink"));
     }
 
@@ -295,7 +293,6 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.clientHost.setText(state.getCodeLink().getHost());
         this.panel.clientPort.setText(String.valueOf(state.getCodeLink().getPort()));
         this.panel.codeLinkSSL.setSelected(state.getCodeLink().isSSL());
-        this.panel.codeLinkLegacy.setSelected(state.getCodeLink().isLegacy());
 
         //this.panel.javaBrowsingPerspective.setSelected(state.getCodeLink().javaBrowsingPerspective);
 
@@ -325,13 +322,11 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         private JTextField clientHost;
         private JTextField clientPort;
         private JCheckBox codeLinkSSL;
-        //private JCheckBox javaBrowsingPerspective;
 
         private JPanel wholePanel;
         private JEditorPane helpText;
         private JButton testServerConnection;
         private JButton testCodeLinkConnection;
-        private JCheckBox codeLinkLegacy;
 
         private void createUIComponents() {
             this.agentLibrary = new TextFieldWithBrowseButton();

@@ -90,7 +90,6 @@ public class TestRunsEndpointTest {
             fail("Exception not thrown when expected to do");
         } catch (TestRunsConnectionException e) {
             assertTrue(e.getCause() instanceof HttpHostConnectException);
-            assertTrue(e.getCause().getMessage().endsWith("Connection refused: connect"));
         }
     }
 

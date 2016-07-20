@@ -33,15 +33,25 @@ import com.dynatrace.diagnostics.Utils;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkConnectionException;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
+import org.xml.sax.InputSource;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +60,14 @@ import java.util.List;
  * {@link #connect(long) connect} method should be called frequently to minimize delays.
  */
 public class CodeLinkEndpoint {
+    public static final ClientVersion DTCLIENT_VERSION_WITH_INTELLIJ_SUPPORT = new ClientVersion(8, 0, 0, 0);
+
     private final IProjectDescriptor project;
     private final IIDEDescriptor ide;
     private final ICodeLinkSettings clSettings;
     private final CloseableHttpClient client;
+    private ClientVersion version;
+
     public CodeLinkEndpoint(IProjectDescriptor project, IIDEDescriptor ide, ICodeLinkSettings settings) {
         this.project = project;
         this.ide = ide;
@@ -79,19 +93,26 @@ public class CodeLinkEndpoint {
      */
     @NotNull
     public CodeLinkLookupResponse connect(long sessionId) throws CodeLinkConnectionException, CodeLinkResponseException {
-        List<NameValuePair> nvps = new ArrayList<>();
-        nvps.add(new BasicNameValuePair("ideid", String.valueOf(this.ide.getId())));
-        nvps.add(new BasicNameValuePair("ideversion", this.ide.getVersion()));
-        nvps.add(new BasicNameValuePair("major", this.ide.getPluginVersion().major));
-        nvps.add(new BasicNameValuePair("minor", this.ide.getPluginVersion().minor));
-        nvps.add(new BasicNameValuePair("revision", this.ide.getPluginVersion().revision));
-        nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
-        nvps.add(new BasicNameValuePair("activeproject", this.project.getProjectName()));
-        nvps.add(new BasicNameValuePair("projectpath", this.project.getProjectPath()));
-
-        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("codelink/connect");
-        HttpPost post = new HttpPost(builder.toString());
         try {
+            if (this.version == null) {
+                this.version = this.getClientVersion();
+            }
+            //0 stands for eclipse IDE, older versions of dynatrace have no support for IDEA, therefore we disguise under eclipse
+            int ideId = this.version.compareTo(DTCLIENT_VERSION_WITH_INTELLIJ_SUPPORT) < 0 ? 0 : this.ide.getId();
+
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("ideid", String.valueOf(ideId)));
+            nvps.add(new BasicNameValuePair("ideversion", this.ide.getVersion()));
+            nvps.add(new BasicNameValuePair("major", this.ide.getPluginVersion().major));
+            nvps.add(new BasicNameValuePair("minor", this.ide.getPluginVersion().minor));
+            nvps.add(new BasicNameValuePair("revision", this.ide.getPluginVersion().revision));
+            nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
+            nvps.add(new BasicNameValuePair("activeproject", this.project.getProjectName()));
+            nvps.add(new BasicNameValuePair("projectpath", this.project.getProjectPath()));
+
+            StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("codelink/connect");
+            HttpPost post = new HttpPost(builder.toString());
+
             post.setHeader("Content-Type", "application/x-www-form-urlencoded");
             post.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = this.client.execute(post)) {
@@ -134,6 +155,22 @@ public class CodeLinkEndpoint {
             }
         } catch (IOException e) {
             throw new CodeLinkConnectionException(e);
+        }
+    }
+
+    public ClientVersion getClientVersion() throws CodeLinkConnectionException, CodeLinkResponseException {
+        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("version");
+        HttpGet get = new HttpGet(builder.toString());
+        try (CloseableHttpResponse response = this.client.execute(get)) {
+            if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
+                throw new CodeLinkConnectionException(response.getStatusLine().getReasonPhrase());
+            }
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            return ClientVersion.fromString(xPath.compile("/result/@value").evaluate(new InputSource(response.getEntity().getContent())));
+        } catch (IOException e) {
+            throw new CodeLinkConnectionException(e);
+        } catch (Exception e) {
+            throw new CodeLinkResponseException(e);
         }
     }
 

@@ -42,7 +42,6 @@ public class CodeLinkSettings implements ICodeLinkSettings {
     private String host = "localhost";
     private int port = 8031;
     private boolean ssl = true;
-    private boolean isLegacy = true;
 
     @Override
     public synchronized boolean isEnabled() {
@@ -79,13 +78,5 @@ public class CodeLinkSettings implements ICodeLinkSettings {
 
     public synchronized void setSSL(boolean ssl) {
         this.ssl = ssl;
-    }
-
-    public synchronized boolean isLegacy() {
-        return this.isLegacy;
-    }
-
-    public synchronized void setLegacy(boolean legacy) {
-        this.isLegacy = legacy;
     }
 }
