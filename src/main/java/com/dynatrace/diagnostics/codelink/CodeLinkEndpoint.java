@@ -92,7 +92,7 @@ public class CodeLinkEndpoint {
         StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("connect");
         HttpPost post = new HttpPost(builder.toString());
         try {
-            post.setHeader("Content-Type", "text/xml");
+            post.setHeader("Content-Type", "application/x-www-form-urlencoded");
             post.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = this.client.execute(post)) {
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
