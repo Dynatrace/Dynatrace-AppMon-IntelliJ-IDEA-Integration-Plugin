@@ -65,7 +65,7 @@ public class CodeLinkEndpoint {
         return new StringBuilder(settings.isSSL() ? "https://" : "http://")
                 .append(settings.getHost())
                 .append(':').append(settings.getPort())
-                .append("/rest/management/codelink/");
+                .append("/rest/management/");
     }
 
     /**
@@ -89,7 +89,7 @@ public class CodeLinkEndpoint {
         nvps.add(new BasicNameValuePair("activeproject", this.project.getProjectName()));
         nvps.add(new BasicNameValuePair("projectpath", this.project.getProjectPath()));
 
-        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("connect");
+        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("codelink/connect");
         HttpPost post = new HttpPost(builder.toString());
         try {
             post.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -122,10 +122,10 @@ public class CodeLinkEndpoint {
         nvps.add(new BasicNameValuePair("sessionid", String.valueOf(sessionId)));
         nvps.add(new BasicNameValuePair("responsecode", String.valueOf(responseCode.code)));
 
-        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("response");
+        StringBuilder builder = CodeLinkEndpoint.buildURL(this.clSettings).append("codelink/response");
         HttpPost post = new HttpPost(builder.toString());
         try {
-            post.setHeader("Content-Type", "text/xml");
+            post.setHeader("Content-Type", "application/x-www-form-urlencoded");
             post.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = this.client.execute(post)) {
                 if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
