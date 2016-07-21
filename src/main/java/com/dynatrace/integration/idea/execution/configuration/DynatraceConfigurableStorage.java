@@ -31,14 +31,13 @@ package com.dynatrace.integration.idea.execution.configuration;
 
 
 import com.intellij.execution.configurations.RunConfigurationBase;
-import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 
-public class DynatraceConfigurableStorage {
-    public static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
+class DynatraceConfigurableStorage {
+    private static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
 
     private String systemProfile = "IntelliJ";
     private String agentName = "IntelliJ";

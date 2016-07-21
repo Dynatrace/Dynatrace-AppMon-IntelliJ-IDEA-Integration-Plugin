@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
 public class DynatraceRunConfigurationExtension extends RunConfigurationExtension {
     public static final Key<String> PROFILE_KEY = Key.create("com.dynatrace.integration.idea.profilename");
     public static final Key<String> TRID_KEY = Key.create("com.dynatrace.integration.idea.trid");
-    public static final Pattern TRID_EXTRACTOR = Pattern.compile("-agentpath:[^\"]+,optionTestRunIdJava=([\\w-]+)");
+    private static final Pattern TRID_EXTRACTOR = Pattern.compile("-agentpath:[^\"]+,optionTestRunIdJava=([\\w-]+)");
 
     @Override
     public void attachToProcess(@NotNull final RunConfigurationBase configuration, @NotNull final ProcessHandler handler, @Nullable RunnerSettings runnerSettings) {

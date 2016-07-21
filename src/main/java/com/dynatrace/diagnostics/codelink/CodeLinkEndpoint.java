@@ -33,25 +33,19 @@ import com.dynatrace.diagnostics.Utils;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkConnectionException;
 import com.dynatrace.diagnostics.codelink.exceptions.CodeLinkResponseException;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.InputSource;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +54,9 @@ import java.util.List;
  * {@link #connect(long) connect} method should be called frequently to minimize delays.
  */
 public class CodeLinkEndpoint {
-    public static final ClientVersion DTCLIENT_VERSION_WITH_INTELLIJ_SUPPORT = new ClientVersion(8, 0, 0, 0);
+    public static final ClientVersion DTCLIENT_VERSION_WITH_IDEA_SUPPORT = new ClientVersion(8, 0, 0, 0);
+    public static final int IDEA_ID = 5;
+    public static final int ECLIPSE_ID = 0;
 
     private final IProjectDescriptor project;
     private final IIDEDescriptor ide;
@@ -98,7 +94,7 @@ public class CodeLinkEndpoint {
                 this.version = this.getClientVersion();
             }
             //0 stands for eclipse IDE, older versions of dynatrace have no support for IDEA, therefore we disguise under eclipse
-            int ideId = this.version.compareTo(DTCLIENT_VERSION_WITH_INTELLIJ_SUPPORT) < 0 ? 0 : this.ide.getId();
+            int ideId = (this.version.compareTo(DTCLIENT_VERSION_WITH_IDEA_SUPPORT) < 0 && this.ide.getId() == IDEA_ID) ? ECLIPSE_ID : this.ide.getId();
 
             List<NameValuePair> nvps = new ArrayList<>();
             nvps.add(new BasicNameValuePair("ideid", String.valueOf(ideId)));

@@ -29,9 +29,9 @@
 
 package com.dynatrace.integration.idea.plugin.codelink;
 
+import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
 import com.dynatrace.diagnostics.codelink.IIDEDescriptor;
 import com.dynatrace.integration.idea.Icons;
-import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.*;
 import com.intellij.openapi.application.ApplicationInfo;
@@ -47,11 +47,6 @@ import java.util.logging.Level;
 public class IDEDescriptor implements IIDEDescriptor {
     public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, Icons.CROSSED);
     public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, Icons.DYNATRACE13);
-    private final DynatraceSettingsProvider provider;
-
-    public IDEDescriptor(DynatraceSettingsProvider provider) {
-        this.provider = provider;
-    }
 
     public static IDEDescriptor getInstance() {
         return ServiceManager.getService(IDEDescriptor.class);
@@ -95,7 +90,7 @@ public class IDEDescriptor implements IIDEDescriptor {
 
     @Override
     public int getId() {
-        return 5;
+        return CodeLinkEndpoint.IDEA_ID;
     }
 
 }
