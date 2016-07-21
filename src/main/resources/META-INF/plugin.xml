@@ -11,6 +11,13 @@
       <li>retrieve & display the key architectural metrics (such as number of SQL queries, external API calls, exceptions and log messages) from your tests</li>
       <li>perform look-ups of sources files and methods from applications under diagnosis in Dynatrace Application Monitoring</li>
       </ul>
+
+      <div style="text-align: right;">Contributors:<dl>
+        <dt>Maciej Mionskowski</dt>
+        <dd><a href="https://maciekmm.net">https://maciekmm.net</a></dd>
+        <dd><a href="mailto:maciej.mionskowski@dynatrace.com">maciej.mionskowski@dynatrace.com</a></dd>
+      </dl>
+      </div>
     ]]></description>
 
     <change-notes><![CDATA[
