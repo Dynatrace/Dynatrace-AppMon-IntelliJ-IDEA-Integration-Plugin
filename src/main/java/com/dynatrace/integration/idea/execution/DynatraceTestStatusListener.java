@@ -68,6 +68,7 @@ public class DynatraceTestStatusListener extends TestStatusListener {
         if (profileName == null || trId == null) {
             return;
         }
+
         TestRunResultsCoordinator.getInstance(project).requestTestRunResults(profileName, trId, getPureTestCount(root));
     }
 }

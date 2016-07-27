@@ -34,11 +34,13 @@ import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.SDKClient;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
 import com.dynatrace.server.sdk.exceptions.ServerResponseException;
 import com.dynatrace.server.sdk.testautomation.TestAutomation;
 import com.dynatrace.server.sdk.testautomation.models.TestRun;
+import com.intellij.openapi.project.Project;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,9 +55,11 @@ public class TestRunResultsWorker implements Runnable {
     private final long startTime;
     private final DynatraceSettingsProvider.State settings;
     private final TestRunResultsView view;
-    private final int testCount;
+    private int testCount;
+    private final Project project;
 
-    public TestRunResultsWorker(TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings, int testCount) {
+    public TestRunResultsWorker(Project project, TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings, int testCount) {
+        this.project = project;
         this.view = view;
         this.profileName = profileName;
         this.testRunId = testRunId;
@@ -67,6 +71,10 @@ public class TestRunResultsWorker implements Runnable {
     @Override
     public void run() {
         int lastFetched = 0;
+        SessionStorage ss = this.project.getComponent(SessionStorage.class);
+        if (ss.isRecording(this.profileName)) {
+            ss.stopRecording(this.profileName);
+        }
         while (System.currentTimeMillis() - this.startTime < this.settings.getServer().getTimeout() * 1000L) {
             TestAutomation automation = new TestAutomation(SDKClient.getInstance());
             try {

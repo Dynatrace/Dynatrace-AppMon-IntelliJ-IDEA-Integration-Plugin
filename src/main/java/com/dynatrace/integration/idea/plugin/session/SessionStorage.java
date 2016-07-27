@@ -151,15 +151,16 @@ public class SessionStorage implements ProjectComponent {
         try {
             String stopped = this.sessions.stopRecording(profileName);
             if (stopped != null) {
-                synchronized (this.recordings) {
-                    this.recordings.remove(profileName);
-                    LOG.info(Messages.getMessage("plugin.session.stopped", profileName));
-                }
+                LOG.info(Messages.getMessage("plugin.session.stopped", profileName));
             }
             return stopped;
         } catch (ServerResponseException | ServerConnectionException e) {
             IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()), true);
             LOG.warning(Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()));
+        } finally {
+            synchronized (this.recordings) {
+                this.recordings.remove(profileName);
+            }
         }
         return null;
     }

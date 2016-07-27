@@ -89,7 +89,7 @@ public class TestRunResultsCoordinator {
             toolWindow.getContentManager().setSelectedContent(content);
             toolWindow.activate(null, false);
 
-            new Thread(new TestRunResultsWorker(view, profileName, trId, this.settingsProvider.getState(), testCount), "TestRunResultsFetchingThread").start();
+            new Thread(new TestRunResultsWorker(this.project, view, profileName, trId, this.settingsProvider.getState(), testCount), "TestRunResultsFetchingThread").start();
         });
     }
 }
