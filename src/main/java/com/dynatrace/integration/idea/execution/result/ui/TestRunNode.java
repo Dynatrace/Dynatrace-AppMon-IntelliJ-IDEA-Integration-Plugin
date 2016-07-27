@@ -29,9 +29,10 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
+
 import com.dynatrace.integration.idea.Icons;
+import com.dynatrace.server.sdk.testautomation.models.TestRun;
+import com.dynatrace.server.sdk.testautomation.models.TestStatus;
 import com.intellij.ui.treeStructure.SimpleNode;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class TestRunNode extends SimpleNode implements StatusProvider {
 
     @Override
     protected void doUpdate() {
-        this.setIcon(Icons.fromStatus(this.run.getStatus()));
+        this.setIcon(Icons.fromStatus(this.getStatus()));
     }
 
     @Override
@@ -62,6 +63,21 @@ public class TestRunNode extends SimpleNode implements StatusProvider {
 
     @Override
     public TestStatus getStatus() {
-        return this.run.getStatus();
+        if (this.run.getFailedCount() > 0) {
+            return TestStatus.FAILED;
+        }
+        if (this.run.getDegradedCount() > 0) {
+            return TestStatus.DEGRADED;
+        }
+        if (this.run.getVolatileCount() > 0) {
+            return TestStatus.VOLATILE;
+        }
+        if (this.run.getInvalidatedCount() > 0) {
+            return TestStatus.INVALIDATED;
+        }
+        if (this.run.getImprovedCount() > 0) {
+            return TestStatus.IMPROVED;
+        }
+        return TestStatus.PASSED;
     }
 }

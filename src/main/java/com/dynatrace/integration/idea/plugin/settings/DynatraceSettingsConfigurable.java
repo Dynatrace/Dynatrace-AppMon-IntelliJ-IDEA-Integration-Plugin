@@ -29,15 +29,16 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
-import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
-import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
 import com.dynatrace.diagnostics.codelink.Callback;
 import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
 import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.server.sdk.DynatraceClient;
+import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
+import com.dynatrace.server.sdk.exceptions.ServerResponseException;
+import com.dynatrace.server.sdk.testautomation.TestAutomation;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -106,13 +107,13 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
             this.panel.testServerConnection.setEnabled(false);
             new Thread(() -> {
-                TestRunsEndpoint endpoint = new TestRunsEndpoint(settings);
+                TestAutomation testAutomation = new TestAutomation(new DynatraceClient(settings));
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
-                    endpoint.getTestRun("DOESNTMATTER", "DOESNTMATTER");
-                } catch (TestRunsResponseException e) {
+                    testAutomation.fetchTestRun("DOESNTMATTER", "DOESNTMATTER");
+                } catch (ServerResponseException e) {
                     //that's okay, we won't get a valid XML anyway
-                } catch (TestRunsConnectionException e) {
+                } catch (ServerConnectionException e) {
                     if (!e.getMessage().equals("Not Found")) {
                         message = TEST_CONNECTION_MESSAGE + " FAIL";
                     }
@@ -166,7 +167,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 }, IDEDescriptor.getInstance(), settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
-                    endpoint.connect(-1);
+                    endpoint.getClientVersion();
                 } catch (Exception e) {
                     message = TEST_CONNECTION_MESSAGE + " FAIL";
                 } finally {
@@ -209,9 +210,9 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
             if (state.getServer().isSSL() != this.panel.serverSSL.isSelected()
                     || !state.getServer().getHost().equals(this.panel.serverHost.getText())
                     || !state.getServer().getPassword().equals(String.valueOf(this.panel.password.getPassword()))
-                    || !state.getServer().getLogin().equals(this.panel.login.getText())
+                    || !state.getServer().getName().equals(this.panel.login.getText())
                     || state.getServer().getPort() != Integer.parseInt(this.panel.restPort.getText())
-                    || state.getServer().getTimeout() != Integer.parseInt(this.panel.timeout.getText())) {
+                    || state.getServer().getTimeout() != Integer.parseInt(this.panel.timeout.getText()) * 1000) {
                 return true;
             }
 
@@ -236,7 +237,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         settings.setPassword(String.valueOf(this.panel.password.getPassword()));
         settings.setPort(checkPort(this.panel.restPort.getText(), "Server"));
         try {
-            int timeout = Integer.parseInt(this.panel.timeout.getText());
+            int timeout = Integer.parseInt(this.panel.timeout.getText()) * 1000;
             settings.setTimeout(timeout);
         } catch (NumberFormatException e) {
             throw new ConfigurationException(Messages.getMessage("plugin.settings.ui.validation.illegalTimeout", "Server"));
@@ -275,9 +276,9 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
         this.panel.serverSSL.setSelected(state.getServer().isSSL());
         this.panel.restPort.setText(String.valueOf(state.getServer().getPort()));
         this.panel.serverSSL.setSelected(state.getServer().isSSL());
-        this.panel.login.setText(state.getServer().getLogin());
+        this.panel.login.setText(state.getServer().getName());
         this.panel.password.setText(state.getServer().getPassword());
-        this.panel.timeout.setText(String.valueOf(state.getServer().getTimeout()));
+        this.panel.timeout.setText(String.valueOf(state.getServer().getTimeout() / 1000));
 
 
         //agent

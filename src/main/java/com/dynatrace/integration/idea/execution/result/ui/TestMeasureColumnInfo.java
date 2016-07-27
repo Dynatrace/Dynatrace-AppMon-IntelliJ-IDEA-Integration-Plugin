@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestMeasure;
+import com.dynatrace.server.sdk.testautomation.models.TestMeasure;
 import com.intellij.util.ui.ColumnInfo;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -66,6 +66,7 @@ class TestMeasureColumnInfo extends ColumnInfo {
         final String name;
         final int width;
         private final ValueSupplier supplier;
+
         MeasureProperty(String name, ValueSupplier supplier, int width) {
             this.name = name;
             this.supplier = supplier;

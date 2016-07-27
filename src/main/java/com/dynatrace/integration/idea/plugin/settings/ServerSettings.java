@@ -29,13 +29,15 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
+import com.dynatrace.server.sdk.ServerConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.security.Principal;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sdk.ServerSettings {
+public class ServerSettings implements ServerConfiguration, Principal {
 
     @NotNull
     private String host = "localhost";
@@ -44,8 +46,8 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
     private boolean ssl = true;
     @NotNull
     private String login = "admin";
-    //in seconds
-    private int timeout = 30;
+    //in milliseconds
+    private int timeout = 30000;
 
     @NotNull
     @Override
@@ -67,6 +69,11 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
     }
 
     @Override
+    public Principal getUserPrincipal() {
+        return this;
+    }
+
+    @Override
     public synchronized String getPassword() {
         return this.password;
     }
@@ -84,11 +91,6 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
         this.ssl = ssl;
     }
 
-    @NotNull
-    @Override
-    public synchronized String getLogin() {
-        return this.login;
-    }
 
     public synchronized void setLogin(@NotNull String login) {
         this.login = login;
@@ -99,7 +101,17 @@ public class ServerSettings extends com.dynatrace.diagnostics.automation.rest.sd
         return this.timeout;
     }
 
-    public synchronized void setTimeout(int timeout) {
-        this.timeout = timeout;
+    @Override
+    public boolean isValidateCertificates() {
+        return false;
+    }
+
+    public synchronized void setTimeout(int timeoutMillis) {
+        this.timeout = timeoutMillis;
+    }
+
+    @Override
+    public String getName() {
+        return this.login;
     }
 }

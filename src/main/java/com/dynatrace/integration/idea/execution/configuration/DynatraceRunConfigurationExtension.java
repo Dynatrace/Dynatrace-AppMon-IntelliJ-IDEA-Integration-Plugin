@@ -29,12 +29,16 @@
 
 package com.dynatrace.integration.idea.execution.configuration;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
+import com.dynatrace.integration.idea.plugin.SDKClient;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
+import com.dynatrace.server.sdk.DynatraceClient;
+import com.dynatrace.server.sdk.testautomation.TestAutomation;
+import com.dynatrace.server.sdk.testautomation.models.CreateTestRunRequest;
+import com.dynatrace.server.sdk.testautomation.models.TestRun;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.JavaTestConfigurationBase;
 import com.intellij.execution.RunConfigurationExtension;
@@ -93,7 +97,7 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
         DynatraceSettingsProvider.State settings = DynatraceSettingsProvider.getInstance().getState();
 
         try {
-            RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(settings);
+            DynatraceClient client = SDKClient.getInstance();
             //get local (runconfiguration) settings
             DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
 
@@ -116,13 +120,16 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             Calendar now = Calendar.getInstance();
 
             //fetch test id
-            String id = endpoint.startTest(executionSettings.getSystemProfile(), String.valueOf(now.get(Calendar.YEAR)),
-                    String.valueOf(now.get(Calendar.MONTH) + 1), String.valueOf(now.get(Calendar.DAY_OF_WEEK)),
-                    String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())),
-                    null, null, null, null, null, null);
+            TestAutomation testAutomation = new TestAutomation(client);
+            CreateTestRunRequest request = new CreateTestRunRequest(executionSettings.getSystemProfile(), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())));
+            request.setVersionMajor(String.valueOf(now.get(Calendar.YEAR)));
+            request.setVersionMinor(String.valueOf(now.get(Calendar.MONTH) + 1));
+            request.setVersionRevision(String.valueOf(now.get(Calendar.DAY_OF_WEEK)));
 
-            builder.append(',').append("optionTestRunIdJava=").append(id);
-            IDEDescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", id), false);
+            TestRun testRun = testAutomation.createTestRun(request);
+
+            builder.append(',').append("optionTestRunIdJava=").append(testRun.getId());
+            IDEDescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", testRun.getId()), false);
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());

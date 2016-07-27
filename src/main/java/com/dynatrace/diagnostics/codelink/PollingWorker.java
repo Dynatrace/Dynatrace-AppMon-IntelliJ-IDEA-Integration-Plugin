@@ -98,7 +98,7 @@ class PollingWorker implements Runnable {
             }
         } catch (Exception e) {
             CodeLinkClient.LOGGER.warning("Error occured in codelink worker " + e.getMessage());
-            if (!hasErrored) {
+            if (!this.hasErrored) {
                 this.ide.log(Level.WARNING, "CodeLink Error", "Could not connect to client.", "<b>Check your configuration</b>", true);
             }
             this.hasErrored = true;

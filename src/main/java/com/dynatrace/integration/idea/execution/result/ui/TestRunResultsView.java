@@ -29,10 +29,11 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
+
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.actions.OpenInEditorAction;
+import com.dynatrace.server.sdk.testautomation.models.TestRun;
+import com.dynatrace.server.sdk.testautomation.models.TestStatus;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -75,7 +76,7 @@ public class TestRunResultsView implements Disposable {
 
     public TestRunResultsView(Project project) {
         this.model = new ListTreeTableModelOnColumns(null, COLUMNS.toArray(new ColumnInfo[COLUMNS.size()]));
-        this.tree = new TreeTable(model);
+        this.tree = new TreeTable(this.model);
 
         this.tree.getColumnModel().getColumn(0).setMinWidth(TestMeasureColumnInfo.MeasureProperty.GROUP.width * 2);
         for (TestMeasureColumnInfo.MeasureProperty prop : TestMeasureColumnInfo.MeasureProperty.values()) {

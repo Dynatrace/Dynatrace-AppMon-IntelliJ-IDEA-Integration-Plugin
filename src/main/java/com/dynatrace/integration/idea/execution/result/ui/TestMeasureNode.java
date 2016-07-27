@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestMeasure;
+import com.dynatrace.server.sdk.testautomation.models.TestMeasure;
 import com.intellij.ui.treeStructure.SimpleNode;
 
 public class TestMeasureNode extends SimpleNode {

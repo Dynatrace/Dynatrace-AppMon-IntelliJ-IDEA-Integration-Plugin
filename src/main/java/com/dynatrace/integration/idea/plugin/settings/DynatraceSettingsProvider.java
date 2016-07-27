@@ -29,7 +29,6 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -42,10 +41,6 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
 
     private State state;
 
-    public static RESTEndpoint endpointFromState(DynatraceSettingsProvider.State settings) {
-        return new RESTEndpoint(settings.server.getLogin(), settings.server.getPassword(), (settings.server.isSSL() ? "https://" : "http://") + settings.server.getHost() + ":" + settings.server.getPort());
-    }
-
     public static DynatraceSettingsProvider getInstance() {
         return ServiceManager.getService(DynatraceSettingsProvider.class);
     }
@@ -53,7 +48,7 @@ public class DynatraceSettingsProvider implements PersistentStateComponent<Dynat
     @Override
     @NotNull
     public DynatraceSettingsProvider.State getState() {
-        if (state == null) {
+        if (this.state == null) {
             this.state = new DynatraceSettingsProvider.State();
         }
         return this.state;

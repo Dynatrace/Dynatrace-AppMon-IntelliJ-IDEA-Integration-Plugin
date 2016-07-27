@@ -29,11 +29,15 @@
 
 package com.dynatrace.integration.idea.plugin.session;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.CommandExecutionException;
-import com.dynatrace.diagnostics.automation.rest.sdk.RESTEndpoint;
 import com.dynatrace.integration.idea.Messages;
+import com.dynatrace.integration.idea.plugin.SDKClient;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
+import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
+import com.dynatrace.server.sdk.exceptions.ServerResponseException;
+import com.dynatrace.server.sdk.sessions.Sessions;
+import com.dynatrace.server.sdk.sessions.models.RecordingOption;
+import com.dynatrace.server.sdk.sessions.models.StartRecordingRequest;
 import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,9 +56,11 @@ public class SessionStorage implements ProjectComponent {
 
     private final HashSet<String> recordings = new HashSet<>();
     private final DynatraceSettingsProvider provider;
+    private final Sessions sessions;
 
     public SessionStorage(@NotNull DynatraceSettingsProvider provider) {
         this.provider = provider;
+        this.sessions = new Sessions(SDKClient.getInstance());
     }
 
     @Override
@@ -105,10 +111,15 @@ public class SessionStorage implements ProjectComponent {
 
     @Nullable
     public String startRecording(String profileName) {
-        RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         String sessionName = profileName + ' ' + DateFormat.getDateInstance().format(new Date());
         try {
-            String id = endpoint.startRecording(profileName, sessionName, sessionName, "all", false, true);
+            StartRecordingRequest request = new StartRecordingRequest(profileName);
+            request.setPresentableName(sessionName);
+            request.setDescription(sessionName);
+            request.setRecordingOption(RecordingOption.ALL);
+            request.setSessionLocked(false);
+            request.setTimestampAllowed(true);
+            String id = this.sessions.startRecording(request);
 
             if (id != null) {
                 synchronized (this.recordings) {
@@ -118,7 +129,7 @@ public class SessionStorage implements ProjectComponent {
                 }
             }
             return id;
-        } catch (CommandExecutionException e) {
+        } catch (ServerConnectionException | ServerResponseException e) {
             if (e.getMessage().equals(SESSION_ALREADY_STARTED)) {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
@@ -126,7 +137,8 @@ public class SessionStorage implements ProjectComponent {
                 IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", e.getMessage(), false);
                 LOG.log(Level.INFO, e.getMessage());
             } else {
-                throw e;
+                IDEDescriptor.getInstance().log(Level.SEVERE, "Session", "", Messages.getMessage("plugin.session.starting.failed", profileName, e.getMessage()), true);
+                LOG.log(Level.INFO, e.getMessage());
             }
         }
         return null;
@@ -134,17 +146,22 @@ public class SessionStorage implements ProjectComponent {
 
     @Nullable
     public String stopRecording(String profileName) {
-        RESTEndpoint endpoint = DynatraceSettingsProvider.endpointFromState(this.provider.getState());
         IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.stopping", profileName), false);
         LOG.info(Messages.getMessage("plugin.session.stopping", profileName));
-        String stopped = endpoint.stopRecording(profileName);
-        if (stopped != null) {
-            synchronized (this.recordings) {
-                this.recordings.remove(profileName);
-                LOG.info(Messages.getMessage("plugin.session.stopped", profileName));
+        try {
+            String stopped = this.sessions.stopRecording(profileName);
+            if (stopped != null) {
+                synchronized (this.recordings) {
+                    this.recordings.remove(profileName);
+                    LOG.info(Messages.getMessage("plugin.session.stopped", profileName));
+                }
             }
+            return stopped;
+        } catch (ServerResponseException | ServerConnectionException e) {
+            IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()), true);
+            LOG.warning(Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()));
         }
-        return stopped;
+        return null;
     }
 
     public boolean isRecording(String profile) {

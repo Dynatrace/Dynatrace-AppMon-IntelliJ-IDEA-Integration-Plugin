@@ -18,10 +18,10 @@ public class ClientVersion implements Comparable<ClientVersion> {
 
     @Override
     public int hashCode() {
-        int result = major;
-        result = 31 * result + minor;
-        result = 31 * result + revision;
-        result = 31 * result + build;
+        int result = this.major;
+        result = 31 * result + this.minor;
+        result = 31 * result + this.revision;
+        result = 31 * result + this.build;
         return result;
     }
 
@@ -60,13 +60,13 @@ public class ClientVersion implements Comparable<ClientVersion> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         ClientVersion that = (ClientVersion) o;
 
-        if (major != that.major) return false;
-        if (minor != that.minor) return false;
-        if (revision != that.revision) return false;
-        return build == that.build;
+        if (this.major != that.major) return false;
+        if (this.minor != that.minor) return false;
+        if (this.revision != that.revision) return false;
+        return this.build == that.build;
     }
 }

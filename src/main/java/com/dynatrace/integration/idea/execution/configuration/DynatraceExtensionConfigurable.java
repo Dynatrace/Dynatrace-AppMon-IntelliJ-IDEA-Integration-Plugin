@@ -84,6 +84,6 @@ public class DynatraceExtensionConfigurable extends SettingsEditor<RunConfigurat
             }
         });
         this.helpText.setText(Messages.getMessage("plugin.settings.ui.help", this.helpText.getFont().getFamily()));
-        return wholePanel;
+        return this.wholePanel;
     }
 }

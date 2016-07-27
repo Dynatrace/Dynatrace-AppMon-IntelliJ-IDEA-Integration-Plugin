@@ -77,7 +77,7 @@ class DynatraceConfigurableStorage {
         if (this.additionalParameters != null) {
             element.setAttribute("additionalParameters", this.additionalParameters);
         }
-        element.setAttribute("recordSessionPerLaunch", String.valueOf(recordSessionPerLaunch));
+        element.setAttribute("recordSessionPerLaunch", String.valueOf(this.recordSessionPerLaunch));
     }
 
     public String getSystemProfile() {

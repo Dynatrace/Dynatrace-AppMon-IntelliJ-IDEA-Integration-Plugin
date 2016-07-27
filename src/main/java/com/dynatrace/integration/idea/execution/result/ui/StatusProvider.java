@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
+import com.dynatrace.server.sdk.testautomation.models.TestStatus;
 
 public interface StatusProvider {
     TestStatus getStatus();

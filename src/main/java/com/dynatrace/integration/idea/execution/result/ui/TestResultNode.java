@@ -29,9 +29,10 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestResult;
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestStatus;
+
 import com.dynatrace.integration.idea.Icons;
+import com.dynatrace.server.sdk.testautomation.models.TestResult;
+import com.dynatrace.server.sdk.testautomation.models.TestStatus;
 import com.intellij.ui.treeStructure.SimpleNode;
 
 import java.util.ArrayList;
@@ -53,13 +54,13 @@ public class TestResultNode extends SimpleNode implements StatusProvider {
     @Override
     public TestMeasureNode[] getChildren() {
         List<TestMeasureNode> measures = new ArrayList<>();
-        this.result.getTestMeasures().forEach((measure) -> measures.add(new TestMeasureNode(measure)));
+        this.result.getMeasures().forEach((measure) -> measures.add(new TestMeasureNode(measure)));
         return measures.toArray(new TestMeasureNode[measures.size()]);
     }
 
     @Override
     public String getName() {
-        return this.result.getTestName();
+        return this.result.getName();
     }
 
     @Override

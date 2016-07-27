@@ -29,10 +29,10 @@
 
 package com.dynatrace.integration.idea.execution.result.actions;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestResult;
 import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor;
+import com.dynatrace.server.sdk.testautomation.models.TestResult;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -54,10 +54,10 @@ public class OpenInEditorAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         TestResult result = this.provider.getTestResult();
-        if (result == null || result.getTestName() == null) {
+        if (result == null || result.getName() == null) {
             return;
         }
-        String[] testName = result.getTestName().split("\\.");
+        String[] testName = result.getName().split("\\.");
         if (testName.length < 2) {
             return;
         }

@@ -39,6 +39,7 @@
         <applicationService
                 serviceImplementation="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider"/>
         <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor"/>
+        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.SDKClient"/>
         <projectService
                 serviceImplementation="com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator"/>
         <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor"/>

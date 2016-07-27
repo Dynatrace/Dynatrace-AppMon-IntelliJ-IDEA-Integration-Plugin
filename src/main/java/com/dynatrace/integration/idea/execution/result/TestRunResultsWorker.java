@@ -29,14 +29,16 @@
 
 package com.dynatrace.integration.idea.execution.result;
 
-import com.dynatrace.diagnostics.automation.rest.sdk.TestRunsEndpoint;
-import com.dynatrace.diagnostics.automation.rest.sdk.entity.TestRun;
-import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsConnectionException;
-import com.dynatrace.diagnostics.automation.rest.sdk.exceptions.TestRunsResponseException;
+
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
+import com.dynatrace.integration.idea.plugin.SDKClient;
 import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
+import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
+import com.dynatrace.server.sdk.exceptions.ServerResponseException;
+import com.dynatrace.server.sdk.testautomation.TestAutomation;
+import com.dynatrace.server.sdk.testautomation.models.TestRun;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,10 +68,10 @@ public class TestRunResultsWorker implements Runnable {
     public void run() {
         int lastFetched = 0;
         while (System.currentTimeMillis() - this.startTime < this.settings.getServer().getTimeout() * 1000L) {
-            TestRunsEndpoint endpoint = new TestRunsEndpoint(this.settings.getServer());
+            TestAutomation automation = new TestAutomation(SDKClient.getInstance());
             try {
-                TestRun testRun = endpoint.getTestRun(this.profileName, this.testRunId);
-                if (!testRun.isEmpty() && testRun.getTestResults().size() > lastFetched) {
+                TestRun testRun = automation.fetchTestRun(this.profileName, this.testRunId);
+                if (!testRun.getTestResults().isEmpty() && testRun.getTestResults().size() > lastFetched) {
                     lastFetched = testRun.getTestResults().size();
                     this.view.setTestRun(testRun);
                     if (testRun.getTestResults().size() >= this.testCount) {
@@ -82,7 +84,7 @@ public class TestRunResultsWorker implements Runnable {
                     }
                 }
                 Thread.sleep(DELAY);
-            } catch (TestRunsResponseException | TestRunsConnectionException e) {
+            } catch (ServerResponseException | ServerConnectionException e) {
                 IDEDescriptor.getInstance().log(Level.SEVERE, "TestRuns", "", Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()), false);
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()));
                 break;
