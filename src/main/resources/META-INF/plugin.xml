@@ -1,0 +1,65 @@
+<idea-plugin version="2">
+    <id>com.dynatrace.integration.idea</id>
+    <name>Dynatrace AppMon Integration</name>
+    <version>0.0.4</version>
+    <vendor url="https://dynatrace.com">Dynatrace</vendor>
+
+    <description><![CDATA[
+      The Dynatrace IntelliJ Idea Integration Plugin enables you to:
+      <ul>
+      <li>launch applications with an injected Dynatrace Agent directly from IntelliJ IDEA</li>
+      <li>retrieve & display the key architectural metrics (such as number of SQL queries, external API calls, exceptions and log messages) from your tests</li>
+      <li>perform look-ups of sources files and methods from applications under diagnosis in Dynatrace Application Monitoring</li>
+      </ul>
+
+      <div style="text-align: right;">Contributors:<dl>
+        <dt>Maciej Mionskowski</dt>
+        <dd><a href="https://maciekmm.net">https://maciekmm.net</a></dd>
+        <dd><a href="mailto:maciej.mionskowski@dynatrace.com">maciej.mionskowski@dynatrace.com</a></dd>
+      </dl>
+      </div>
+    ]]></description>
+
+    <change-notes><![CDATA[
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="151.0"/>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <runConfigurationExtension
+                implementation="com.dynatrace.integration.idea.execution.configuration.DynatraceRunConfigurationExtension"/>
+        <executor implementation="com.dynatrace.integration.idea.execution.DynatraceExecutor"/>
+        <programRunner implementation="com.dynatrace.integration.idea.execution.DynatraceRunner"/>
+        <applicationConfigurable groupId="build"
+                                 instance="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsConfigurable"
+                                 id="dynatrace" displayName="Dynatrace AppMon"/>
+        <applicationService
+                serviceImplementation="com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider"/>
+        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.IDEADescriptor"/>
+        <applicationService serviceImplementation="com.dynatrace.integration.idea.plugin.SDKClient"/>
+        <projectService
+                serviceImplementation="com.dynatrace.integration.idea.execution.result.TestRunResultsCoordinator"/>
+        <projectService serviceImplementation="com.dynatrace.integration.idea.plugin.codelink.DynatraceProjectDescriptor"/>
+        <testStatusListener implementation="com.dynatrace.integration.idea.execution.DynatraceTestStatusListener"/>
+    </extensions>
+
+    <project-components>
+        <component>
+            <implementation-class>com.dynatrace.integration.idea.plugin.codelink.CodeLinkCoordinator
+            </implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.dynatrace.integration.idea.plugin.session.SessionStorage
+            </implementation-class>
+        </component>
+    </project-components>
+
+    <!--<application-components>-->
+    <!--<component>-->
+    <!--<implementation-class>com.dynatrace.integration.idea.settings.plugin.set</implementation-class>-->
+    <!--</component>-->
+    <!--</application-components>-->
+</idea-plugin>
