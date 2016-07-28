@@ -33,13 +33,13 @@ package com.dynatrace.integration.idea.execution.result;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.ui.TestRunResultsView;
 import com.dynatrace.integration.idea.plugin.SDKClient;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
-import com.dynatrace.server.sdk.exceptions.ServerResponseException;
-import com.dynatrace.server.sdk.testautomation.TestAutomation;
-import com.dynatrace.server.sdk.testautomation.models.TestRun;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import com.intellij.openapi.project.Project;
 
 import java.util.logging.Level;
@@ -83,17 +83,17 @@ public class TestRunResultsWorker implements Runnable {
                     lastFetched = testRun.getTestResults().size();
                     this.view.setTestRun(testRun);
                     if (testRun.getTestResults().size() >= this.testCount) {
-                        IDEDescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.success", this.testRunId), false);
+                        IDEADescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.success", this.testRunId), false);
                         LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.success", this.testRunId));
                         return;
                     } else {
-                        IDEDescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.partial", testRun.getTestResults().size(), this.testCount, this.testRunId), false);
+                        IDEADescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.worker.partial", testRun.getTestResults().size(), this.testCount, this.testRunId), false);
                         LOG.log(Level.INFO, Messages.getMessage("execution.result.worker.partial", testRun.getTestResults().size(), this.testCount, this.testRunId));
                     }
                 }
                 Thread.sleep(DELAY);
             } catch (ServerResponseException | ServerConnectionException e) {
-                IDEDescriptor.getInstance().log(Level.SEVERE, "TestRuns", "", Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()), false);
+                IDEADescriptor.getInstance().log(Level.SEVERE, "TestRuns", "", Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()), false);
                 LOG.log(Level.WARNING, Messages.getMessage("execution.result.worker.error", e.getLocalizedMessage()));
                 break;
             } catch (InterruptedException e) {
@@ -101,7 +101,7 @@ public class TestRunResultsWorker implements Runnable {
                 break;
             }
         }
-        IDEDescriptor.getInstance().log(Level.WARNING, "TestRuns", "", Messages.getMessage("execution.result.worker.timeout", lastFetched, this.testCount, this.testRunId), false);
+        IDEADescriptor.getInstance().log(Level.WARNING, "TestRuns", "", Messages.getMessage("execution.result.worker.timeout", lastFetched, this.testCount, this.testRunId), false);
         this.view.setEmptyText(Messages.getMessage("execution.result.ui.errorloading"));
     }
 }

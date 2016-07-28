@@ -27,10 +27,9 @@
  *
  */
 
-package com.dynatrace.integration.idea.plugin.codelink;
+package com.dynatrace.integration.idea.plugin;
 
-import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
-import com.dynatrace.diagnostics.codelink.IIDEDescriptor;
+import com.dynatrace.codelink.IDEDescriptor;
 import com.dynatrace.integration.idea.Icons;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.notification.*;
@@ -44,12 +43,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.logging.Level;
 
 
-public class IDEDescriptor implements IIDEDescriptor {
+public class IDEADescriptor implements IDEDescriptor {
     public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, Icons.CROSSED);
     public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, Icons.DYNATRACE13);
 
-    public static IDEDescriptor getInstance() {
-        return ServiceManager.getService(IDEDescriptor.class);
+    public static IDEADescriptor getInstance() {
+        return ServiceManager.getService(IDEADescriptor.class);
     }
 
     @Override
@@ -66,7 +65,7 @@ public class IDEDescriptor implements IIDEDescriptor {
         if (split.length < 3) {
             throw new RuntimeException("Invalid plugin version, should be in major.minor.rev format");
         }
-        return new IIDEDescriptor.Version(split[0], split[1], split[2]);
+        return new IDEDescriptor.Version(split[0], split[1], split[2]);
     }
 
     @Override
@@ -90,7 +89,7 @@ public class IDEDescriptor implements IIDEDescriptor {
 
     @Override
     public int getId() {
-        return CodeLinkEndpoint.IDEA_ID;
+        return IDEDescriptor.IDEA_ID;
     }
 
 }

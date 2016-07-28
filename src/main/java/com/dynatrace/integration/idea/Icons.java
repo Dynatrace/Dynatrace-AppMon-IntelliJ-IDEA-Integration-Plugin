@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea;
 
-import com.dynatrace.server.sdk.testautomation.models.TestStatus;
+import com.dynatrace.sdk.server.testautomation.models.TestStatus;
 import com.intellij.openapi.util.IconLoader;
 import org.jetbrains.annotations.NotNull;
 

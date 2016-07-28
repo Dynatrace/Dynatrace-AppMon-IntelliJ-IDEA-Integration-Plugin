@@ -31,13 +31,13 @@ package com.dynatrace.integration.idea.plugin.session;
 
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.plugin.SDKClient;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
-import com.dynatrace.server.sdk.exceptions.ServerResponseException;
-import com.dynatrace.server.sdk.sessions.Sessions;
-import com.dynatrace.server.sdk.sessions.models.RecordingOption;
-import com.dynatrace.server.sdk.sessions.models.StartRecordingRequest;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.sessions.Sessions;
+import com.dynatrace.sdk.server.sessions.models.RecordingOption;
+import com.dynatrace.sdk.server.sessions.models.StartRecordingRequest;
 import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,7 +124,7 @@ public class SessionStorage implements ProjectComponent {
             if (id != null) {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
-                    IDEDescriptor.getInstance().log(Level.INFO, "Session", "", Messages.getMessage("plugin.session.started", id, profileName), false);
+                    IDEADescriptor.getInstance().log(Level.INFO, "Session", "", Messages.getMessage("plugin.session.started", id, profileName), false);
                     LOG.info(Messages.getMessage("plugin.session.started", id, profileName));
                 }
             }
@@ -134,10 +134,10 @@ public class SessionStorage implements ProjectComponent {
                 synchronized (this.recordings) {
                     this.recordings.add(profileName);
                 }
-                IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", e.getMessage(), false);
+                IDEADescriptor.getInstance().log(Level.WARNING, "Session", "", e.getMessage(), false);
                 LOG.log(Level.INFO, e.getMessage());
             } else {
-                IDEDescriptor.getInstance().log(Level.SEVERE, "Session", "", Messages.getMessage("plugin.session.starting.failed", profileName, e.getMessage()), true);
+                IDEADescriptor.getInstance().log(Level.SEVERE, "Session", "", Messages.getMessage("plugin.session.starting.failed", profileName, e.getMessage()), true);
                 LOG.log(Level.INFO, e.getMessage());
             }
         }
@@ -146,7 +146,7 @@ public class SessionStorage implements ProjectComponent {
 
     @Nullable
     public String stopRecording(String profileName) {
-        IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.stopping", profileName), false);
+        IDEADescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.stopping", profileName), false);
         LOG.info(Messages.getMessage("plugin.session.stopping", profileName));
         try {
             String stopped = this.sessions.stopRecording(profileName);
@@ -155,7 +155,7 @@ public class SessionStorage implements ProjectComponent {
             }
             return stopped;
         } catch (ServerResponseException | ServerConnectionException e) {
-            IDEDescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()), true);
+            IDEADescriptor.getInstance().log(Level.WARNING, "Session", "", Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()), true);
             LOG.warning(Messages.getMessage("plugin.session.cantend", profileName, e.getMessage()));
         } finally {
             synchronized (this.recordings) {

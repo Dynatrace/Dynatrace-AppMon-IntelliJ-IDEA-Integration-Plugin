@@ -30,7 +30,7 @@
 package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
@@ -79,7 +79,7 @@ public class DynatraceExtensionConfigurable extends SettingsEditor<RunConfigurat
                 try {
                     desktop.browse(hle.getURL().toURI());
                 } catch (Exception ex) {
-                    IDEDescriptor.getInstance().log(Level.WARNING, "Error occured while opening hyperlink", "", ex.getMessage(), false);
+                    IDEADescriptor.getInstance().log(Level.WARNING, "Error occured while opening hyperlink", "", ex.getMessage(), false);
                 }
             }
         });

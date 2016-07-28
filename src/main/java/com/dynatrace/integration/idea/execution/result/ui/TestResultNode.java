@@ -31,8 +31,8 @@ package com.dynatrace.integration.idea.execution.result.ui;
 
 
 import com.dynatrace.integration.idea.Icons;
-import com.dynatrace.server.sdk.testautomation.models.TestResult;
-import com.dynatrace.server.sdk.testautomation.models.TestStatus;
+import com.dynatrace.sdk.server.testautomation.models.TestResult;
+import com.dynatrace.sdk.server.testautomation.models.TestStatus;
 import com.intellij.ui.treeStructure.SimpleNode;
 
 import java.util.ArrayList;

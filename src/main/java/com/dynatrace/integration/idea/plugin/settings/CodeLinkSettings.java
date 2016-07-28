@@ -29,14 +29,13 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.diagnostics.codelink.ICodeLinkSettings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class CodeLinkSettings implements ICodeLinkSettings {
+public class CodeLinkSettings implements com.dynatrace.codelink.CodeLinkSettings {
     private boolean enabled = true;
     @NotNull
     private String host = "localhost";

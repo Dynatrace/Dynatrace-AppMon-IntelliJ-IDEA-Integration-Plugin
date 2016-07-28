@@ -1,7 +1,7 @@
 package com.dynatrace.integration.idea.plugin;
 
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.dynatrace.server.sdk.DynatraceClient;
+import com.dynatrace.sdk.server.DynatraceClient;
 import com.intellij.openapi.components.ServiceManager;
 
 public class SDKClient {

@@ -72,7 +72,7 @@ public class TestRunResultsCoordinator {
 
     // Requests test results from the server and displays them in the UI
     public void requestTestRunResults(String profileName, final String trId, int testCount) {
-        //IDEDescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.display.requested", profileName), false);
+        //IDEADescriptor.getInstance().log(Level.INFO, "TestRuns", "", Messages.getMessage("execution.result.display.requested", profileName), false);
         LOG.log(Level.INFO, Messages.getMessage("execution.result.display.requested", profileName));
 
         ApplicationManager.getApplication().invokeLater(() -> {

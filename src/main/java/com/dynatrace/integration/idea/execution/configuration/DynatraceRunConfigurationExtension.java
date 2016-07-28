@@ -32,13 +32,13 @@ package com.dynatrace.integration.idea.execution.configuration;
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
 import com.dynatrace.integration.idea.plugin.SDKClient;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
 import com.dynatrace.integration.idea.plugin.session.SessionStorage;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
-import com.dynatrace.server.sdk.DynatraceClient;
-import com.dynatrace.server.sdk.testautomation.TestAutomation;
-import com.dynatrace.server.sdk.testautomation.models.CreateTestRunRequest;
-import com.dynatrace.server.sdk.testautomation.models.TestRun;
+import com.dynatrace.sdk.server.DynatraceClient;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
+import com.dynatrace.sdk.server.testautomation.models.CreateTestRunRequest;
+import com.dynatrace.sdk.server.testautomation.models.TestRun;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.JavaTestConfigurationBase;
 import com.intellij.execution.RunConfigurationExtension;
@@ -129,12 +129,12 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             TestRun testRun = testAutomation.createTestRun(request);
 
             builder.append(',').append("optionTestRunIdJava=").append(testRun.getId());
-            IDEDescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", testRun.getId()), false);
+            IDEADescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", testRun.getId()), false);
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
         } catch (Exception e) {
-            //IDEDescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
+            //IDEADescriptor.getInstance(configuration.getProject()).log(Level.SEVERE, Messages.getMessage("notifications.error.title"), "", Messages.getMessage("notifications.error.configuration"), true);
             throw new ExecutionException(e);
         }
     }

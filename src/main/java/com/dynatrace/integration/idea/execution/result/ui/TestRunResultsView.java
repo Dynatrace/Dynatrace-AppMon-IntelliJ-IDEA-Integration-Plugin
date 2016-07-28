@@ -32,8 +32,8 @@ package com.dynatrace.integration.idea.execution.result.ui;
 
 import com.dynatrace.integration.idea.Messages;
 import com.dynatrace.integration.idea.execution.result.actions.OpenInEditorAction;
-import com.dynatrace.server.sdk.testautomation.models.TestRun;
-import com.dynatrace.server.sdk.testautomation.models.TestStatus;
+import com.dynatrace.sdk.server.testautomation.models.TestRun;
+import com.dynatrace.sdk.server.testautomation.models.TestStatus;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;

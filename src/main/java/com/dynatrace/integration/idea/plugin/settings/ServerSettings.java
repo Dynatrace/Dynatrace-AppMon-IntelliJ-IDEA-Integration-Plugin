@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.server.sdk.ServerConfiguration;
+import com.dynatrace.sdk.server.ServerConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.bind.annotation.XmlAccessType;

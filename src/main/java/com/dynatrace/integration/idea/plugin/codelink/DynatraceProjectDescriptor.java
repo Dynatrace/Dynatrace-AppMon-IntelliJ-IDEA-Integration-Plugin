@@ -29,9 +29,10 @@
 
 package com.dynatrace.integration.idea.plugin.codelink;
 
-import com.dynatrace.diagnostics.codelink.Callback;
-import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
-import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
+
+import com.dynatrace.codelink.Callback;
+import com.dynatrace.codelink.CodeLinkLookupResponse;
+import com.dynatrace.codelink.ProjectDescriptor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
@@ -43,15 +44,15 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ProjectDescriptor implements IProjectDescriptor {
+public class DynatraceProjectDescriptor implements ProjectDescriptor {
     private final Project project;
 
-    public ProjectDescriptor(Project project) {
+    public DynatraceProjectDescriptor(Project project) {
         this.project = project;
     }
 
-    public static ProjectDescriptor getInstance(Project project) {
-        return ServiceManager.getService(project, ProjectDescriptor.class);
+    public static DynatraceProjectDescriptor getInstance(Project project) {
+        return ServiceManager.getService(project, DynatraceProjectDescriptor.class);
     }
 
     @Override

@@ -29,10 +29,11 @@
 
 package com.dynatrace.integration.idea.execution.result.actions;
 
-import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
+
+import com.dynatrace.codelink.CodeLinkLookupResponse;
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.plugin.codelink.ProjectDescriptor;
-import com.dynatrace.server.sdk.testautomation.models.TestResult;
+import com.dynatrace.integration.idea.plugin.codelink.DynatraceProjectDescriptor;
+import com.dynatrace.sdk.server.testautomation.models.TestResult;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 public class OpenInEditorAction extends AnAction {
     private final TestResultProvider provider;
     private final Project project;
+
     public OpenInEditorAction(@NotNull TestResultProvider provider, @NotNull Project project) {
         this.provider = provider;
         this.project = project;
@@ -62,7 +64,7 @@ public class OpenInEditorAction extends AnAction {
             return;
         }
         String className = result.getPackageName() + '.' + testName[0];
-        ProjectDescriptor descriptor = ProjectDescriptor.getInstance(this.project);
+        DynatraceProjectDescriptor descriptor = DynatraceProjectDescriptor.getInstance(this.project);
         CodeLinkLookupResponse response = new CodeLinkLookupResponse();
         response.className = className;
         //if the test was parametrized the mathod name will contain parameters passed, we need to strip it

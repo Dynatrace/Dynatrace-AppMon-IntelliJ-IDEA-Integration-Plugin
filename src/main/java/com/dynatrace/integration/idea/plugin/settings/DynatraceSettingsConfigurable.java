@@ -29,16 +29,17 @@
 
 package com.dynatrace.integration.idea.plugin.settings;
 
-import com.dynatrace.diagnostics.codelink.Callback;
-import com.dynatrace.diagnostics.codelink.CodeLinkEndpoint;
-import com.dynatrace.diagnostics.codelink.CodeLinkLookupResponse;
-import com.dynatrace.diagnostics.codelink.IProjectDescriptor;
+
+import com.dynatrace.codelink.Callback;
+import com.dynatrace.codelink.CodeLinkEndpoint;
+import com.dynatrace.codelink.CodeLinkLookupResponse;
+import com.dynatrace.codelink.ProjectDescriptor;
 import com.dynatrace.integration.idea.Messages;
-import com.dynatrace.integration.idea.plugin.codelink.IDEDescriptor;
-import com.dynatrace.server.sdk.DynatraceClient;
-import com.dynatrace.server.sdk.exceptions.ServerConnectionException;
-import com.dynatrace.server.sdk.exceptions.ServerResponseException;
-import com.dynatrace.server.sdk.testautomation.TestAutomation;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
+import com.dynatrace.sdk.server.DynatraceClient;
+import com.dynatrace.sdk.server.exceptions.ServerConnectionException;
+import com.dynatrace.sdk.server.exceptions.ServerResponseException;
+import com.dynatrace.sdk.server.testautomation.TestAutomation;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -148,7 +149,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
 
             this.panel.testCodeLinkConnection.setEnabled(false);
             new Thread(() -> {
-                CodeLinkEndpoint endpoint = new CodeLinkEndpoint(new IProjectDescriptor() {
+                CodeLinkEndpoint endpoint = new CodeLinkEndpoint(new ProjectDescriptor() {
                     @NotNull
                     @Override
                     public String getProjectName() {
@@ -164,7 +165,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                     @Override
                     public void jumpToClass(@NotNull CodeLinkLookupResponse response, @Nullable Callback<Boolean> cb) {
                     }
-                }, IDEDescriptor.getInstance(), settings);
+                }, IDEADescriptor.getInstance(), settings);
                 String message = TEST_CONNECTION_MESSAGE + " OK";
                 try {
                     endpoint.getClientVersion();
@@ -187,7 +188,7 @@ public class DynatraceSettingsConfigurable implements Configurable.NoScroll, Con
                 try {
                     desktop.browse(hle.getURL().toURI());
                 } catch (Exception ex) {
-                    IDEDescriptor.getInstance().log(Level.WARNING, "Error occured while opening hyperlink", "", ex.getMessage(), false);
+                    IDEADescriptor.getInstance().log(Level.WARNING, "Error occured while opening hyperlink", "", ex.getMessage(), false);
                 }
             }
         });

@@ -29,18 +29,20 @@
 
 package com.dynatrace.integration.idea.plugin.codelink;
 
-import com.dynatrace.diagnostics.codelink.CodeLinkClient;
+
+import com.dynatrace.codelink.CodeLinkClient;
+import com.dynatrace.integration.idea.plugin.IDEADescriptor;
 import com.dynatrace.integration.idea.plugin.settings.DynatraceSettingsProvider;
 import com.intellij.openapi.components.ProjectComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class CodeLinkCoordinator implements ProjectComponent {
     private final DynatraceSettingsProvider settings;
-    private final IDEDescriptor ideDescriptor;
-    private final ProjectDescriptor projectDescriptor;
+    private final IDEADescriptor ideDescriptor;
+    private final DynatraceProjectDescriptor projectDescriptor;
     private CodeLinkClient client;
 
-    public CodeLinkCoordinator(DynatraceSettingsProvider settings, IDEDescriptor ideDescriptor, ProjectDescriptor projectDescriptor) {
+    public CodeLinkCoordinator(DynatraceSettingsProvider settings, IDEADescriptor ideDescriptor, DynatraceProjectDescriptor projectDescriptor) {
         this.settings = settings;
         this.ideDescriptor = ideDescriptor;
         this.projectDescriptor = projectDescriptor;

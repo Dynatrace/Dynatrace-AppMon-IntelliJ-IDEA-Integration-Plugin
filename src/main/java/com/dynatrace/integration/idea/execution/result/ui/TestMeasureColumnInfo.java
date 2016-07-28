@@ -29,7 +29,7 @@
 
 package com.dynatrace.integration.idea.execution.result.ui;
 
-import com.dynatrace.server.sdk.testautomation.models.TestMeasure;
+import com.dynatrace.sdk.server.testautomation.models.TestMeasure;
 import com.intellij.util.ui.ColumnInfo;
 
 import javax.swing.tree.DefaultMutableTreeNode;
