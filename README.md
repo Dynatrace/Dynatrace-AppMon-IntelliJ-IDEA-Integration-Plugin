@@ -29,8 +29,8 @@ The Dynatrace IntelliJ Idea Integration Plugin enables you to:
 
 ### <a name="prerequisites"></a>Prerequisites
 
-* Dynatrace Application Monitoring version:
-* IntelliJ version:
+* Dynatrace Application Monitoring version: 6.3+
+* IntelliJ version: 2016.1+ (145+)
 
 Find further information in the [Dynatrace community](https://community.dynatrace.com/community/pages/viewpage.action?pageId=68649064).
 
