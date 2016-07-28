@@ -65,10 +65,8 @@ public class OpenInEditorAction extends AnAction {
         }
         String className = result.getPackageName() + '.' + testName[0];
         DynatraceProjectDescriptor descriptor = DynatraceProjectDescriptor.getInstance(this.project);
-        CodeLinkLookupResponse response = new CodeLinkLookupResponse();
-        response.className = className;
+        CodeLinkLookupResponse response = new CodeLinkLookupResponse(className, testName[1].split("\\(")[0], null);
         //if the test was parametrized the mathod name will contain parameters passed, we need to strip it
-        response.methodName = testName[1].split("\\(")[0];
         descriptor.jumpToClass(response, null);
     }
 

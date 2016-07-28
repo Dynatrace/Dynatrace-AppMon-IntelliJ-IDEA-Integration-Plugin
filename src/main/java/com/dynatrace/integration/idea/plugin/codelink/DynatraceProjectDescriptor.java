@@ -70,7 +70,7 @@ public class DynatraceProjectDescriptor implements ProjectDescriptor {
 
     private Navigatable getNavigatable(CodeLinkLookupResponse response) {
         //outer$inner$inner$inner or outer
-        String[] innerClasses = response.className.split("\\$");
+        String[] innerClasses = response.getClassName().split("\\$");
 
         PsiClass clazz = JavaPsiFacade.getInstance(this.project).findClass(innerClasses[0], GlobalSearchScope.allScope(this.project));
         if (clazz == null || !clazz.canNavigateToSource()) {
@@ -85,11 +85,11 @@ public class DynatraceProjectDescriptor implements ProjectDescriptor {
             clazz = inner;
         }
 
-        if (response.methodName == null) {
+        if (response.getMethodName() == null) {
             return clazz;
         }
 
-        PsiMethod[] methods = clazz.findMethodsByName(response.methodName, false);
+        PsiMethod[] methods = clazz.findMethodsByName(response.getMethodName(), false);
         if (methods.length == 0) {
             return clazz;
         }
@@ -97,17 +97,17 @@ public class DynatraceProjectDescriptor implements ProjectDescriptor {
         PsiMethod jumpTo = methods[0];
         //if there is no method signature present and only one method with a given name is available
         //jump to the method, otherwise do nothing (we don't want to confuse the user)
-        if (methods.length != 1 && response.arguments == null) {
+        if (methods.length != 1 && response.getArguments() == null) {
             return clazz;
-        } else if (methods.length > 1) {
+        } else if (methods.length > 1 && response.getArguments() != null) {
             for (PsiMethod method : methods) {
-                if (method.getParameterList().getParametersCount() != response.arguments.length) {
+                if (method.getParameterList().getParametersCount() != response.getArguments().length) {
                     continue;
                 }
                 jumpTo = method;
                 //verify params
                 for (int i = 0; i < method.getParameterList().getParametersCount(); i++) {
-                    if (!method.getParameterList().getParameters()[i].getType().getCanonicalText().equals(response.arguments[i])) {
+                    if (!method.getParameterList().getParameters()[i].getType().getCanonicalText().equals(response.getArguments()[i])) {
                         jumpTo = null;
                         break;
                     }
