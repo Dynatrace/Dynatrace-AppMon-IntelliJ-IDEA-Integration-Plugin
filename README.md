@@ -1,6 +1,6 @@
 ![](img/logo_IntelliJIDEA.png)
 
-# Dynatrace IntelliJ Idea Integration Plugin
+# Dynatrace IntelliJ Idea Integration Plugin [![Build Status](https://travis-ci.org/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin.svg?branch=master)](https://travis-ci.org/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin) 
  
 The Dynatrace IntelliJ Idea Integration Plugin enables you to:
 * launch applications with an injected Dynatrace Agent directly from IntelliJ
