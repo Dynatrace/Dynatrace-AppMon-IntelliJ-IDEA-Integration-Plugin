@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 class DynatraceConfigurableStorage {
     private static final Key<DynatraceConfigurableStorage> STORAGE_KEY = Key.create("com.dynatrace.integration.idea");
 
-    private String systemProfile = "IntelliJ";
+    private String systemProfile = "Monitoring";
     private String agentName = "IntelliJ";
     private String additionalParameters;
     private boolean recordSessionPerLaunch;
