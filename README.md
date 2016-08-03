@@ -7,6 +7,11 @@ The Dynatrace IntelliJ Idea Integration Plugin enables you to:
 * retrieve & display the key architectural metrics (such as number of SQL queries, external API calls, exceptions and log messages) from your tests
 * perform look-ups of sources files and methods from applications under diagnosis in Dynatrace Application Monitoring
 
+Special thanks to Christian Grimm who contributed to the first version of this plugin.
+
+* Download latest release: 
+* IntelliJ IDEA Plugin on the Dynatrace Community: https://community.dynatrace.com/community/display/DL/IntelliJ+IDEA+Integration+Plugin
+
 #### Table of Contents
 
 * [Installation](#installation)  
