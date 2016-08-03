@@ -1,4 +1,4 @@
-![](img/logo_IntelliJIDEA.png)
+<img src="/img/logo_IntelliJIDEA.png" width="300" />
 
 # Dynatrace IntelliJ Idea Integration Plugin [![Build Status](https://travis-ci.org/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin.svg?branch=master)](https://travis-ci.org/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin) 
  
