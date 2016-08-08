@@ -9,7 +9,7 @@ The Dynatrace IntelliJ Idea Integration Plugin enables you to:
 
 Special thanks to Christian Grimm who contributed to the first version of this plugin.
 
-* Download latest release: 
+* Download latest release: https://github.com/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin/releases/tag/v2.0.1
 * IntelliJ IDEA Plugin on the Dynatrace Community: https://community.dynatrace.com/community/display/DL/IntelliJ+IDEA+Integration+Plugin
 
 #### Table of Contents
