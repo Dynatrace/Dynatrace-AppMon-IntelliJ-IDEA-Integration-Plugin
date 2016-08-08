@@ -1,8 +1,8 @@
 <idea-plugin version="2">
     <id>com.dynatrace.integration.idea</id>
     <name>Dynatrace AppMon Integration</name>
-    <version>0.0.4</version>
-    <vendor url="https://dynatrace.com">Dynatrace</vendor>
+    <version>2.0.1</version>
+    <vendor url="https://www.dynatrace.com">Dynatrace LLC</vendor>
 
     <description><![CDATA[
       The Dynatrace IntelliJ Idea Integration Plugin enables you to:
@@ -12,12 +12,13 @@
       <li>perform look-ups of sources files and methods from applications under diagnosis in Dynatrace Application Monitoring</li>
       </ul>
 
-      <div style="text-align: right;">Contributors:<dl>
-        <dt>Maciej Mionskowski</dt>
-        <dd><a href="https://maciekmm.net">https://maciekmm.net</a></dd>
-        <dd><a href="mailto:maciej.mionskowski@dynatrace.com">maciej.mionskowski@dynatrace.com</a></dd>
-      </dl>
-      </div>
+      <p style="font-weight: bold"><a href="https://community.dynatrace.com/community/display/DL/IntelliJ+IDEA+Integration+Plugin">Help & Troubleshooting</a></p>
+
+      <h3 style="font-size: inherit; line-height: inherit; margin: 10px 0 0 0;">Contributors:</h3>
+      <ul>
+        <li>Christian Grimm</li>
+        <li>Maciej Mionskowski</li>
+      </ul>
     ]]></description>
 
     <change-notes><![CDATA[
