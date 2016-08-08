@@ -15,7 +15,8 @@ Special thanks to Christian Grimm who contributed to the first version of this p
 #### Table of Contents
 
 * [Installation](#installation)  
- * [Prerequisites](#prerequisites)  
+ * [Prerequisites](#prerequisites)
+ * [Installation from JetBrains repository](#repository_installation)
  * [Manual Installation](#manual_installation)
 * [Configuration](#configuration)
  * [Global Settings](#global)
@@ -38,6 +39,14 @@ Special thanks to Christian Grimm who contributed to the first version of this p
 * IntelliJ version: 2016.1+ (145+)
 
 Find further information in the [Dynatrace community](https://community.dynatrace.com/community/pages/viewpage.action?pageId=68649064).
+
+### <a name="repository_installation"></a>Installation from JetBrains repository
+
+* In IntelliJ IDEA, click on *File / Settings / Plugin / Browse repositories...*
+* In the search box type *Dynatrace* and select *Dynatrace AppMon Integration*
+* Click *Install* and restart IDEA
+
+![repository_installation](img/repository_installation.png)
 
 ### <a name="manual_installation"></a>Manual Installation
 
