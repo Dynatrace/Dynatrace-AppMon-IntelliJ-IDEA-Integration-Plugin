@@ -30,9 +30,11 @@
 package com.dynatrace.integration.idea.plugin;
 
 import com.dynatrace.codelink.IDEDescriptor;
-import com.dynatrace.integration.idea.Icons;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.notification.*;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -44,8 +46,10 @@ import java.util.logging.Level;
 
 
 public class IDEADescriptor implements IDEDescriptor {
-    public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.eventlog", NotificationDisplayType.STICKY_BALLOON, true, null, Icons.CROSSED);
-    public static final NotificationGroup INFO_NOTIFICATION_GROUP = new NotificationGroup("dynatrace.systemlog", NotificationDisplayType.NONE, true, null, Icons.DYNATRACE13);
+    public static final NotificationGroup IMPORTANT_NOTIFICATION_GROUP = NotificationGroup.balloonGroup("dynatrace.eventlog");
+    public static final NotificationGroup INFO_NOTIFICATION_GROUP = NotificationGroup.logOnlyGroup("dynatrace.systemlog");
+    private static final String NOTIFICATION_FORMAT = "<b>%s</b><br><i>%s</i><br>%s";
+    private static final String LOG_FORMAT = "[%s](%s) - %s";
 
     public static IDEADescriptor getInstance() {
         return ServiceManager.getService(IDEADescriptor.class);
@@ -79,9 +83,9 @@ public class IDEADescriptor implements IDEDescriptor {
             }
             Notification notif;
             if (notification) {
-                notif = IMPORTANT_NOTIFICATION_GROUP.createNotification(title, subtitle, content, type);
+                notif = IMPORTANT_NOTIFICATION_GROUP.createNotification(String.format(NOTIFICATION_FORMAT, title, subtitle, content), type);
             } else {
-                notif = INFO_NOTIFICATION_GROUP.createNotification(title, subtitle, content, type);
+                notif = INFO_NOTIFICATION_GROUP.createNotification(String.format(LOG_FORMAT, title, subtitle, content), type);
             }
             Notifications.Bus.notify(notif);
         });
