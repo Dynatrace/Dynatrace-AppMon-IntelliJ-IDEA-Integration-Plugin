@@ -22,6 +22,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <ul>
+        <li>2.0.2: Support IntelliJ IDEA 15</li>
+        <li>2.0.0: Initial release</li>
+        </ul>
     ]]>
     </change-notes>
 
