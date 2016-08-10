@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.dynatrace.integration.idea</id>
     <name>Dynatrace AppMon Integration</name>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <vendor url="https://www.dynatrace.com">Dynatrace LLC</vendor>
 
     <description><![CDATA[
