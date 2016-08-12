@@ -56,10 +56,8 @@ public class TestRunResultsWorker implements Runnable {
     private final DynatraceSettingsProvider.State settings;
     private final TestRunResultsView view;
     private int testCount;
-    private final Project project;
 
-    public TestRunResultsWorker(Project project, TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings, int testCount) {
-        this.project = project;
+    public TestRunResultsWorker(TestRunResultsView view, String profileName, String testRunId, DynatraceSettingsProvider.State settings, int testCount) {
         this.view = view;
         this.profileName = profileName;
         this.testRunId = testRunId;
@@ -71,10 +69,6 @@ public class TestRunResultsWorker implements Runnable {
     @Override
     public void run() {
         int lastFetched = 0;
-        SessionStorage ss = this.project.getComponent(SessionStorage.class);
-        if (ss.isRecording(this.profileName)) {
-            ss.stopRecording(this.profileName);
-        }
         while (System.currentTimeMillis() - this.startTime < this.settings.getServer().getTimeout() * 1000L) {
             TestAutomation automation = new TestAutomation(SDKClient.getInstance());
             try {

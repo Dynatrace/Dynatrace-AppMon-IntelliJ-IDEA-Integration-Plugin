@@ -30,6 +30,7 @@
 package com.dynatrace.integration.idea.execution.configuration;
 
 import com.dynatrace.integration.idea.Messages;
+import com.dynatrace.integration.idea.execution.DynatraceProcessListener;
 import com.dynatrace.integration.idea.execution.DynatraceRunnerSettings;
 import com.dynatrace.integration.idea.plugin.SDKClient;
 import com.dynatrace.integration.idea.plugin.IDEADescriptor;
@@ -76,13 +77,20 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             return;
         }
 
-        OSProcessHandler procHandler = (OSProcessHandler) handler;
         DynatraceConfigurableStorage executionSettings = DynatraceConfigurableStorage.getOrCreateStorage(configuration);
+        handler.putCopyableUserData(PROFILE_KEY, executionSettings.getSystemProfile());
+
+        OSProcessHandler procHandler = (OSProcessHandler) handler;
+        handler.addProcessListener(new DynatraceProcessListener(executionSettings.getSystemProfile(), configuration.getProject()));
+
+        if(!(configuration instanceof JavaTestConfigurationBase)) {
+            return;
+        }
+
         Matcher matcher = TRID_EXTRACTOR.matcher(procHandler.getCommandLine());
         if (!matcher.find()) {
             return;
         }
-        handler.putCopyableUserData(PROFILE_KEY, executionSettings.getSystemProfile());
         handler.putCopyableUserData(TRID_KEY, matcher.group(1));
     }
 
@@ -117,19 +125,21 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
                 builder.append(',').append(executionSettings.getAdditionalParameters());
             }
 
-            Calendar now = Calendar.getInstance();
+            if(configuration instanceof JavaTestConfigurationBase) {
+                Calendar now = Calendar.getInstance();
 
-            //fetch test id
-            TestAutomation testAutomation = new TestAutomation(client);
-            CreateTestRunRequest request = new CreateTestRunRequest(executionSettings.getSystemProfile(), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())));
-            request.setVersionMajor(String.valueOf(now.get(Calendar.YEAR)));
-            request.setVersionMinor(String.valueOf(now.get(Calendar.MONTH) + 1));
-            request.setVersionRevision(String.valueOf(now.get(Calendar.DAY_OF_WEEK)));
+                //fetch test id
+                TestAutomation testAutomation = new TestAutomation(client);
+                CreateTestRunRequest request = new CreateTestRunRequest(executionSettings.getSystemProfile(), String.valueOf(new SimpleDateFormat("HH:mm:ss").format(now.getTime())));
+                request.setVersionMajor(String.valueOf(now.get(Calendar.YEAR)));
+                request.setVersionMinor(String.valueOf(now.get(Calendar.MONTH) + 1));
+                request.setVersionRevision(String.valueOf(now.get(Calendar.DAY_OF_WEEK)));
 
-            TestRun testRun = testAutomation.createTestRun(request);
+                TestRun testRun = testAutomation.createTestRun(request);
 
-            builder.append(',').append("optionTestRunIdJava=").append(testRun.getId());
-            IDEADescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", testRun.getId()), false);
+                builder.append(',').append("optionTestRunIdJava=").append(testRun.getId());
+                IDEADescriptor.getInstance().log(Level.INFO, "TestRun", "", Messages.getMessage("execution.configuration.tests.running", testRun.getId()), false);
+            }
 
             //mutate java parameters
             javaParameters.getVMParametersList().add(builder.toString());
@@ -157,7 +167,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
 
     @Override
     protected boolean isApplicableFor(@NotNull RunConfigurationBase runConfigurationBase) {
-        return runConfigurationBase instanceof JavaTestConfigurationBase;
+        return true;
+        //return runConfigurationBase instanceof JavaTestConfigurationBase;
     }
 
     @NotNull
