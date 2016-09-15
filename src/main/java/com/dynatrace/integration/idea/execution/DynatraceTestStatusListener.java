@@ -62,6 +62,9 @@ public class DynatraceTestStatusListener extends TestStatusListener {
             return;
         }
         SMTestProxy.SMRootTestProxy testProxy = (SMTestProxy.SMRootTestProxy) root;
+        if (testProxy.getHandler() == null) {
+            return;
+        }
         String profileName = testProxy.getHandler().getCopyableUserData(DynatraceRunConfigurationExtension.PROFILE_KEY);
         String trId = testProxy.getHandler().getCopyableUserData(DynatraceRunConfigurationExtension.TRID_KEY);
 

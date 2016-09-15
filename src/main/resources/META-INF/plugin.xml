@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.dynatrace.integration.idea</id>
     <name>Dynatrace AppMon Integration</name>
-    <version>2.0.3</version>
+    <version>2.0.3.1</version>
     <vendor url="https://www.dynatrace.com">Dynatrace LLC</vendor>
 
     <description><![CDATA[
@@ -23,6 +23,7 @@
 
     <change-notes><![CDATA[
         <ul>
+        <li>2.0.3.1: Fixed possible NPE when getting test results</li>
         <li>2.0.3: Added support for running all Java run configurations with agents injected</li>
         <li>2.0.2: Support IntelliJ IDEA 15</li>
         <li>2.0.0: Initial release</li>
