@@ -9,7 +9,7 @@ The Dynatrace IntelliJ Idea Integration Plugin enables you to:
 
 Special thanks to Christian Grimm who contributed to the first version of this plugin.
 
-* Download latest release: https://github.com/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin/releases/tag/v2.0.1
+* Download latest release: https://github.com/Dynatrace/Dynatrace-IntelliJ-IDEA-Integration-Plugin/releases
 * IntelliJ IDEA Plugin on the Dynatrace Community: https://community.dynatrace.com/community/display/DL/IntelliJ+IDEA+Integration+Plugin
 
 #### Table of Contents
@@ -36,7 +36,7 @@ Special thanks to Christian Grimm who contributed to the first version of this p
 ### <a name="prerequisites"></a>Prerequisites
 
 * Dynatrace Application Monitoring version: 6.3+
-* IntelliJ version: 2016.1+ (145+)
+* IntelliJ version: 15+ (143+)
 
 Find further information in the [Dynatrace community](https://community.dynatrace.com/community/pages/viewpage.action?pageId=68649064).
 
@@ -76,9 +76,7 @@ The lancher will run applications with an injected Dynatrace Agent using the age
 
 ![launcher](img/launcher.png)
 
-The launcher support the following launch mode:
-* NGTest
-* JUnit test
+The launcher support all java run configurations.
 
 The agent will output debug information into the console:
 
