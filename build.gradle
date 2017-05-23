@@ -32,6 +32,7 @@ intellij {
 
 dependencies {
     compile fileTree(dir: 'lib', include: '*.jar')
+    compile "com.dynatrace.sdk:server-rest-sdk:7.0.0"
     testCompile "junit:junit:4.12"
     testCompile "com.github.tomakehurst:wiremock:2.1.7"
 }
