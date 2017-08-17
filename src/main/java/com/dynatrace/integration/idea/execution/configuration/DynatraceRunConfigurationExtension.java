@@ -118,8 +118,8 @@ public class DynatraceRunConfigurationExtension extends RunConfigurationExtensio
             builder.append(settings.getAgent().getAgentLibrary()).append('=');
             builder.append("wait=").append(settings.getServer().getTimeout()).append(',');
             builder.append("name=").append(executionSettings.getAgentName()).append(',');
-            builder.append("server=").append(settings.getAgent().getCollectorHost()).append(',');
-            builder.append("port=").append(settings.getAgent().getCollectorPort());
+            builder.append("server=").append(settings.getAgent().getCollectorHost()).append(':');
+            builder.append(settings.getAgent().getCollectorPort());
 
             if (executionSettings.getAdditionalParameters() != null && !executionSettings.getAdditionalParameters().isEmpty()) {
                 builder.append(',').append(executionSettings.getAdditionalParameters());
